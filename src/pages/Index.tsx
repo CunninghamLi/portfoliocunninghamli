@@ -22,7 +22,7 @@ const Index = () => {
       </main>
       <footer className="py-8 bg-background border-t border-border">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© {new Date().getFullYear()} Portfolio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Portfolio. Made by Cunningham Li.</p>
         </div>
       </footer>
     </div>
