@@ -1,6 +1,10 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedArray, useTranslatedText } from '@/hooks/useTranslation';
 import { Badge } from '@/components/ui/badge';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 const container = {
   hidden: { opacity: 0 },
@@ -19,9 +23,20 @@ const item = {
 
 const Skills = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { skills } = data;
 
-  const categories = [...new Set(skills.map((s) => s.category))];
+  const skillsForTranslation = useMemo(() => 
+    skills.map(s => ({ ...s, category: s.category, name: s.name })), 
+    [skills]
+  );
+
+  const { items: translatedSkills, isTranslating } = useTranslatedArray(
+    skillsForTranslation,
+    ['category', 'name']
+  );
+
+  const categories = [...new Set(translatedSkills.map((s) => s.category))];
 
   return (
     <section id="skills" className="py-20 bg-secondary/30">
@@ -31,9 +46,10 @@ const Skills = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
         >
-          Skills
+          {t.sections.skills}
+          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <div className="max-w-4xl mx-auto space-y-8">
           {categories.map((category, catIndex) => (
@@ -52,7 +68,7 @@ const Skills = () => {
                 viewport={{ once: true }}
                 className="flex flex-wrap gap-2"
               >
-                {skills
+                {translatedSkills
                   .filter((s) => s.category === category)
                   .map((skill) => (
                     <motion.div key={skill.id} variants={item}>

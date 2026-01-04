@@ -1,10 +1,24 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import { Briefcase } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedArray } from '@/hooks/useTranslation';
+import { Briefcase, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 const Experience = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { experiences } = data;
+
+  const experiencesForTranslation = useMemo(() => 
+    experiences.map(e => ({ ...e, description: e.description, role: e.role })), 
+    [experiences]
+  );
+
+  const { items: translatedExperiences, isTranslating } = useTranslatedArray(
+    experiencesForTranslation,
+    ['description', 'role']
+  );
 
   return (
     <section id="experience" className="py-20 bg-background">
@@ -14,13 +28,14 @@ const Experience = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
         >
-          Experience
+          {t.sections.experience}
+          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <div className="max-w-3xl mx-auto">
           <div className="relative border-l-2 border-primary/30 pl-8 ml-4">
-            {experiences.map((exp, index) => (
+            {translatedExperiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 initial={{ opacity: 0, x: -30 }}

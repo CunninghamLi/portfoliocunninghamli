@@ -1,11 +1,16 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedText } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Hero = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { aboutMe } = data;
+
+  const { text: translatedTitle } = useTranslatedText(aboutMe.title);
 
   const scrollToAbout = () => {
     document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
@@ -48,7 +53,7 @@ const Hero = () => {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-4"
         >
-          Hi, I'm{' '}
+          {t.hero.greeting}{' '}
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -64,7 +69,7 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-xl md:text-2xl text-muted-foreground mb-8"
         >
-          {aboutMe.title}
+          {translatedTitle}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -73,7 +78,7 @@ const Hero = () => {
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button size="lg" onClick={scrollToAbout} className="group">
-              Explore My Work
+              {t.hero.viewWork}
               <motion.span
                 animate={{ y: [0, 4, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePortfolio, Project, Experience, Skill, Education } from '@/contexts/PortfolioContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,15 +13,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload, FileText, X } from 'lucide-react';
 
 const Dashboard = () => {
   const { isLoggedIn } = useAuth();
+  const { t } = useLanguage();
   const {
     data,
     loading,
+    portfolioId,
     updateAboutMe,
     updateContact,
+    updateResumeUrl,
     addProject,
     updateProject,
     deleteProject,
@@ -41,7 +46,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-foreground">Loading portfolio data...</div>
+        <div className="text-foreground">{t.common.loading}</div>
       </div>
     );
   }
@@ -50,16 +55,17 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-12">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">{t.dashboard.title}</h1>
         
         <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full">
-            <TabsTrigger value="about">About</TabsTrigger>
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="experience">Experience</TabsTrigger>
-            <TabsTrigger value="skills">Skills</TabsTrigger>
-            <TabsTrigger value="education">Education</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
+          <TabsList className="grid grid-cols-4 md:grid-cols-7 w-full">
+            <TabsTrigger value="about">{t.dashboard.about}</TabsTrigger>
+            <TabsTrigger value="projects">{t.dashboard.projects}</TabsTrigger>
+            <TabsTrigger value="experience">{t.dashboard.experience}</TabsTrigger>
+            <TabsTrigger value="skills">{t.dashboard.skills}</TabsTrigger>
+            <TabsTrigger value="education">{t.dashboard.education}</TabsTrigger>
+            <TabsTrigger value="contact">{t.dashboard.contact}</TabsTrigger>
+            <TabsTrigger value="resume">{t.dashboard.resume}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="about">
@@ -105,9 +111,159 @@ const Dashboard = () => {
           <TabsContent value="contact">
             <ContactEditor data={data.contact} onSave={updateContact} />
           </TabsContent>
+
+          <TabsContent value="resume">
+            <ResumeEditor
+              resumeUrl={data.resumeUrl}
+              portfolioId={portfolioId}
+              onSave={updateResumeUrl}
+            />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
+  );
+};
+
+// Resume Editor Component
+const ResumeEditor = ({
+  resumeUrl,
+  portfolioId,
+  onSave,
+}: {
+  resumeUrl?: string;
+  portfolioId: string | null;
+  onSave: (url: string | null) => Promise<void>;
+}) => {
+  const { t } = useLanguage();
+  const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !portfolioId) return;
+
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({ title: 'Error', description: 'Please upload a PDF or image file.', variant: 'destructive' });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${portfolioId}/resume.${fileExt}`;
+
+      // Delete old file if exists
+      if (resumeUrl) {
+        const oldPath = resumeUrl.split('/resumes/')[1];
+        if (oldPath) {
+          await supabase.storage.from('resumes').remove([oldPath]);
+        }
+      }
+
+      const { error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage.from('resumes').getPublicUrl(fileName);
+      
+      await onSave(urlData.publicUrl);
+      toast({ title: 'Success!', description: 'Resume uploaded successfully.' });
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      toast({ title: 'Error', description: 'Failed to upload resume.', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemove = async () => {
+    if (!resumeUrl || !portfolioId) return;
+
+    setRemoving(true);
+    try {
+      const path = resumeUrl.split('/resumes/')[1];
+      if (path) {
+        await supabase.storage.from('resumes').remove([path]);
+      }
+      await onSave(null);
+      toast({ title: 'Success!', description: 'Resume removed.' });
+    } catch (error) {
+      console.error('Error removing resume:', error);
+      toast({ title: 'Error', description: 'Failed to remove resume.', variant: 'destructive' });
+    } finally {
+      setRemoving(false);
+    }
+  };
+
+  const isPdf = resumeUrl?.toLowerCase().endsWith('.pdf');
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t.dashboard.editResume}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label>{t.dashboard.uploadResume}</Label>
+          <div className="flex items-center gap-4">
+            <Input
+              type="file"
+              accept=".pdf,image/*"
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="cursor-pointer"
+            />
+            {uploading && <span className="text-muted-foreground text-sm">{t.common.saving}</span>}
+          </div>
+          <p className="text-xs text-muted-foreground">{t.dashboard.resumeHelp}</p>
+        </div>
+
+        {resumeUrl && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>{t.dashboard.currentResume}</Label>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleRemove}
+                disabled={removing}
+              >
+                <X className="w-4 h-4 mr-2" />
+                {removing ? t.common.saving : t.dashboard.removeResume}
+              </Button>
+            </div>
+            <div className="border border-border rounded-lg overflow-hidden">
+              {isPdf ? (
+                <div className="flex items-center gap-3 p-4 bg-secondary/50">
+                  <FileText className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="font-medium text-foreground">Resume PDF</p>
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      View PDF
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <img
+                  src={resumeUrl}
+                  alt="Resume preview"
+                  className="max-w-full h-auto max-h-96 object-contain mx-auto"
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -1,10 +1,24 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import { GraduationCap } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedArray } from '@/hooks/useTranslation';
+import { GraduationCap, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 const Education = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { education } = data;
+
+  const educationForTranslation = useMemo(() => 
+    education.map(e => ({ ...e, degree: e.degree, description: e.description || '' })), 
+    [education]
+  );
+
+  const { items: translatedEducation, isTranslating } = useTranslatedArray(
+    educationForTranslation,
+    ['degree', 'description']
+  );
 
   return (
     <section id="education" className="py-20 bg-background">
@@ -14,12 +28,13 @@ const Education = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
         >
-          Education
+          {t.sections.education}
+          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <div className="max-w-3xl mx-auto space-y-6">
-          {education.map((edu, index) => (
+          {translatedEducation.map((edu, index) => (
             <motion.div
               key={edu.id}
               initial={{ opacity: 0, y: 30 }}

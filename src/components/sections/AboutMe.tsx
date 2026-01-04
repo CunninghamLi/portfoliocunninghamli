@@ -1,10 +1,18 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import { User } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedText } from '@/hooks/useTranslation';
+import { User, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const AboutMe = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { aboutMe } = data;
+
+  const { text: translatedTitle, isTranslating: titleLoading } = useTranslatedText(aboutMe.title);
+  const { text: translatedBio, isTranslating: bioLoading } = useTranslatedText(aboutMe.bio);
+
+  const isTranslating = titleLoading || bioLoading;
 
   return (
     <section id="about" className="py-20 bg-background">
@@ -16,7 +24,7 @@ const AboutMe = () => {
           transition={{ duration: 0.5 }}
           className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
         >
-          About Me
+          {t.sections.aboutMe}
         </motion.h2>
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
           <motion.div
@@ -45,8 +53,11 @@ const AboutMe = () => {
             className="text-center md:text-left"
           >
             <h3 className="text-2xl font-bold text-foreground mb-2">{aboutMe.name}</h3>
-            <p className="text-lg text-primary mb-4">{aboutMe.title}</p>
-            <p className="text-muted-foreground leading-relaxed">{aboutMe.bio}</p>
+            <p className="text-lg text-primary mb-4 flex items-center justify-center md:justify-start gap-2">
+              {translatedTitle}
+              {isTranslating && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
+            </p>
+            <p className="text-muted-foreground leading-relaxed">{translatedBio}</p>
           </motion.div>
         </div>
       </div>

@@ -1,8 +1,11 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 const container = {
   hidden: { opacity: 0 },
@@ -21,7 +24,18 @@ const item = {
 
 const Projects = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { projects } = data;
+
+  const projectsForTranslation = useMemo(() => 
+    projects.map(p => ({ ...p, description: p.description })), 
+    [projects]
+  );
+  
+  const { items: translatedProjects, isTranslating } = useTranslatedArray(
+    projectsForTranslation,
+    ['description']
+  );
 
   return (
     <section id="projects" className="py-20 bg-secondary/30">
@@ -31,9 +45,10 @@ const Projects = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
         >
-          Projects
+          {t.sections.projects}
+          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <motion.div
           variants={container}
@@ -42,7 +57,7 @@ const Projects = () => {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         >
-          {projects.map((project) => (
+          {translatedProjects.map((project) => (
             <motion.div key={project.id} variants={item}>
               <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
                 <CardHeader>

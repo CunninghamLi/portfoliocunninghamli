@@ -1,28 +1,33 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import { Mail, Phone, MapPin, Linkedin, Github } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedText } from '@/hooks/useTranslation';
+import { Mail, Phone, MapPin, Linkedin, Github, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
 const Contact = () => {
   const { data } = usePortfolio();
+  const { t } = useLanguage();
   const { contact } = data;
+
+  const { text: translatedLocation, isTranslating } = useTranslatedText(contact.location);
 
   const contactItems = [
     {
       icon: Mail,
-      label: 'Email',
+      label: t.contact.email,
       value: contact.email,
       href: `mailto:${contact.email}`,
     },
     {
       icon: Phone,
-      label: 'Phone',
+      label: t.contact.phone,
       value: contact.phone,
     },
     {
       icon: MapPin,
-      label: 'Location',
-      value: contact.location,
+      label: t.contact.location,
+      value: translatedLocation,
     },
   ];
 
@@ -34,9 +39,10 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground"
+          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
         >
-          Contact
+          {t.sections.contact}
+          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <motion.div
           initial={{ opacity: 0, y: 30 }}

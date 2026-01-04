@@ -3,24 +3,27 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const navItems = [
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Education', href: '#education' },
-  { label: 'Contact', href: '#contact' },
-];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isLoggedIn, logout } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const isHome = location.pathname === '/';
+
+  const navItems = [
+    { label: t.nav.about, href: '#about' },
+    { label: t.nav.projects, href: '#projects' },
+    { label: t.nav.experience, href: '#experience' },
+    { label: t.nav.skills, href: '#skills' },
+    { label: t.nav.education, href: '#education' },
+    { label: t.nav.contact, href: '#contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,6 +85,20 @@ const Navbar = () => {
               </motion.a>
             ))}
 
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
+            >
+              <Link
+                to="/resume"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+              >
+                {t.nav.resume}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+              </Link>
+            </motion.div>
+
             {isLoggedIn && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -92,21 +109,23 @@ const Navbar = () => {
                   to="/dashboard"
                   className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                 >
-                  Dashboard
+                  {t.nav.dashboard}
                 </Link>
               </motion.div>
             )}
+
+            <LanguageToggle />
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               {isLoggedIn ? (
                 <Button variant="outline" size="sm" onClick={logout}>
                   <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  {t.nav.logout}
                 </Button>
               ) : (
                 <Link to="/login">
                   <Button variant="default" size="sm">
-                    Login
+                    {t.nav.login}
                   </Button>
                 </Link>
               )}
@@ -114,14 +133,17 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="md:hidden p-2"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageToggle />
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="p-2"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </motion.button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -154,25 +176,33 @@ const Navbar = () => {
                   </motion.a>
                 ))}
 
+                <Link
+                  to="/resume"
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                >
+                  {t.nav.resume}
+                </Link>
+
                 {isLoggedIn && (
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
                     className="px-4 py-2 text-sm font-medium text-primary hover:bg-accent rounded-md transition-colors"
                   >
-                    Dashboard
+                    {t.nav.dashboard}
                   </Link>
                 )}
 
                 {isLoggedIn ? (
                   <Button variant="outline" size="sm" onClick={logout} className="mx-4">
                     <LogOut className="w-4 h-4 mr-2" />
-                    Logout
+                    {t.nav.logout}
                   </Button>
                 ) : (
                   <Link to="/login" className="px-4">
                     <Button variant="default" size="sm" className="w-full">
-                      Login
+                      {t.nav.login}
                     </Button>
                   </Link>
                 )}

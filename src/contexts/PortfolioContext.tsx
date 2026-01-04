@@ -52,6 +52,7 @@ export interface PortfolioData {
     linkedin?: string;
     github?: string;
   };
+  resumeUrl?: string;
 }
 
 const defaultData: PortfolioData = {
@@ -66,11 +67,12 @@ const defaultData: PortfolioData = {
   education: [],
   contact: {
     email: 'snipercunni4399@gmail.com',
-    phone: '438-998-9602',
+    phone: '4389989602',
     location: 'Brossard, QC',
     linkedin: 'https://www.linkedin.com/in/cunningham-li-7b3672382/',
     github: 'https://github.com/CunninghamLi',
   },
+  resumeUrl: undefined,
 };
 
 interface PortfolioContextType {
@@ -79,6 +81,7 @@ interface PortfolioContextType {
   portfolioId: string | null;
   updateAboutMe: (aboutMe: PortfolioData['aboutMe']) => Promise<void>;
   updateContact: (contact: PortfolioData['contact']) => Promise<void>;
+  updateResumeUrl: (resumeUrl: string | null) => Promise<void>;
   addProject: (project: Omit<Project, 'id'>) => Promise<void>;
   updateProject: (project: Project) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
@@ -187,6 +190,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
             linkedin: portfolio.linkedin || undefined,
             github: portfolio.github || undefined,
           },
+          resumeUrl: portfolio.resume_url || undefined,
         });
       } catch (error) {
         console.error('Error loading portfolio data:', error);
@@ -500,6 +504,22 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     setData((prev) => ({ ...prev, education: prev.education.filter((e) => e.id !== id) }));
   };
 
+  const updateResumeUrl = async (resumeUrl: string | null) => {
+    if (!portfolioId) return;
+
+    const { error } = await supabase
+      .from('portfolio')
+      .update({ resume_url: resumeUrl })
+      .eq('id', portfolioId);
+
+    if (error) {
+      console.error('Error updating resume URL:', error);
+      return;
+    }
+
+    setData((prev) => ({ ...prev, resumeUrl: resumeUrl || undefined }));
+  };
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -508,6 +528,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         portfolioId,
         updateAboutMe,
         updateContact,
+        updateResumeUrl,
         addProject,
         updateProject,
         deleteProject,
