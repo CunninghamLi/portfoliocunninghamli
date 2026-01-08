@@ -27,8 +27,9 @@ const Projects = () => {
   const { t } = useLanguage();
   const { projects } = data;
 
+  // Memoize to ensure stable reference for translation hook
   const projectsForTranslation = useMemo(() => 
-    projects.map(p => ({ ...p, description: p.description })), 
+    projects.map(p => ({ ...p })), 
     [projects]
   );
   
@@ -36,6 +37,9 @@ const Projects = () => {
     projectsForTranslation,
     ['description']
   );
+
+  // Always show projects - use original if translation hasn't processed yet
+  const displayProjects = translatedProjects.length > 0 ? translatedProjects : projects;
 
   return (
     <section id="projects" className="py-20 bg-secondary/30">
@@ -51,13 +55,14 @@ const Projects = () => {
           {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
         </motion.h2>
         <motion.div
+          key={`projects-container-${displayProjects.length}`}
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         >
-          {translatedProjects.map((project) => (
+          {displayProjects.map((project) => (
             <motion.div key={project.id} variants={item}>
               <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
                 <CardHeader>
