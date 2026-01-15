@@ -141,13 +141,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (username: string, password: string): Promise<{ error: string | null }> => {
     try {
-      // Generate the fake email from username for login
-      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
+      // First check if this is the admin user (cunninghamli uses gmail.com)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('username', username)
+        .maybeSingle();
 
-      const { error } = await supabase.auth.signInWithPassword({
+      // Try with the fake email format first for new users
+      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
+      
+      let { error } = await supabase.auth.signInWithPassword({
         email: fakeEmail,
         password,
       });
+
+      // If login fails and user exists in profiles, try with gmail format (for legacy admin)
+      if (error && profile && username.toLowerCase() === 'cunninghamli') {
+        const legacyEmail = `${username.toLowerCase()}@gmail.com`;
+        const legacyResult = await supabase.auth.signInWithPassword({
+          email: legacyEmail,
+          password,
+        });
+        error = legacyResult.error;
+      }
 
       if (error) {
         return { error: 'Invalid username or password' };
