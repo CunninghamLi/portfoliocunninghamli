@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, isAdmin, logout } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -114,7 +114,7 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            {isLoggedIn && (
+            {isLoggedIn && isAdmin && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -207,7 +207,7 @@ const Navbar = () => {
                   {t.nav.testimonials}
                 </Link>
 
-                {isLoggedIn && (
+                {isLoggedIn && isAdmin && (
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
