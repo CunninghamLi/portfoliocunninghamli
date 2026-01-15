@@ -1,42 +1,180 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
+  user: User | null;
+  session: Session | null;
   isLoggedIn: boolean;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
+  isAdmin: boolean;
+  username: string | null;
+  loading: boolean;
+  signUp: (email: string, password: string, username: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const VALID_USERNAME = 'cunninghamli';
-const VALID_PASSWORD = 'pwd123';
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('portfolio_auth');
-    if (stored === 'true') {
-      setIsLoggedIn(true);
-    }
-  }, []);
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
 
-  const login = (username: string, password: string): boolean => {
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-      setIsLoggedIn(true);
-      localStorage.setItem('portfolio_auth', 'true');
-      return true;
+      if (error) {
+        console.error('Error checking admin role:', error);
+        return false;
+      }
+      return !!data;
+    } catch (err) {
+      console.error('Error checking admin:', err);
+      return false;
     }
-    return false;
   };
 
-  const logout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('portfolio_auth');
+  const fetchUsername = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching username:', error);
+        return null;
+      }
+      return data?.username || null;
+    } catch (err) {
+      console.error('Error fetching username:', err);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+
+        if (newSession?.user) {
+          // Use setTimeout to avoid blocking the auth state change
+          setTimeout(async () => {
+            const adminStatus = await checkAdminRole(newSession.user.id);
+            setIsAdmin(adminStatus);
+            const uname = await fetchUsername(newSession.user.id);
+            setUsername(uname);
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setUsername(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    // THEN get initial session
+    supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
+      setSession(initialSession);
+      setUser(initialSession?.user ?? null);
+
+      if (initialSession?.user) {
+        const adminStatus = await checkAdminRole(initialSession.user.id);
+        setIsAdmin(adminStatus);
+        const uname = await fetchUsername(initialSession.user.id);
+        setUsername(uname);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signUp = async (email: string, password: string, username: string): Promise<{ error: string | null }> => {
+    try {
+      // Check if username is already taken
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
+
+      if (existingProfile) {
+        return { error: 'Username is already taken' };
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: {
+            username,
+          },
+        },
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      return { error: null };
+    } catch (err) {
+      return { error: 'An unexpected error occurred' };
+    }
+  };
+
+  const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      return { error: null };
+    } catch (err) {
+      return { error: 'An unexpected error occurred' };
+    }
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setIsAdmin(false);
+    setUsername(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        isLoggedIn: !!user,
+        isAdmin,
+        username,
+        loading,
+        signUp,
+        signIn,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
