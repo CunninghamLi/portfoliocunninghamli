@@ -26,6 +26,13 @@ export interface Skill {
   category: string;
 }
 
+export interface Hobby {
+  id: string;
+  name: string;
+  category: string;
+  icon?: string;
+}
+
 export interface Education {
   id: string;
   institution: string;
@@ -44,6 +51,7 @@ export interface PortfolioData {
   projects: Project[];
   experiences: Experience[];
   skills: Skill[];
+  hobbies: Hobby[];
   education: Education[];
   contact: {
     email: string;
@@ -57,20 +65,21 @@ export interface PortfolioData {
 
 const defaultData: PortfolioData = {
   aboutMe: {
-    name: 'Cunningham Li',
+    name: 'John Doe',
     title: 'Computer Science Student',
-    bio: 'Full-stack Computer Science student at Champlain College St-Lambert with experience in backend development, frontend technologies, and API integration. I work with Java, Spring Boot, JavaScript, TypeScript, React, Next.js, SQL, and Docker, and I enjoy building reliable applications that are clear to maintain and extend. I’ve worked across different parts of the development process, from designing REST APIs to implementing user interfaces and managing data. I’m continuing to grow my skills through practical projects and team-based coursework.',
+    bio: 'Passionate computer science student with a keen interest in software development, machine learning, and web technologies.',
   },
   projects: [],
   experiences: [],
   skills: [],
+  hobbies: [],
   education: [],
   contact: {
-    email: 'snipercunni4399@gmail.com',
-    phone: '4389989602',
-    location: 'Brossard, QC',
-    linkedin: 'https://www.linkedin.com/in/cunningham-li-7b3672382/',
-    github: 'https://github.com/CunninghamLi',
+    email: 'john.doe@email.com',
+    phone: '+1 (555) 123-4567',
+    location: 'San Francisco, CA',
+    linkedin: 'https://linkedin.com/in/johndoe',
+    github: 'https://github.com/johndoe',
   },
   resumeUrl: undefined,
 };
@@ -91,6 +100,9 @@ interface PortfolioContextType {
   addSkill: (skill: Omit<Skill, 'id'>) => Promise<void>;
   updateSkill: (skill: Skill) => Promise<void>;
   deleteSkill: (id: string) => Promise<void>;
+  addHobby: (hobby: Omit<Hobby, 'id'>) => Promise<void>;
+  updateHobby: (hobby: Hobby) => Promise<void>;
+  deleteHobby: (id: string) => Promise<void>;
   addEducation: (education: Omit<Education, 'id'>) => Promise<void>;
   updateEducation: (education: Education) => Promise<void>;
   deleteEducation: (id: string) => Promise<void>;
@@ -140,10 +152,11 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         setPortfolioId(portfolio.id);
 
         // Load all related data
-        const [projectsRes, experiencesRes, skillsRes, educationRes] = await Promise.all([
+        const [projectsRes, experiencesRes, skillsRes, hobbiesRes, educationRes] = await Promise.all([
           supabase.from('projects').select('*').eq('portfolio_id', portfolio.id),
           supabase.from('experiences').select('*').eq('portfolio_id', portfolio.id),
           supabase.from('skills').select('*').eq('portfolio_id', portfolio.id),
+          supabase.from('hobbies').select('*').eq('portfolio_id', portfolio.id),
           supabase.from('education').select('*').eq('portfolio_id', portfolio.id),
         ]);
 
@@ -175,6 +188,12 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
             id: s.id,
             name: s.name,
             category: s.category,
+          })),
+          hobbies: (hobbiesRes.data || []).map((h) => ({
+            id: h.id,
+            name: h.name,
+            category: h.category,
+            icon: h.icon || undefined,
           })),
           education: (educationRes.data || []).map((e) => ({
             id: e.id,
@@ -440,6 +459,67 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     setData((prev) => ({ ...prev, skills: prev.skills.filter((s) => s.id !== id) }));
   };
 
+  const addHobby = async (hobby: Omit<Hobby, 'id'>) => {
+    if (!portfolioId) return;
+
+    const { data: newHobby, error } = await supabase
+      .from('hobbies')
+      .insert({
+        portfolio_id: portfolioId,
+        name: hobby.name,
+        category: hobby.category,
+        icon: hobby.icon || null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error adding hobby:', error);
+      return;
+    }
+
+    const mappedHobby: Hobby = {
+      id: newHobby.id,
+      name: newHobby.name,
+      category: newHobby.category,
+      icon: newHobby.icon || undefined,
+    };
+
+    setData((prev) => ({ ...prev, hobbies: [...prev.hobbies, mappedHobby] }));
+  };
+
+  const updateHobby = async (hobby: Hobby) => {
+    const { error } = await supabase
+      .from('hobbies')
+      .update({
+        name: hobby.name,
+        category: hobby.category,
+        icon: hobby.icon || null,
+      })
+      .eq('id', hobby.id);
+
+    if (error) {
+      console.error('Error updating hobby:', error);
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      hobbies: prev.hobbies.map((h) => (h.id === hobby.id ? hobby : h)),
+    }));
+  };
+
+  const deleteHobby = async (id: string) => {
+    const { error } = await supabase.from('hobbies').delete().eq('id', id);
+
+    if (error) {
+      console.error('Error deleting hobby:', error);
+      return;
+    }
+
+    setData((prev) => ({ ...prev, hobbies: prev.hobbies.filter((h) => h.id !== id) }));
+  };
+
   const addEducation = async (education: Omit<Education, 'id'>) => {
     if (!portfolioId) return;
 
@@ -538,6 +618,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         addSkill,
         updateSkill,
         deleteSkill,
+        addHobby,
+        updateHobby,
+        deleteHobby,
         addEducation,
         updateEducation,
         deleteEducation,
