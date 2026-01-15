@@ -9,8 +9,8 @@ interface AuthContextType {
   isAdmin: boolean;
   username: string | null;
   loading: boolean;
-  signUp: (email: string, password: string, username: string) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (username: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (username: string, password: string) => Promise<{ error: string | null }>;
   logout: () => Promise<void>;
 }
 
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, username: string): Promise<{ error: string | null }> => {
+  const signUp = async (username: string, password: string): Promise<{ error: string | null }> => {
     try {
       // Check if username is already taken
       const { data: existingProfile } = await supabase
@@ -115,8 +115,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error: 'Username is already taken' };
       }
 
+      // Generate a fake email from username for Supabase auth
+      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
+
       const { error } = await supabase.auth.signUp({
-        email,
+        email: fakeEmail,
         password,
         options: {
           emailRedirectTo: window.location.origin,
@@ -136,15 +139,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
+  const signIn = async (username: string, password: string): Promise<{ error: string | null }> => {
     try {
+      // Generate the fake email from username for login
+      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
+
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: fakeEmail,
         password,
       });
 
       if (error) {
-        return { error: error.message };
+        return { error: 'Invalid username or password' };
       }
 
       return { error: null };
