@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { usePortfolio, Project, Experience, Skill, Education } from '@/contexts/PortfolioContext';
+import { usePortfolio, Project, Experience, Skill, Hobby, Education } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
@@ -16,7 +16,7 @@ import { toast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Upload, FileText, X } from 'lucide-react';
 
 const Dashboard = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isAdmin } = useAuth();
   const { t } = useLanguage();
   const {
     data,
@@ -34,12 +34,16 @@ const Dashboard = () => {
     addSkill,
     updateSkill,
     deleteSkill,
+    addHobby,
+    updateHobby,
+    deleteHobby,
     addEducation,
     updateEducation,
     deleteEducation,
   } = usePortfolio();
 
-  if (!isLoggedIn) {
+  // Only admin can access the dashboard
+  if (!isLoggedIn || !isAdmin) {
     return <Navigate to="/login" replace />;
   }
 
@@ -58,11 +62,12 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold text-foreground mb-8">{t.dashboard.title}</h1>
         
         <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="grid grid-cols-4 md:grid-cols-7 w-full">
+          <TabsList className="grid grid-cols-4 md:grid-cols-8 w-full">
             <TabsTrigger value="about">{t.dashboard.about}</TabsTrigger>
             <TabsTrigger value="projects">{t.dashboard.projects}</TabsTrigger>
             <TabsTrigger value="experience">{t.dashboard.experience}</TabsTrigger>
             <TabsTrigger value="skills">{t.dashboard.skills}</TabsTrigger>
+            <TabsTrigger value="hobbies">Hobbies</TabsTrigger>
             <TabsTrigger value="education">{t.dashboard.education}</TabsTrigger>
             <TabsTrigger value="contact">{t.dashboard.contact}</TabsTrigger>
             <TabsTrigger value="resume">{t.dashboard.resume}</TabsTrigger>
@@ -96,6 +101,15 @@ const Dashboard = () => {
               onAdd={addSkill}
               onUpdate={updateSkill}
               onDelete={deleteSkill}
+            />
+          </TabsContent>
+
+          <TabsContent value="hobbies">
+            <HobbiesEditor
+              hobbies={data.hobbies}
+              onAdd={addHobby}
+              onUpdate={updateHobby}
+              onDelete={deleteHobby}
             />
           </TabsContent>
 
@@ -1069,6 +1083,168 @@ const EducationForm = ({
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
           required
+        />
+      </div>
+      <Button type="submit" disabled={saving}>
+        {saving ? 'Saving...' : 'Save'}
+      </Button>
+    </form>
+  );
+};
+
+// Hobbies Editor
+const HobbiesEditor = ({
+  hobbies,
+  onAdd,
+  onUpdate,
+  onDelete,
+}: {
+  hobbies: Hobby[];
+  onAdd: (hobby: Omit<Hobby, 'id'>) => Promise<void>;
+  onUpdate: (hobby: Hobby) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+}) => {
+  const [isAddOpen, setIsAddOpen] = useState(false);
+
+  const categories = [...new Set(hobbies.map((h) => h.category))];
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Manage Hobbies</CardTitle>
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm">
+              <Plus className="w-4 h-4 mr-2" /> Add Hobby
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Hobby</DialogTitle>
+            </DialogHeader>
+            <HobbyForm
+              categories={categories}
+              onSave={async (hobby) => {
+                await onAdd(hobby);
+                setIsAddOpen(false);
+                toast({ title: 'Added!', description: 'New hobby added.' });
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {hobbies.map((hobby) => (
+            <div
+              key={hobby.id}
+              className="flex items-center justify-between p-4 border border-border rounded-lg"
+            >
+              <div>
+                <h4 className="font-medium text-foreground">{hobby.name}</h4>
+                <p className="text-sm text-muted-foreground">{hobby.category}</p>
+              </div>
+              <div className="flex gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit Hobby</DialogTitle>
+                    </DialogHeader>
+                    <HobbyForm
+                      hobby={hobby}
+                      categories={categories}
+                      onSave={async (updated) => {
+                        await onUpdate({ ...updated, id: hobby.id });
+                        toast({ title: 'Updated!', description: 'Hobby updated.' });
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={async () => {
+                    await onDelete(hobby.id);
+                    toast({ title: 'Deleted!', description: 'Hobby removed.' });
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const HobbyForm = ({
+  hobby,
+  categories,
+  onSave,
+}: {
+  hobby?: Hobby;
+  categories: string[];
+  onSave: (hobby: Omit<Hobby, 'id'>) => Promise<void>;
+}) => {
+  const [form, setForm] = useState({
+    name: hobby?.name || '',
+    category: hobby?.category || '',
+    icon: hobby?.icon || '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    await onSave({
+      name: form.name,
+      category: form.category,
+      icon: form.icon || undefined,
+    });
+    setSaving(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="hobby-name">Hobby Name</Label>
+        <Input
+          id="hobby-name"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="hobby-category">Category</Label>
+        <Input
+          id="hobby-category"
+          value={form.category}
+          onChange={(e) => setForm({ ...form, category: e.target.value })}
+          placeholder="e.g., Sports, Arts, Gaming"
+          list="hobby-categories"
+          required
+        />
+        <datalist id="hobby-categories">
+          {categories.map((cat) => (
+            <option key={cat} value={cat} />
+          ))}
+        </datalist>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="hobby-icon">Icon (optional)</Label>
+        <Input
+          id="hobby-icon"
+          value={form.icon}
+          onChange={(e) => setForm({ ...form, icon: e.target.value })}
+          placeholder="e.g., 🎮, 📚, 🎵"
         />
       </div>
       <Button type="submit" disabled={saving}>
