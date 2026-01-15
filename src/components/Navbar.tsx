@@ -99,6 +99,20 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: (navItems.length + 1) * 0.1 }}
+            >
+              <Link
+                to="/testimonials"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+              >
+                {t.nav.testimonials}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+              </Link>
+            </motion.div>
+
             {isLoggedIn && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -182,6 +196,14 @@ const Navbar = () => {
                   className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
                 >
                   {t.nav.resume}
+                </Link>
+
+                <Link
+                  to="/testimonials"
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                >
+                  {t.nav.testimonials}
                 </Link>
 
                 {isLoggedIn && (
