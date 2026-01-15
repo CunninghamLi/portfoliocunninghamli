@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePortfolio, Project, Experience, Skill, Hobby, Education } from '@/contexts/PortfolioContext';
@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2, Upload, FileText, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Upload, FileText, X, Check, XCircle } from 'lucide-react';
 
 const Dashboard = () => {
   const { isLoggedIn, isAdmin } = useAuth();
@@ -62,13 +62,14 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold text-foreground mb-8">{t.dashboard.title}</h1>
         
         <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="grid grid-cols-4 md:grid-cols-8 w-full">
+          <TabsList className="grid grid-cols-5 md:grid-cols-9 w-full">
             <TabsTrigger value="about">{t.dashboard.about}</TabsTrigger>
             <TabsTrigger value="projects">{t.dashboard.projects}</TabsTrigger>
             <TabsTrigger value="experience">{t.dashboard.experience}</TabsTrigger>
             <TabsTrigger value="skills">{t.dashboard.skills}</TabsTrigger>
             <TabsTrigger value="hobbies">Hobbies</TabsTrigger>
             <TabsTrigger value="education">{t.dashboard.education}</TabsTrigger>
+            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
             <TabsTrigger value="contact">{t.dashboard.contact}</TabsTrigger>
             <TabsTrigger value="resume">{t.dashboard.resume}</TabsTrigger>
           </TabsList>
@@ -120,6 +121,10 @@ const Dashboard = () => {
               onUpdate={updateEducation}
               onDelete={deleteEducation}
             />
+          </TabsContent>
+
+          <TabsContent value="testimonials">
+            <TestimonialsEditor />
           </TabsContent>
 
           <TabsContent value="contact">
@@ -1251,6 +1256,196 @@ const HobbyForm = ({
         {saving ? 'Saving...' : 'Save'}
       </Button>
     </form>
+  );
+};
+
+// Testimonials Editor Component
+interface Testimonial {
+  id: string;
+  content: string;
+  status: string;
+  user_id: string;
+  created_at: string;
+  username?: string;
+}
+
+const TestimonialsEditor = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTestimonials = async () => {
+    setLoading(true);
+    try {
+      // Fetch all testimonials (admin can see all)
+      const { data: testimonialsData, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Fetch usernames for each testimonial
+      if (testimonialsData && testimonialsData.length > 0) {
+        const userIds = [...new Set(testimonialsData.map(t => t.user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('user_id, username')
+          .in('user_id', userIds);
+
+        const usernameMap = new Map(profiles?.map(p => [p.user_id, p.username]) || []);
+        
+        const withUsernames = testimonialsData.map(t => ({
+          ...t,
+          username: usernameMap.get(t.user_id) || 'Unknown User',
+        }));
+        setTestimonials(withUsernames);
+      } else {
+        setTestimonials([]);
+      }
+    } catch (err) {
+      console.error('Error fetching testimonials:', err);
+      toast({ title: 'Error', description: 'Failed to load testimonials.', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const updateStatus = async (id: string, status: 'approved' | 'rejected') => {
+    try {
+      const { error } = await supabase
+        .from('testimonials')
+        .update({ status })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setTestimonials(prev => 
+        prev.map(t => t.id === id ? { ...t, status } : t)
+      );
+      toast({ 
+        title: status === 'approved' ? 'Approved!' : 'Rejected', 
+        description: `Testimonial has been ${status}.` 
+      });
+    } catch (err) {
+      console.error('Error updating testimonial:', err);
+      toast({ title: 'Error', description: 'Failed to update testimonial.', variant: 'destructive' });
+    }
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('testimonials')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setTestimonials(prev => prev.filter(t => t.id !== id));
+      toast({ title: 'Deleted!', description: 'Testimonial has been removed.' });
+    } catch (err) {
+      console.error('Error deleting testimonial:', err);
+      toast({ title: 'Error', description: 'Failed to delete testimonial.', variant: 'destructive' });
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-600">Approved</span>;
+      case 'rejected':
+        return <span className="px-2 py-1 text-xs rounded-full bg-red-500/20 text-red-600">Rejected</span>;
+      default:
+        return <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-600">Pending</span>;
+    }
+  };
+
+  const pendingCount = testimonials.filter(t => t.status === 'pending').length;
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <p className="text-center text-muted-foreground">Loading testimonials...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          Manage Testimonials
+          {pendingCount > 0 && (
+            <span className="text-sm font-normal bg-yellow-500/20 text-yellow-600 px-3 py-1 rounded-full">
+              {pendingCount} pending
+            </span>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {testimonials.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">No testimonials yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {testimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="p-4 border border-border rounded-lg space-y-3"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <p className="font-medium text-foreground">{testimonial.username}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(testimonial.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  {getStatusBadge(testimonial.status)}
+                </div>
+                <p className="text-sm text-muted-foreground">{testimonial.content}</p>
+                <div className="flex gap-2">
+                  {testimonial.status !== 'approved' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-green-600 hover:text-green-700"
+                      onClick={() => updateStatus(testimonial.id, 'approved')}
+                    >
+                      <Check className="w-4 h-4 mr-1" />
+                      Approve
+                    </Button>
+                  )}
+                  {testimonial.status !== 'rejected' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-orange-600 hover:text-orange-700"
+                      onClick={() => updateStatus(testimonial.id, 'rejected')}
+                    >
+                      <XCircle className="w-4 h-4 mr-1" />
+                      Reject
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => deleteTestimonial(testimonial.id)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
