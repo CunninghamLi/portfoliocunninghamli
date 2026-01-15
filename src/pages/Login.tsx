@@ -12,11 +12,10 @@ import Navbar from '@/components/Navbar';
 import { Loader2 } from 'lucide-react';
 
 const Login = () => {
-  const [loginEmail, setLoginEmail] = useState('');
+  const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
   const [signupUsername, setSignupUsername] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp, isLoggedIn } = useAuth();
   const { t } = useLanguage();
@@ -31,7 +30,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signIn(loginEmail, loginPassword);
+    const { error } = await signIn(loginUsername, loginPassword);
     
     if (error) {
       toast({
@@ -72,7 +71,7 @@ const Login = () => {
 
     setIsLoading(true);
 
-    const { error } = await signUp(signupEmail, signupPassword, signupUsername);
+    const { error } = await signUp(signupUsername, signupPassword);
     
     if (error) {
       toast({
@@ -109,13 +108,13 @@ const Login = () => {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">{t.auth.email}</Label>
+                    <Label htmlFor="login-username">{t.auth.username}</Label>
                     <Input
-                      id="login-email"
-                      type="email"
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      placeholder="you@example.com"
+                      id="login-username"
+                      type="text"
+                      value={loginUsername}
+                      onChange={(e) => setLoginUsername(e.target.value)}
+                      placeholder="johndoe"
                       required
                     />
                   </div>
@@ -158,17 +157,6 @@ const Login = () => {
                       maxLength={30}
                     />
                     <p className="text-xs text-muted-foreground">{t.auth.usernameHelp}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">{t.auth.email}</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">{t.auth.password}</Label>
