@@ -65,7 +65,7 @@ export interface PortfolioData {
 
 const defaultData: PortfolioData = {
   aboutMe: {
-    name: 'John Doe',
+    name: 'Cunningham Li',
     title: 'Computer Science Student',
     bio: 'Passionate computer science student with a keen interest in software development, machine learning, and web technologies.',
   },
@@ -75,11 +75,11 @@ const defaultData: PortfolioData = {
   hobbies: [],
   education: [],
   contact: {
-    email: 'john.doe@email.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-    linkedin: 'https://linkedin.com/in/johndoe',
-    github: 'https://github.com/johndoe',
+    email: 'snipercunni4399@gmail.com',
+    phone: '4389989602',
+    location: 'Brossard, QC',
+    linkedin: 'https://www.linkedin.com/in/cunningham-li-7b3672382/',
+    github: 'https://github.com/CunninghamLi',
   },
   resumeUrl: undefined,
 };
