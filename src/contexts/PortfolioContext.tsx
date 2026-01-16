@@ -67,7 +67,7 @@ const defaultData: PortfolioData = {
   aboutMe: {
     name: 'Cunningham Li',
     title: 'Computer Science Student',
-    bio: 'Passionate computer science student with a keen interest in software development, machine learning, and web technologies.',
+    bio: 'Full-stack Computer Science student at Champlain College St-Lambert with experience in backend development, frontend technologies, and API integration. I work with Java, Spring Boot, JavaScript, TypeScript, React, Next.js, SQL, and Docker, and I enjoy building reliable applications that are clear to maintain and extend. I’ve worked across different parts of the development process, from designing REST APIs to implementing user interfaces and managing data. I’m continuing to grow my skills through practical projects and team-based coursework.',
   },
   projects: [],
   experiences: [],
