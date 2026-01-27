@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -198,7 +199,7 @@ const Testimonials = () => {
                 <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-muted-foreground mb-4">{t.testimonials.loginToSubmit}</p>
                 <Button asChild>
-                  <a href="/login">{t.nav.login}</a>
+                  <Link to="/login">{t.nav.login}</Link>
                 </Button>
               </CardContent>
             </Card>
