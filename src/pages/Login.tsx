@@ -9,14 +9,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff, Check, X } from 'lucide-react';
+
+interface PasswordRequirement {
+  label: string;
+  test: (password: string) => boolean;
+}
+
+const passwordRequirements: PasswordRequirement[] = [
+  { label: 'At least 8 characters', test: (p) => p.length >= 8 },
+  { label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
+  { label: 'One lowercase letter', test: (p) => /[a-z]/.test(p) },
+  { label: 'One number', test: (p) => /[0-9]/.test(p) },
+  { label: 'One special character (!@#$%^&*)', test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
+];
 
 const Login = () => {
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [signupUsername, setSignupUsername] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signIn, signUp, isLoggedIn } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -25,6 +42,10 @@ const Login = () => {
     navigate('/');
     return null;
   }
+
+  const validatePassword = (password: string): boolean => {
+    return passwordRequirements.every((req) => req.test(password));
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,10 +81,19 @@ const Login = () => {
       return;
     }
 
-    if (signupPassword.length < 6) {
+    if (!validatePassword(signupPassword)) {
       toast({
         title: 'Error',
-        description: t.auth.passwordMinLength,
+        description: 'Password does not meet all requirements',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (signupPassword !== signupConfirmPassword) {
+      toast({
+        title: 'Error',
+        description: 'Passwords do not match',
         variant: 'destructive',
       });
       return;
@@ -120,14 +150,25 @@ const Login = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="login-password">{t.auth.password}</Label>
-                    <Input
-                      id="login-password"
-                      type="password"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                    />
+                    <div className="relative">
+                      <Input
+                        id="login-password"
+                        type={showLoginPassword ? 'text' : 'password'}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? (
@@ -160,18 +201,84 @@ const Login = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">{t.auth.password}</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      minLength={6}
-                    />
-                    <p className="text-xs text-muted-foreground">{t.auth.passwordHelp}</p>
+                    <div className="relative">
+                      <Input
+                        id="signup-password"
+                        type={showSignupPassword ? 'text' : 'password'}
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSignupPassword(!showSignupPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showSignupPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showSignupPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    {/* Password requirements checklist */}
+                    <div className="space-y-1 mt-2">
+                      {passwordRequirements.map((req, index) => {
+                        const isMet = req.test(signupPassword);
+                        return (
+                          <div
+                            key={index}
+                            className={`flex items-center gap-2 text-xs ${
+                              isMet ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
+                            }`}
+                          >
+                            {isMet ? (
+                              <Check className="w-3 h-3" />
+                            ) : (
+                              <X className="w-3 h-3" />
+                            )}
+                            <span>{req.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="signup-confirm-password"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={signupConfirmPassword}
+                        onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showConfirmPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      </button>
+                    </div>
+                    {signupConfirmPassword && signupPassword !== signupConfirmPassword && (
+                      <p className="text-xs text-destructive flex items-center gap-1">
+                        <X className="w-3 h-3" /> Passwords do not match
+                      </p>
+                    )}
+                    {signupConfirmPassword && signupPassword === signupConfirmPassword && (
+                      <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <Check className="w-3 h-3" /> Passwords match
+                      </p>
+                    )}
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading || !validatePassword(signupPassword) || signupPassword !== signupConfirmPassword}
+                  >
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
