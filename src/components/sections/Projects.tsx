@@ -3,7 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Loader2 } from 'lucide-react';
+import { ExternalLink, Github, Loader2, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
@@ -18,8 +18,8 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
 const Projects = () => {
@@ -27,7 +27,6 @@ const Projects = () => {
   const { t } = useLanguage();
   const { projects } = data;
 
-  // Memoize to ensure stable reference for translation hook
   const projectsForTranslation = useMemo(() => 
     projects.map(p => ({ ...p })), 
     [projects]
@@ -38,56 +37,92 @@ const Projects = () => {
     ['description']
   );
 
-  // Always show projects - use original if translation hasn't processed yet
   const displayProjects = translatedProjects.length > 0 ? translatedProjects : projects;
 
   return (
-    <section id="projects" className="py-20 bg-secondary/30">
-      <div className="container mx-auto px-4">
-        <motion.h2
+    <section id="projects" className="py-32 bg-background relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-mesh pointer-events-none" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
+          className="text-center mb-16"
         >
-          {t.sections.projects}
-          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
-        </motion.h2>
+          <span className="text-sm font-medium text-glow-primary mb-4 block">MY WORK</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground flex items-center justify-center gap-3">
+            {t.sections.projects}
+            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
+          </h2>
+        </motion.div>
+
         <motion.div
           key={`projects-container-${displayProjects.length}`}
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
         >
-          {displayProjects.map((project) => (
+          {displayProjects.map((project, index) => (
             <motion.div key={project.id} variants={item}>
-              <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {project.title}
-                    {project.link && (
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors group-hover:scale-110 transform"
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </a>
-                    )}
+              <Card className="h-full group relative overflow-hidden glass glass-hover transition-all duration-500 hover:-translate-y-2">
+                {/* Gradient accent on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-glow-primary to-glow-secondary" />
+                </div>
+
+                {/* Project number */}
+                <div className="absolute top-4 right-4 text-6xl font-bold text-foreground/5 group-hover:text-foreground/10 transition-colors">
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+
+                <CardHeader className="relative z-10">
+                  <CardTitle className="flex items-center justify-between text-xl">
+                    <span className="group-hover:text-gradient transition-all duration-300">
+                      {project.title}
+                    </span>
+                    <div className="flex gap-2">
+                      {project.github && (
+                        <motion.a
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <Github className="w-5 h-5" />
+                        </motion.a>
+                      )}
+                      {project.link && (
+                        <motion.a
+                          whileHover={{ scale: 1.1, rotate: 45 }}
+                          whileTap={{ scale: 0.9 }}
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-glow-primary transition-colors"
+                        >
+                          <ArrowUpRight className="w-5 h-5" />
+                        </motion.a>
+                      )}
+                    </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="mb-4">{project.description}</CardDescription>
+                <CardContent className="relative z-10">
+                  <CardDescription className="mb-6 text-base leading-relaxed">
+                    {project.description}
+                  </CardDescription>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.map((tech) => (
                       <Badge
                         key={tech}
                         variant="secondary"
-                        className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                        className="bg-secondary/50 hover:bg-glow-primary/20 hover:text-glow-primary border-transparent hover:border-glow-primary/30 transition-all duration-300"
                       >
                         {tech}
                       </Badge>
