@@ -1,7 +1,6 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray, useTranslatedText } from '@/hooks/useTranslation';
-import { Badge } from '@/components/ui/badge';
+import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
@@ -11,14 +10,14 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
+      staggerChildren: 0.03,
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1 },
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  show: { opacity: 1, scale: 1, y: 0 },
 };
 
 const Skills = () => {
@@ -39,45 +38,70 @@ const Skills = () => {
   const categories = [...new Set(translatedSkills.map((s) => s.category))];
 
   return (
-    <section id="skills" className="py-20 bg-secondary/30">
-      <div className="container mx-auto px-4">
-        <motion.h2
+    <section id="skills" className="py-32 bg-background relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
+        {/* Decorative circles */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
+          className="absolute -top-1/2 -right-1/2 w-full h-full border border-border/10 rounded-full"
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground flex items-center justify-center gap-2"
+          className="text-center mb-16"
         >
-          {t.sections.skills}
-          {isTranslating && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
-        </motion.h2>
-        <div className="max-w-4xl mx-auto space-y-8">
+          <span className="text-sm font-medium text-glow-secondary mb-4 block">EXPERTISE</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground flex items-center justify-center gap-3">
+            {t.sections.skills}
+            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
+          </h2>
+        </motion.div>
+
+        <div className="max-w-5xl mx-auto space-y-12">
           {categories.map((category, catIndex) => (
             <motion.div
               key={category}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: catIndex * 0.1 }}
+              className="glass rounded-2xl p-8"
             >
-              <h3 className="text-lg font-semibold text-foreground mb-4">{category}</h3>
+              <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
+                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-glow-primary to-glow-secondary" />
+                {category}
+              </h3>
               <motion.div
                 variants={container}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="flex flex-wrap gap-2"
+                className="flex flex-wrap gap-3"
               >
                 {translatedSkills
                   .filter((s) => s.category === category)
-                  .map((skill) => (
-                    <motion.div key={skill.id} variants={item}>
-                      <Badge
-                        variant="outline"
-                        className="px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-200 cursor-default"
+                  .map((skill, index) => (
+                    <motion.div 
+                      key={skill.id} 
+                      variants={item}
+                      whileHover={{ scale: 1.1, y: -5 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                    >
+                      <div
+                        className="px-5 py-3 rounded-xl text-sm font-medium cursor-default transition-all duration-300 
+                                   bg-secondary/50 text-foreground border border-transparent
+                                   hover:bg-glow-primary/20 hover:text-glow-primary hover:border-glow-primary/30 hover:glow-primary"
                       >
                         {skill.name}
-                      </Badge>
+                      </div>
                     </motion.div>
                   ))}
               </motion.div>
