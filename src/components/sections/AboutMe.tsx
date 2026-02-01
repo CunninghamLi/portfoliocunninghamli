@@ -116,7 +116,7 @@ const AboutMe = () => {
               {/* Stats or highlights */}
               <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="glass rounded-xl p-4 text-center glass-hover transition-all duration-300">
-                  <div className="text-2xl font-bold text-gradient">5+</div>
+                  <div className="text-2xl font-bold text-gradient">2+</div>
                   <div className="text-sm text-muted-foreground">Projects</div>
                 </div>
                 <div className="glass rounded-xl p-4 text-center glass-hover transition-all duration-300">
