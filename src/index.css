@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
 @layer base {
   :root {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 84% 6%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -22,7 +26,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 263 70% 50%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -32,7 +36,13 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom design tokens for enhanced visuals */
+    --glow-primary: 263 70% 50%;
+    --glow-secondary: 199 89% 48%;
+    --gradient-start: 263 70% 50%;
+    --gradient-end: 199 89% 48%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -48,7 +58,7 @@
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 84% 6%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -63,7 +73,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 263 70% 50%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -93,6 +103,93 @@
   }
 }
 
+@layer utilities {
+  /* Gradient text utility */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--glow-primary)), hsl(var(--glow-secondary)));
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 40px -10px hsl(var(--glow-primary) / 0.5);
+  }
+
+  .glow-secondary {
+    box-shadow: 0 0 40px -10px hsl(var(--glow-secondary) / 0.5);
+  }
+
+  .glow-border {
+    border: 1px solid transparent;
+    background: 
+      linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+      linear-gradient(135deg, hsl(var(--glow-primary) / 0.5), hsl(var(--glow-secondary) / 0.5)) border-box;
+  }
+
+  /* Glass morphism */
+  .glass {
+    @apply bg-card/80 backdrop-blur-xl;
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .glass-hover:hover {
+    @apply bg-card/90;
+    border-color: hsl(var(--glow-primary) / 0.3);
+    box-shadow: 0 8px 32px -8px hsl(var(--glow-primary) / 0.2);
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-radial {
+    background: radial-gradient(ellipse at center, hsl(var(--glow-primary) / 0.15), transparent 70%);
+  }
+
+  .bg-gradient-mesh {
+    background: 
+      radial-gradient(at 40% 20%, hsl(var(--glow-primary) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--glow-secondary) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--glow-primary) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--glow-secondary) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--glow-primary) / 0.1) 0px, transparent 50%);
+  }
+
+  /* Animated gradient border */
+  .animated-border {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+  }
+
+  .animated-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, hsl(var(--glow-primary)), hsl(var(--glow-secondary)), hsl(var(--glow-primary)));
+    background-size: 200% 200%;
+    border-radius: calc(var(--radius) + 2px);
+    z-index: -1;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Section decorators */
+  .section-glow::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, hsl(var(--glow-primary) / 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -104,6 +201,34 @@
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.6s ease-out;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
 }
