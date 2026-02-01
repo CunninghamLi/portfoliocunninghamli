@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Upload, FileText, X, Check, XCircle } from 'lucide-react';
+import ContactMessagesEditor from '@/components/dashboard/ContactMessagesEditor';
 
 const Dashboard = () => {
   const { isLoggedIn, isAdmin } = useAuth();
@@ -62,7 +63,7 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold text-foreground mb-8">{t.dashboard.title}</h1>
         
         <Tabs defaultValue="about" className="space-y-6">
-          <TabsList className="grid grid-cols-5 md:grid-cols-9 w-full">
+          <TabsList className="grid grid-cols-5 md:grid-cols-10 w-full">
             <TabsTrigger value="about">{t.dashboard.about}</TabsTrigger>
             <TabsTrigger value="projects">{t.dashboard.projects}</TabsTrigger>
             <TabsTrigger value="experience">{t.dashboard.experience}</TabsTrigger>
@@ -70,6 +71,7 @@ const Dashboard = () => {
             <TabsTrigger value="hobbies">Hobbies</TabsTrigger>
             <TabsTrigger value="education">{t.dashboard.education}</TabsTrigger>
             <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
             <TabsTrigger value="contact">{t.dashboard.contact}</TabsTrigger>
             <TabsTrigger value="resume">{t.dashboard.resume}</TabsTrigger>
           </TabsList>
@@ -125,6 +127,10 @@ const Dashboard = () => {
 
           <TabsContent value="testimonials">
             <TestimonialsEditor />
+          </TabsContent>
+
+          <TabsContent value="messages">
+            <ContactMessagesEditor />
           </TabsContent>
 
           <TabsContent value="contact">
