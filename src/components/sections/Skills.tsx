@@ -1,7 +1,7 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslatedArray } from '@/hooks/useTranslation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Cpu, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
@@ -39,16 +39,9 @@ const Skills = () => {
 
   return (
     <section id="skills" className="py-32 bg-background relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
-        {/* Decorative circles */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-1/2 -right-1/2 w-full h-full border border-border/10 rounded-full"
-        />
-      </div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-hex-pattern opacity-20" />
+      <div className="absolute inset-0 bg-gradient-mesh" />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -58,8 +51,11 @@ const Skills = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-glow-secondary mb-4 block">EXPERTISE</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground flex items-center justify-center gap-3">
+          <span className="font-pixel text-[10px] text-neon-cyan mb-4 block tracking-wider">
+            {'// SKILL TREE'}
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-cyan flex items-center justify-center gap-3">
+            <Cpu className="w-10 h-10" />
             {t.sections.skills}
             {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
@@ -73,12 +69,28 @@ const Skills = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: catIndex * 0.1 }}
-              className="glass rounded-2xl p-8"
+              className="game-card p-8"
             >
-              <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-glow-primary to-glow-secondary" />
-                {category}
-              </h3>
+              {/* Category header */}
+              <div className="flex items-center gap-4 mb-6">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                  className="w-8 h-8 border border-neon-cyan flex items-center justify-center"
+                  style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+                >
+                  <Sparkles className="w-4 h-4 text-neon-cyan" />
+                </motion.div>
+                <h3 className="text-xl font-game font-bold text-foreground uppercase">
+                  {category}
+                </h3>
+                <div className="flex-1 h-[1px] bg-gradient-to-r from-neon-cyan/50 to-transparent" />
+                <span className="font-pixel text-[8px] text-muted-foreground">
+                  {translatedSkills.filter(s => s.category === category).length} UNLOCKED
+                </span>
+              </div>
+
+              {/* Skills grid */}
               <motion.div
                 variants={container}
                 initial="hidden"
@@ -88,23 +100,45 @@ const Skills = () => {
               >
                 {translatedSkills
                   .filter((s) => s.category === category)
-                  .map((skill, index) => (
+                  .map((skill) => (
                     <motion.div 
                       key={skill.id} 
                       variants={item}
-                      whileHover={{ scale: 1.1, y: -5 }}
+                      whileHover={{ 
+                        scale: 1.1, 
+                        y: -5,
+                        boxShadow: '0 0 20px hsl(180 100% 50% / 0.5)'
+                      }}
                       transition={{ type: 'spring', stiffness: 300 }}
                     >
                       <div
-                        className="px-5 py-3 rounded-xl text-sm font-medium cursor-default transition-all duration-300 
-                                   bg-secondary/50 text-foreground border border-transparent
-                                   hover:bg-glow-primary/20 hover:text-glow-primary hover:border-glow-primary/30 hover:glow-primary"
+                        className="px-5 py-3 text-sm font-body cursor-default transition-all duration-300 
+                                   bg-muted/30 text-foreground border border-neon-cyan/30
+                                   hover:bg-neon-cyan/20 hover:text-neon-cyan hover:border-neon-cyan"
                       >
+                        <span className="text-neon-cyan/50 mr-1">+</span>
                         {skill.name}
                       </div>
                     </motion.div>
                   ))}
               </motion.div>
+
+              {/* Progress bar */}
+              <div className="mt-6">
+                <div className="flex justify-between font-pixel text-[8px] text-muted-foreground mb-1">
+                  <span>MASTERY</span>
+                  <span>EXPERT</span>
+                </div>
+                <div className="power-bar">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '85%' }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, delay: catIndex * 0.2 }}
+                    className="power-bar-fill"
+                  />
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
