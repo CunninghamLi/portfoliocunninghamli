@@ -129,7 +129,7 @@ const AboutMe = () => {
                   className="game-card p-4 text-center"
                 >
                   <Trophy className="w-6 h-6 text-neon-yellow mx-auto mb-2" />
-                  <div className="text-2xl font-game font-bold text-neon-cyan">5+</div>
+                  <div className="text-2xl font-game font-bold text-neon-cyan">2+</div>
                   <div className="font-pixel text-[8px] text-muted-foreground">PROJECTS</div>
                 </motion.div>
                 <motion.div 
