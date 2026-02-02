@@ -168,7 +168,7 @@ const translations: Record<Language, Translations> = {
       getInTouch: 'Get In Touch',
       sendMessage: 'Send me a message',
       name: 'Name',
-      email: 'Email',
+      email: 'Message me',
       message: 'Message',
       send: 'Send Message',
       sending: 'Sending...',

@@ -11,7 +11,7 @@ import { Gamepad2, Heart } from 'lucide-react';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background overflow-hidden crt-effect">
+    <div className="min-h-screen bg-background crt-effect">
       <Navbar />
       <main>
         <Hero />

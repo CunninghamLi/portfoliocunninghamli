@@ -128,13 +128,13 @@ const Contact = () => {
 
             <div className="space-y-8">
               {/* Contact Me Button */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.3 }}
+                >
                   <DialogTrigger asChild>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
@@ -156,7 +156,8 @@ const Contact = () => {
                       </div>
                     </motion.button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md game-card border-neon-green/30">
+                </motion.div>
+                <DialogContent className="sm:max-w-md game-card border-neon-green/30">
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2 text-xl font-game text-neon-green">
                         <Mail className="w-5 h-5" />
@@ -243,8 +244,7 @@ const Contact = () => {
                       )}
                     </form>
                   </DialogContent>
-                </Dialog>
-              </motion.div>
+              </Dialog>
 
               {/* Contact info items */}
               {contactItems.map((item, index) => (
