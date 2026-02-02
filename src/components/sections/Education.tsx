@@ -11,13 +11,13 @@ const Education = () => {
   const { education } = data;
 
   const educationForTranslation = useMemo(() => 
-    education.map(e => ({ ...e, degree: e.degree, description: e.description || '' })), 
+    education.map(e => ({ ...e, degree: e.degree, description: e.description || '', duration: e.duration })), 
     [education]
   );
 
   const { items: translatedEducation, isTranslating } = useTranslatedArray(
     educationForTranslation,
-    ['degree', 'description']
+    ['degree', 'description', 'duration']
   );
 
   return (
@@ -40,7 +40,7 @@ const Education = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-yellow mb-4 block tracking-wider">
-            {'// TRAINING GROUNDS'}
+            {'// ' + t.sections.trainingGrounds}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-yellow flex items-center justify-center gap-3">
             <Award className="w-10 h-10" />
@@ -67,7 +67,7 @@ const Education = () => {
                 
                 {/* Achievement badge */}
                 <div className="absolute top-4 right-4 font-pixel text-[8px] text-neon-yellow/50 group-hover:text-neon-yellow transition-colors">
-                  ACHIEVEMENT #{String(index + 1).padStart(2, '0')}
+                  {t.common.achievement} #{String(index + 1).padStart(2, '0')}
                 </div>
                 
                 <div className="flex flex-col md:flex-row items-start gap-6">
@@ -102,7 +102,7 @@ const Education = () => {
                     {/* XP earned */}
                     <div className="pt-4">
                       <div className="flex justify-between font-pixel text-[8px] text-muted-foreground mb-1">
-                        <span>KNOWLEDGE GAINED</span>
+                        <span>{t.common.knowledgeGained}</span>
                         <span>+{(index + 1) * 500} XP</span>
                       </div>
                       <div className="power-bar">

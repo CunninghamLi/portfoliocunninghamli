@@ -9,6 +9,84 @@ const translationCache: Record<string, Record<string, string>> = {
   fr: {},
 };
 
+const manualTranslations: Record<string, Record<string, string>> = {
+  fr: {
+    'Computer Science Student': 'Étudiant en informatique',
+    'Skill level': 'Niveau de compétence',
+    'SKILL LEVEL': 'NIVEAU DE COMPÉTENCE',
+    'Player Profile': 'Profil joueur',
+    'PLAYER PROFILE': 'PROFIL JOUEUR',
+    'Projects': 'Projets',
+    'PROJECTS': 'PROJETS',
+    'Technologies': 'Technologies',
+    'TECHNOLOGIES': 'TECHNOLOGIES',
+    'Side quests': 'Quêtes secondaires',
+    'SIDE QUESTS': 'QUÊTES SECONDAIRES',
+    'Indoor': 'Intérieur',
+    'Gaming': 'Jeux vidéo',
+    'Watching shows': 'Regarder des séries',
+    'Music': 'Musique',
+    'Quest Log': 'Journal de quêtes',
+    'QUEST LOG': 'JOURNAL DE QUÊTES',
+    'Completion': 'Complétude',
+    'COMPLETION': 'COMPLÉTUDE',
+    'Achievement Timeline': 'Chronologie des réalisations',
+    'ACHIEVEMENT TIMELINE': 'CHRONOLOGIE DES RÉALISATIONS',
+    'Training Grounds': 'Terrains d’entraînement',
+    'TRAINING GROUNDS': 'TERRAINS D’ENTRAÎNEMENT',
+    'Knowledge Gained': 'Connaissances acquises',
+    'KNOWLEDGE GAINED': 'CONNAISSANCES ACQUISES',
+    'September': 'septembre',
+    'October': 'octobre',
+    'November': 'novembre',
+    'December': 'décembre',
+    'January': 'janvier',
+    'February': 'février',
+    'March': 'mars',
+    'April': 'avril',
+    'May': 'mai',
+    'June': 'juin',
+    'July': 'juillet',
+    'August': 'août',
+    'Present': 'Présent',
+  },
+};
+
+const inlineReplacements: Record<string, Record<string, string>> = {
+  fr: {
+    January: 'janvier',
+    February: 'février',
+    March: 'mars',
+    April: 'avril',
+    May: 'mai',
+    June: 'juin',
+    July: 'juillet',
+    August: 'août',
+    September: 'septembre',
+    October: 'octobre',
+    November: 'novembre',
+    December: 'décembre',
+    Present: 'Présent',
+  },
+};
+
+const applyInlineReplacements = (text: string, targetLang: string): string => {
+  const replacements = inlineReplacements[targetLang];
+  if (!replacements) return text;
+  let result = text;
+  Object.entries(replacements).forEach(([source, replacement]) => {
+    const regex = new RegExp(`\\b${source}\\b`, 'g');
+    result = result.replace(regex, replacement);
+  });
+  return result;
+};
+
+const getManualTranslation = (text: string, targetLang: string): string | undefined => {
+  const map = manualTranslations[targetLang];
+  if (!map) return undefined;
+  return map[text];
+};
+
 // Batch translation function - translates multiple texts in one API call
 const translateBatch = async (texts: string[], targetLang: string): Promise<string[]> => {
   if (!texts.length) return [];
@@ -19,6 +97,18 @@ const translateBatch = async (texts: string[], targetLang: string): Promise<stri
   
   texts.forEach((text, i) => {
     if (!text || !text.trim()) return;
+    const manual = getManualTranslation(text, targetLang);
+    if (manual) {
+      if (!translationCache[targetLang]) translationCache[targetLang] = {};
+      translationCache[targetLang][text] = manual;
+      return;
+    }
+    const replaced = applyInlineReplacements(text, targetLang);
+    if (replaced !== text) {
+      if (!translationCache[targetLang]) translationCache[targetLang] = {};
+      translationCache[targetLang][text] = replaced;
+      return;
+    }
     if (translationCache[targetLang]?.[text]) return;
     textsToTranslate.push(text);
     indices.push(i);
@@ -79,6 +169,22 @@ export const useTranslatedText = (originalText: string | null | undefined) => {
     if (language === 'en') {
       setTranslatedText(originalText);
       translationCache['en'][originalText] = originalText;
+      return;
+    }
+
+    const manual = getManualTranslation(originalText, language);
+    if (manual) {
+      if (!translationCache[language]) translationCache[language] = {};
+      translationCache[language][originalText] = manual;
+      setTranslatedText(manual);
+      return;
+    }
+
+    const replaced = applyInlineReplacements(originalText, language);
+    if (replaced !== originalText) {
+      if (!translationCache[language]) translationCache[language] = {};
+      translationCache[language][originalText] = replaced;
+      setTranslatedText(replaced);
       return;
     }
 

@@ -37,7 +37,7 @@ const AboutMe = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-cyan mb-4 block tracking-wider">
-            {'// PLAYER PROFILE'}
+            {'// ' + t.sections.playerProfile}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-cyan neon-flicker">
             {t.sections.aboutMe}
@@ -130,7 +130,7 @@ const AboutMe = () => {
                 >
                   <Trophy className="w-6 h-6 text-neon-yellow mx-auto mb-2" />
                   <div className="text-2xl font-game font-bold text-neon-cyan">2+</div>
-                  <div className="font-pixel text-[8px] text-muted-foreground">PROJECTS</div>
+                  <div className="font-pixel text-[8px] text-muted-foreground">{t.common.projectsLabel}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
@@ -138,7 +138,7 @@ const AboutMe = () => {
                 >
                   <Target className="w-6 h-6 text-neon-pink mx-auto mb-2" />
                   <div className="text-2xl font-game font-bold text-neon-pink">10+</div>
-                  <div className="font-pixel text-[8px] text-muted-foreground">TECHNOLOGIES</div>
+                  <div className="font-pixel text-[8px] text-muted-foreground">{t.common.technologiesLabel}</div>
                 </motion.div>
               </div>
             </motion.div>

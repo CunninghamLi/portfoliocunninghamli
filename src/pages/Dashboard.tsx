@@ -68,10 +68,10 @@ const Dashboard = () => {
             <TabsTrigger value="projects">{t.dashboard.projects}</TabsTrigger>
             <TabsTrigger value="experience">{t.dashboard.experience}</TabsTrigger>
             <TabsTrigger value="skills">{t.dashboard.skills}</TabsTrigger>
-            <TabsTrigger value="hobbies">Hobbies</TabsTrigger>
+            <TabsTrigger value="hobbies">{t.dashboard.hobbies}</TabsTrigger>
             <TabsTrigger value="education">{t.dashboard.education}</TabsTrigger>
-            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="testimonials">{t.dashboard.testimonials}</TabsTrigger>
+            <TabsTrigger value="messages">{t.dashboard.messages}</TabsTrigger>
             <TabsTrigger value="contact">{t.dashboard.contact}</TabsTrigger>
             <TabsTrigger value="resume">{t.dashboard.resume}</TabsTrigger>
           </TabsList>
@@ -170,7 +170,7 @@ const ResumeEditor = ({
 
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast({ title: 'Error', description: 'Please upload a PDF or image file.', variant: 'destructive' });
+      toast({ title: t.dashboard.uploadError, description: t.dashboard.uploadPdfOrImage, variant: 'destructive' });
       return;
     }
 
@@ -196,10 +196,10 @@ const ResumeEditor = ({
       const { data: urlData } = supabase.storage.from('resumes').getPublicUrl(fileName);
       
       await onSave(urlData.publicUrl);
-      toast({ title: 'Success!', description: 'Resume uploaded successfully.' });
+      toast({ title: t.dashboard.success, description: t.dashboard.resumeUploaded });
     } catch (error) {
       console.error('Error uploading resume:', error);
-      toast({ title: 'Error', description: 'Failed to upload resume.', variant: 'destructive' });
+      toast({ title: t.dashboard.error, description: t.dashboard.failedToUpload, variant: 'destructive' });
     } finally {
       setUploading(false);
     }
@@ -215,10 +215,10 @@ const ResumeEditor = ({
         await supabase.storage.from('resumes').remove([path]);
       }
       await onSave(null);
-      toast({ title: 'Success!', description: 'Resume removed.' });
+      toast({ title: t.dashboard.success, description: t.dashboard.resumeRemoved });
     } catch (error) {
       console.error('Error removing resume:', error);
-      toast({ title: 'Error', description: 'Failed to remove resume.', variant: 'destructive' });
+      toast({ title: t.dashboard.error, description: t.dashboard.failedToRemove, variant: 'destructive' });
     } finally {
       setRemoving(false);
     }
@@ -321,13 +321,13 @@ const AboutMeEditor = ({
     setSaving(true);
     await onSave(form);
     setSaving(false);
-    toast({ title: 'Saved!', description: 'About Me section updated.' });
+    toast({ title: t.dashboard.saved, description: t.dashboard.aboutMeUpdated });
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Edit About Me</CardTitle>
+        <CardTitle>{t.dashboard.editAboutMe}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -404,7 +404,7 @@ const ContactEditor = ({
     setSaving(true);
     await onSave(form);
     setSaving(false);
-    toast({ title: 'Saved!', description: 'Contact information updated.' });
+    toast({ title: t.dashboard.saved, description: t.dashboard.contactUpdated });
   };
 
   return (
@@ -492,13 +492,13 @@ const ProjectsEditor = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Project</DialogTitle>
+              <DialogTitle>{t.dashboard.addNewProject}</DialogTitle>
             </DialogHeader>
             <ProjectForm
               onSave={async (project) => {
                 await onAdd(project);
                 setIsAddOpen(false);
-                toast({ title: 'Added!', description: 'New project added.' });
+                toast({ title: t.dashboard.added, description: t.dashboard.projectAdded });
               }}
             />
           </DialogContent>
@@ -524,13 +524,13 @@ const ProjectsEditor = ({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Project</DialogTitle>
+                      <DialogTitle>{t.dashboard.editProject}</DialogTitle>
                     </DialogHeader>
                     <ProjectForm
                       project={project}
                       onSave={async (updated) => {
                         await onUpdate({ ...updated, id: project.id });
-                        toast({ title: 'Updated!', description: 'Project updated.' });
+                        toast({ title: t.dashboard.updated, description: t.dashboard.projectUpdated });
                       }}
                     />
                   </DialogContent>
@@ -540,7 +540,7 @@ const ProjectsEditor = ({
                   size="icon"
                   onClick={async () => {
                     await onDelete(project.id);
-                    toast({ title: 'Deleted!', description: 'Project removed.' });
+                    toast({ title: t.dashboard.deleted, description: t.dashboard.projectRemoved });
                   }}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -653,13 +653,13 @@ const ExperienceEditor = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Experience</DialogTitle>
+              <DialogTitle>{t.dashboard.addNewExperience}</DialogTitle>
             </DialogHeader>
             <ExperienceForm
               onSave={async (exp) => {
                 await onAdd(exp);
                 setIsAddOpen(false);
-                toast({ title: 'Added!', description: 'New experience added.' });
+                toast({ title: t.dashboard.added, description: t.dashboard.experienceAdded });
               }}
             />
           </DialogContent>
@@ -685,13 +685,13 @@ const ExperienceEditor = ({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Experience</DialogTitle>
+                      <DialogTitle>{t.dashboard.editExperience}</DialogTitle>
                     </DialogHeader>
                     <ExperienceForm
                       experience={exp}
                       onSave={async (updated) => {
                         await onUpdate({ ...updated, id: exp.id });
-                        toast({ title: 'Updated!', description: 'Experience updated.' });
+                        toast({ title: t.dashboard.updated, description: t.dashboard.experienceUpdated });
                       }}
                     />
                   </DialogContent>
@@ -701,7 +701,7 @@ const ExperienceEditor = ({
                   size="icon"
                   onClick={async () => {
                     await onDelete(exp.id);
-                    toast({ title: 'Deleted!', description: 'Experience removed.' });
+                    toast({ title: t.dashboard.deleted, description: t.dashboard.experienceRemoved });
                   }}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -827,14 +827,14 @@ const SkillsEditor = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Skill</DialogTitle>
+              <DialogTitle>{t.dashboard.addNewSkill}</DialogTitle>
             </DialogHeader>
             <SkillForm
               categories={categories}
               onSave={async (skill) => {
                 await onAdd(skill);
                 setIsAddOpen(false);
-                toast({ title: 'Added!', description: 'New skill added.' });
+                toast({ title: t.dashboard.added, description: t.dashboard.skillAdded });
               }}
             />
           </DialogContent>
@@ -860,14 +860,14 @@ const SkillsEditor = ({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Skill</DialogTitle>
+                      <DialogTitle>{t.dashboard.editSkill}</DialogTitle>
                     </DialogHeader>
                     <SkillForm
                       skill={skill}
                       categories={categories}
                       onSave={async (updated) => {
                         await onUpdate({ ...updated, id: skill.id });
-                        toast({ title: 'Updated!', description: 'Skill updated.' });
+                        toast({ title: t.dashboard.updated, description: t.dashboard.skillUpdated });
                       }}
                     />
                   </DialogContent>
@@ -877,7 +877,7 @@ const SkillsEditor = ({
                   size="icon"
                   onClick={async () => {
                     await onDelete(skill.id);
-                    toast({ title: 'Deleted!', description: 'Skill removed.' });
+                    toast({ title: t.dashboard.deleted, description: t.dashboard.skillRemoved });
                   }}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -973,13 +973,13 @@ const EducationEditor = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Education</DialogTitle>
+              <DialogTitle>{t.dashboard.addNewEducation}</DialogTitle>
             </DialogHeader>
             <EducationForm
               onSave={async (edu) => {
                 await onAdd(edu);
                 setIsAddOpen(false);
-                toast({ title: 'Added!', description: 'New education added.' });
+                toast({ title: t.dashboard.added, description: t.dashboard.educationAdded });
               }}
             />
           </DialogContent>
@@ -1005,13 +1005,13 @@ const EducationEditor = ({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Education</DialogTitle>
+                      <DialogTitle>{t.dashboard.editEducation}</DialogTitle>
                     </DialogHeader>
                     <EducationForm
                       education={edu}
                       onSave={async (updated) => {
                         await onUpdate({ ...updated, id: edu.id });
-                        toast({ title: 'Updated!', description: 'Education updated.' });
+                        toast({ title: t.dashboard.updated, description: t.dashboard.educationUpdated });
                       }}
                     />
                   </DialogContent>
@@ -1021,7 +1021,7 @@ const EducationEditor = ({
                   size="icon"
                   onClick={async () => {
                     await onDelete(edu.id);
-                    toast({ title: 'Deleted!', description: 'Education removed.' });
+                    toast({ title: t.dashboard.deleted, description: t.dashboard.educationRemoved });
                   }}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -1131,14 +1131,14 @@ const HobbiesEditor = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Hobby</DialogTitle>
+              <DialogTitle>{t.dashboard.addNewHobby}</DialogTitle>
             </DialogHeader>
             <HobbyForm
               categories={categories}
               onSave={async (hobby) => {
                 await onAdd(hobby);
                 setIsAddOpen(false);
-                toast({ title: 'Added!', description: 'New hobby added.' });
+                toast({ title: t.dashboard.added, description: t.dashboard.hobbyAdded });
               }}
             />
           </DialogContent>
@@ -1164,14 +1164,14 @@ const HobbiesEditor = ({
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Edit Hobby</DialogTitle>
+                      <DialogTitle>{t.dashboard.editHobby}</DialogTitle>
                     </DialogHeader>
                     <HobbyForm
                       hobby={hobby}
                       categories={categories}
                       onSave={async (updated) => {
                         await onUpdate({ ...updated, id: hobby.id });
-                        toast({ title: 'Updated!', description: 'Hobby updated.' });
+                        toast({ title: t.dashboard.updated, description: t.dashboard.hobbyUpdated });
                       }}
                     />
                   </DialogContent>
@@ -1181,7 +1181,7 @@ const HobbiesEditor = ({
                   size="icon"
                   onClick={async () => {
                     await onDelete(hobby.id);
-                    toast({ title: 'Deleted!', description: 'Hobby removed.' });
+                    toast({ title: t.dashboard.deleted, description: t.dashboard.hobbyRemoved });
                   }}
                 >
                   <Trash2 className="w-4 h-4" />

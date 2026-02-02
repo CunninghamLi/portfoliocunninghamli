@@ -52,7 +52,7 @@ const Skills = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-cyan mb-4 block tracking-wider">
-            {'// SKILL TREE'}
+            {'// ' + t.sections.skillTree}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-cyan flex items-center justify-center gap-3">
             <Cpu className="w-10 h-10" />
@@ -126,8 +126,8 @@ const Skills = () => {
               {/* Progress bar */}
               <div className="mt-6">
                 <div className="flex justify-between font-pixel text-[8px] text-muted-foreground mb-1">
-                  <span>MASTERY</span>
-                  <span>EXPERT</span>
+                  <span>{t.common.mastery}</span>
+                  <span>{t.common.expert}</span>
                 </div>
                 <div className="power-bar">
                   <motion.div

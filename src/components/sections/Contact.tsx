@@ -53,8 +53,8 @@ const Contact = () => {
       setFormData({ name: '', subject: '', message: '' });
       
       toast({
-        title: "Message sent!",
-        description: "Thank you for reaching out. I'll get back to you soon.",
+        title: t.contact.messageSent,
+        description: t.contact.thankYou,
       });
       
       setTimeout(() => {
@@ -64,8 +64,8 @@ const Contact = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: t.contact.errorSending,
+        description: t.contact.errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -151,7 +151,7 @@ const Contact = () => {
                       <div>
                         <p className="font-pixel text-[8px] text-neon-green mb-1">{t.contact.email}</p>
                         <p className="font-game font-semibold text-foreground text-lg">
-                          INITIATE CONTACT
+                          {t.contact.initiateContact}
                         </p>
                       </div>
                     </motion.button>
@@ -161,10 +161,10 @@ const Contact = () => {
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2 text-xl font-game text-neon-green">
                         <Mail className="w-5 h-5" />
-                        SEND MESSAGE
+                        {t.contact.sendMessageTitle}
                       </DialogTitle>
                       <DialogDescription className="font-body">
-                        Fill out the form below and I'll get back to you as soon as possible.
+                        {t.contact.formDescription}
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -181,16 +181,16 @@ const Contact = () => {
                           >
                             <CheckCircle className="w-10 h-10 text-neon-green" />
                           </motion.div>
-                          <p className="text-lg font-game text-neon-green">TRANSMISSION COMPLETE!</p>
-                          <p className="text-muted-foreground font-body">I'll get back to you soon.</p>
+                          <p className="text-lg font-game text-neon-green">{t.contact.transmissionComplete}</p>
+                          <p className="text-muted-foreground font-body">{t.contact.willReply}</p>
                         </motion.div>
                       ) : (
                         <>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-name" className="font-pixel text-[10px] text-neon-cyan">NAME</Label>
+                            <Label htmlFor="contact-name" className="font-pixel text-[10px] text-neon-cyan">{t.contact.nameLabel}</Label>
                             <Input
                               id="contact-name"
-                              placeholder="Your name"
+                              placeholder={t.contact.yourName}
                               value={formData.name}
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                               required
@@ -199,10 +199,10 @@ const Contact = () => {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-subject" className="font-pixel text-[10px] text-neon-cyan">SUBJECT</Label>
+                            <Label htmlFor="contact-subject" className="font-pixel text-[10px] text-neon-cyan">{t.contact.subjectLabel}</Label>
                             <Input
                               id="contact-subject"
-                              placeholder="What's this about?"
+                              placeholder={t.contact.whatsThisAbout}
                               value={formData.subject}
                               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                               required
@@ -211,10 +211,10 @@ const Contact = () => {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-message" className="font-pixel text-[10px] text-neon-cyan">MESSAGE</Label>
+                            <Label htmlFor="contact-message" className="font-pixel text-[10px] text-neon-cyan">{t.contact.messageLabel}</Label>
                             <Textarea
                               id="contact-message"
-                              placeholder="Your message..."
+                              placeholder={t.contact.yourMessage}
                               rows={4}
                               value={formData.message}
                               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -231,12 +231,12 @@ const Contact = () => {
                             {isSubmitting ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                TRANSMITTING...
+                                {t.contact.transmitting}
                               </>
                             ) : (
                               <>
                                 <Send className="w-4 h-4 mr-2" />
-                                SEND TRANSMISSION
+                                {t.contact.sendTransmission}
                               </>
                             )}
                           </Button>

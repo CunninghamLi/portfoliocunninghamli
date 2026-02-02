@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Loader2, Heart, Gamepad2 } from 'lucide-react';
 
 const container = {
@@ -22,13 +24,27 @@ const Hobbies = () => {
   const { data, loading } = usePortfolio();
   const { t } = useLanguage();
 
-  const hobbiesByCategory = data.hobbies.reduce((acc, hobby) => {
-    if (!acc[hobby.category]) {
-      acc[hobby.category] = [];
-    }
-    acc[hobby.category].push(hobby);
-    return acc;
-  }, {} as Record<string, typeof data.hobbies>);
+  const hobbiesForTranslation = useMemo(
+    () => data.hobbies.map((hobby) => ({ ...hobby })),
+    [data.hobbies]
+  );
+
+  const { items: translatedHobbies } = useTranslatedArray(
+    hobbiesForTranslation,
+    ['name', 'category']
+  );
+
+  const displayHobbies = translatedHobbies.length > 0 ? translatedHobbies : data.hobbies;
+
+  const hobbiesByCategory = useMemo(() => {
+    return displayHobbies.reduce((acc, hobby) => {
+      if (!acc[hobby.category]) {
+        acc[hobby.category] = [];
+      }
+      acc[hobby.category].push(hobby);
+      return acc;
+    }, {} as Record<string, typeof displayHobbies>);
+  }, [displayHobbies]);
 
   if (loading) {
     return (
@@ -70,7 +86,7 @@ const Hobbies = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-pink mb-4 block tracking-wider flex items-center justify-center gap-2">
-            <Heart className="w-3 h-3" /> SIDE QUESTS <Gamepad2 className="w-3 h-3" />
+            <Heart className="w-3 h-3" /> {t.sections.sideQuests} <Gamepad2 className="w-3 h-3" />
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-pink">
             {t.sections.hobbies}

@@ -21,6 +21,9 @@ interface Translations {
     greeting: string;
     viewWork: string;
     contactMe: string;
+    online: string;
+    ready: string;
+    scrollToExplore: string;
   };
   sections: {
     aboutMe: string;
@@ -31,6 +34,12 @@ interface Translations {
     education: string;
     contact: string;
     resume: string;
+    playerProfile: string;
+    questLog: string;
+    sideQuests: string;
+    skillTree: string;
+    achievementTimeline: string;
+    trainingGrounds: string;
   };
   contact: {
     getInTouch: string;
@@ -42,6 +51,23 @@ interface Translations {
     sending: string;
     phone: string;
     location: string;
+    initiateContact: string;
+    sendMessageTitle: string;
+    formDescription: string;
+    transmissionComplete: string;
+    willReply: string;
+    nameLabel: string;
+    subjectLabel: string;
+    messageLabel: string;
+    yourName: string;
+    whatsThisAbout: string;
+    yourMessage: string;
+    transmitting: string;
+    sendTransmission: string;
+    messageSent: string;
+    thankYou: string;
+    errorSending: string;
+    errorMessage: string;
   };
   resume: {
     title: string;
@@ -59,6 +85,17 @@ interface Translations {
     viewProject: string;
     viewGithub: string;
     present: string;
+    skillLevel: string;
+    max: string;
+    mastery: string;
+    expert: string;
+    quest: string;
+    level: string;
+    completion: string;
+    achievement: string;
+    projectsLabel: string;
+    technologiesLabel: string;
+    knowledgeGained: string;
   };
   dashboard: {
     title: string;
@@ -89,6 +126,46 @@ interface Translations {
     removeResume: string;
     resumeHelp: string;
     currentResume: string;
+    messages: string;
+    error: string;
+    success: string;
+    saved: string;
+    added: string;
+    updated: string;
+    deleted: string;
+    aboutMeUpdated: string;
+    contactUpdated: string;
+    projectAdded: string;
+    projectUpdated: string;
+    projectRemoved: string;
+    experienceAdded: string;
+    experienceUpdated: string;
+    experienceRemoved: string;
+    skillAdded: string;
+    skillUpdated: string;
+    skillRemoved: string;
+    hobbyAdded: string;
+    hobbyUpdated: string;
+    hobbyRemoved: string;
+    educationAdded: string;
+    educationUpdated: string;
+    educationRemoved: string;
+    resumeUploaded: string;
+    resumeRemoved: string;
+    uploadError: string;
+    uploadPdfOrImage: string;
+    failedToUpload: string;
+    failedToRemove: string;
+    addNewProject: string;
+    editProject: string;
+    addNewExperience: string;
+    editExperience: string;
+    addNewSkill: string;
+    editSkill: string;
+    addNewEducation: string;
+    editEducation: string;
+    addNewHobby: string;
+    editHobby: string;
   };
   auth: {
     title: string;
@@ -111,6 +188,9 @@ interface Translations {
     loggingIn: string;
     creatingAccount: string;
     createAccount: string;
+    error: string;
+    passwordRequirements: string;
+    passwordsDoNotMatch: string;
   };
   testimonials: {
     title: string;
@@ -130,6 +210,8 @@ interface Translations {
     rejected: string;
     approve: string;
     reject: string;
+    error: string;
+    failedToSubmit: string;
   };
 }
 
@@ -153,6 +235,9 @@ const translations: Record<Language, Translations> = {
       greeting: "Hi, I'm",
       viewWork: 'View My Work',
       contactMe: 'Contact Me',
+      online: 'ONLINE',
+      ready: 'READY',
+      scrollToExplore: 'SCROLL TO EXPLORE',
     },
     sections: {
       aboutMe: 'About Me',
@@ -163,6 +248,12 @@ const translations: Record<Language, Translations> = {
       education: 'Education',
       contact: 'Contact',
       resume: 'Resume',
+      playerProfile: 'PLAYER PROFILE',
+      questLog: 'QUEST LOG',
+      sideQuests: 'SIDE QUESTS',
+      skillTree: 'SKILL TREE',
+      achievementTimeline: 'ACHIEVEMENT TIMELINE',
+      trainingGrounds: 'TRAINING GROUNDS',
     },
     contact: {
       getInTouch: 'Get In Touch',
@@ -174,6 +265,23 @@ const translations: Record<Language, Translations> = {
       sending: 'Sending...',
       phone: 'Phone',
       location: 'Location',
+      initiateContact: 'INITIATE CONTACT',
+      sendMessageTitle: 'SEND MESSAGE',
+      formDescription: "Fill out the form below and I'll get back to you as soon as possible.",
+      transmissionComplete: 'TRANSMISSION COMPLETE!',
+      willReply: "I'll get back to you soon.",
+      nameLabel: 'NAME',
+      subjectLabel: 'SUBJECT',
+      messageLabel: 'MESSAGE',
+      yourName: 'Your name',
+      whatsThisAbout: "What's this about?",
+      yourMessage: 'Your message...',
+      transmitting: 'TRANSMITTING...',
+      sendTransmission: 'SEND TRANSMISSION',
+      messageSent: 'Message sent!',
+      thankYou: "Thank you for reaching out. I'll get back to you soon.",
+      errorSending: 'Error',
+      errorMessage: 'Failed to send message. Please try again.',
     },
     resume: {
       title: 'My Resume',
@@ -191,6 +299,17 @@ const translations: Record<Language, Translations> = {
       viewProject: 'View Project',
       viewGithub: 'View GitHub',
       present: 'Present',
+      skillLevel: 'SKILL LEVEL',
+      max: 'MAX',
+      mastery: 'MASTERY',
+      expert: 'EXPERT',
+      quest: 'QUEST',
+      level: 'LVL',
+      completion: 'COMPLETION',
+      achievement: 'ACHIEVEMENT',
+      projectsLabel: 'PROJECTS',
+      technologiesLabel: 'TECHNOLOGIES',
+      knowledgeGained: 'KNOWLEDGE GAINED',
     },
     dashboard: {
       title: 'Dashboard',
@@ -221,6 +340,46 @@ const translations: Record<Language, Translations> = {
       removeResume: 'Remove Resume',
       resumeHelp: 'Upload a PDF or image of your resume',
       currentResume: 'Current Resume',
+      messages: 'Messages',
+      error: 'Error',
+      success: 'Success!',
+      saved: 'Saved!',
+      added: 'Added!',
+      updated: 'Updated!',
+      deleted: 'Deleted!',
+      aboutMeUpdated: 'About Me section updated.',
+      contactUpdated: 'Contact information updated.',
+      projectAdded: 'New project added.',
+      projectUpdated: 'Project updated.',
+      projectRemoved: 'Project removed.',
+      experienceAdded: 'New experience added.',
+      experienceUpdated: 'Experience updated.',
+      experienceRemoved: 'Experience removed.',
+      skillAdded: 'New skill added.',
+      skillUpdated: 'Skill updated.',
+      skillRemoved: 'Skill removed.',
+      hobbyAdded: 'New hobby added.',
+      hobbyUpdated: 'Hobby updated.',
+      hobbyRemoved: 'Hobby removed.',
+      educationAdded: 'New education added.',
+      educationUpdated: 'Education updated.',
+      educationRemoved: 'Education removed.',
+      resumeUploaded: 'Resume uploaded successfully.',
+      resumeRemoved: 'Resume removed.',
+      uploadError: 'Error',
+      uploadPdfOrImage: 'Please upload a PDF or image file.',
+      failedToUpload: 'Failed to upload resume.',
+      failedToRemove: 'Failed to remove resume.',
+      addNewProject: 'Add New Project',
+      editProject: 'Edit Project',
+      addNewExperience: 'Add New Experience',
+      editExperience: 'Edit Experience',
+      addNewSkill: 'Add New Skill',
+      editSkill: 'Edit Skill',
+      addNewEducation: 'Add New Education',
+      editEducation: 'Edit Education',
+      addNewHobby: 'Add New Hobby',
+      editHobby: 'Edit Hobby',
     },
     auth: {
       title: 'Welcome',
@@ -243,6 +402,9 @@ const translations: Record<Language, Translations> = {
       loggingIn: 'Logging in...',
       creatingAccount: 'Creating account...',
       createAccount: 'Create Account',
+      error: 'Error',
+      passwordRequirements: 'Password does not meet all requirements',
+      passwordsDoNotMatch: 'Passwords do not match',
     },
     testimonials: {
       title: 'Testimonials',
@@ -262,6 +424,8 @@ const translations: Record<Language, Translations> = {
       rejected: 'Rejected',
       approve: 'Approve',
       reject: 'Reject',
+      error: 'Error',
+      failedToSubmit: 'Failed to submit testimonial',
     },
   },
   fr: {
@@ -283,6 +447,9 @@ const translations: Record<Language, Translations> = {
       greeting: 'Bonjour, je suis',
       viewWork: 'Voir mes travaux',
       contactMe: 'Me contacter',
+      online: 'EN LIGNE',
+      ready: 'PRÊT',
+      scrollToExplore: 'FAITES DÉFILER POUR EXPLORER',
     },
     sections: {
       aboutMe: 'À propos de moi',
@@ -293,6 +460,12 @@ const translations: Record<Language, Translations> = {
       education: 'Formation',
       contact: 'Contact',
       resume: 'CV',
+      playerProfile: 'PROFIL JOUEUR',
+      questLog: 'JOURNAL DE QUÊTES',
+      sideQuests: 'QUÊTES SECONDAIRES',
+      skillTree: 'ARBRE DES COMPÉTENCES',
+      achievementTimeline: 'CHRONOLOGIE DES RÉALISATIONS',
+      trainingGrounds: 'TERRAINS D’ENTRAÎNEMENT',
     },
     contact: {
       getInTouch: 'Me contacter',
@@ -304,6 +477,23 @@ const translations: Record<Language, Translations> = {
       sending: 'Envoi en cours...',
       phone: 'Téléphone',
       location: 'Localisation',
+      initiateContact: 'INITIER LE CONTACT',
+      sendMessageTitle: 'ENVOYER UN MESSAGE',
+      formDescription: 'Remplissez le formulaire ci-dessous et je vous répondrai dès que possible.',
+      transmissionComplete: 'TRANSMISSION TERMINÉE!',
+      willReply: 'Je vous répondrai bientôt.',
+      nameLabel: 'NOM',
+      subjectLabel: 'SUJET',
+      messageLabel: 'MESSAGE',
+      yourName: 'Votre nom',
+      whatsThisAbout: 'De quoi s\'agit-il?',
+      yourMessage: 'Votre message...',
+      transmitting: 'TRANSMISSION...',
+      sendTransmission: 'ENVOYER LA TRANSMISSION',
+      messageSent: 'Message envoyé!',
+      thankYou: 'Merci de m\'avoir contacté. Je vous répondrai bientôt.',
+      errorSending: 'Erreur',
+      errorMessage: 'Échec de l\'envoi du message. Veuillez réessayer.',
     },
     resume: {
       title: 'Mon CV',
@@ -321,6 +511,17 @@ const translations: Record<Language, Translations> = {
       viewProject: 'Voir le projet',
       viewGithub: 'Voir GitHub',
       present: 'Présent',
+      skillLevel: 'NIVEAU DE COMPÉTENCE',
+      max: 'MAX',
+      mastery: 'MAÎTRISE',
+      expert: 'EXPERT',
+      quest: 'QUÊTE',
+      level: 'NIV',
+      completion: 'COMPLÉTUDE',
+      achievement: 'RÉUSSITE',
+      projectsLabel: 'PROJETS',
+      technologiesLabel: 'TECHNOLOGIES',
+      knowledgeGained: 'CONNAISSANCES ACQUISES',
     },
     dashboard: {
       title: 'Tableau de bord',
@@ -351,6 +552,46 @@ const translations: Record<Language, Translations> = {
       removeResume: 'Supprimer le CV',
       resumeHelp: 'Téléchargez un PDF ou une image de votre CV',
       currentResume: 'CV actuel',
+      messages: 'Messages',
+      error: 'Erreur',
+      success: 'Succès!',
+      saved: 'Enregistré!',
+      added: 'Ajouté!',
+      updated: 'Mis à jour!',
+      deleted: 'Supprimé!',
+      aboutMeUpdated: 'Section À propos de moi mise à jour.',
+      contactUpdated: 'Informations de contact mises à jour.',
+      projectAdded: 'Nouveau projet ajouté.',
+      projectUpdated: 'Projet mis à jour.',
+      projectRemoved: 'Projet supprimé.',
+      experienceAdded: 'Nouvelle expérience ajoutée.',
+      experienceUpdated: 'Expérience mise à jour.',
+      experienceRemoved: 'Expérience supprimée.',
+      skillAdded: 'Nouvelle compétence ajoutée.',
+      skillUpdated: 'Compétence mise à jour.',
+      skillRemoved: 'Compétence supprimée.',
+      hobbyAdded: 'Nouveau loisir ajouté.',
+      hobbyUpdated: 'Loisir mis à jour.',
+      hobbyRemoved: 'Loisir supprimé.',
+      educationAdded: 'Nouvelle formation ajoutée.',
+      educationUpdated: 'Formation mise à jour.',
+      educationRemoved: 'Formation supprimée.',
+      resumeUploaded: 'CV téléchargé avec succès.',
+      resumeRemoved: 'CV supprimé.',
+      uploadError: 'Erreur',
+      uploadPdfOrImage: 'Veuillez télécharger un fichier PDF ou image.',
+      failedToUpload: 'Échec du téléchargement du CV.',
+      failedToRemove: 'Échec de la suppression du CV.',
+      addNewProject: 'Ajouter un nouveau projet',
+      editProject: 'Modifier le projet',
+      addNewExperience: 'Ajouter une nouvelle expérience',
+      editExperience: 'Modifier l\'expérience',
+      addNewSkill: 'Ajouter une nouvelle compétence',
+      editSkill: 'Modifier la compétence',
+      addNewEducation: 'Ajouter une nouvelle formation',
+      editEducation: 'Modifier la formation',
+      addNewHobby: 'Ajouter un nouveau loisir',
+      editHobby: 'Modifier le loisir',
     },
     auth: {
       title: 'Bienvenue',
@@ -373,6 +614,9 @@ const translations: Record<Language, Translations> = {
       loggingIn: 'Connexion en cours...',
       creatingAccount: 'Création du compte...',
       createAccount: 'Créer un compte',
+      error: 'Erreur',
+      passwordRequirements: 'Le mot de passe ne répond pas à toutes les exigences',
+      passwordsDoNotMatch: 'Les mots de passe ne correspondent pas',
     },
     testimonials: {
       title: 'Témoignages',
@@ -392,6 +636,8 @@ const translations: Record<Language, Translations> = {
       rejected: 'Rejeté',
       approve: 'Approuver',
       reject: 'Rejeter',
+      error: 'Erreur',
+      failedToSubmit: 'Échec de la soumission du témoignage',
     },
   },
 };

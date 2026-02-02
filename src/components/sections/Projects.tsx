@@ -34,10 +34,33 @@ const Projects = () => {
   
   const { items: translatedProjects, isTranslating } = useTranslatedArray(
     projectsForTranslation,
-    ['description']
+    ['title', 'description']
   );
 
   const displayProjects = translatedProjects.length > 0 ? translatedProjects : projects;
+
+  const technologiesForTranslation = useMemo(() => {
+    const techSet = new Set<string>();
+    projects.forEach((project) => {
+      project.technologies?.forEach((tech) => {
+        if (tech && tech.trim()) techSet.add(tech);
+      });
+    });
+    return Array.from(techSet).map((value) => ({ value }));
+  }, [projects]);
+
+  const { items: translatedTechnologies } = useTranslatedArray(
+    technologiesForTranslation,
+    ['value']
+  );
+
+  const technologyMap = useMemo(() => {
+    const map = new Map<string, string>();
+    technologiesForTranslation.forEach((item, index) => {
+      map.set(item.value, translatedTechnologies[index]?.value || item.value);
+    });
+    return map;
+  }, [technologiesForTranslation, translatedTechnologies]);
 
   return (
     <section id="projects" className="py-32 bg-background relative overflow-hidden">
@@ -54,7 +77,7 @@ const Projects = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-pink mb-4 block tracking-wider">
-            {'// QUEST LOG'}
+            {'// ' + t.sections.questLog}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-pink flex items-center justify-center gap-3">
             <Sword className="w-10 h-10" />
@@ -81,7 +104,7 @@ const Projects = () => {
                 <Card className="h-full group relative overflow-hidden game-card transition-all duration-300">
                   {/* Quest number badge */}
                   <div className="absolute top-4 right-4 font-pixel text-[10px] text-neon-cyan/30 group-hover:text-neon-cyan transition-colors">
-                    QUEST #{String(index + 1).padStart(2, '0')}
+                    {t.common.quest} #{String(index + 1).padStart(2, '0')}
                   </div>
 
                   {/* Status indicator */}
@@ -143,7 +166,7 @@ const Projects = () => {
                             variant="secondary"
                             className="bg-muted/50 text-neon-cyan border border-neon-cyan/30 hover:bg-neon-cyan/20 hover:border-neon-cyan transition-all font-body"
                           >
-                            {tech}
+                            {technologyMap.get(tech) || tech}
                           </Badge>
                         </motion.div>
                       ))}
@@ -152,7 +175,7 @@ const Projects = () => {
                     {/* XP bar decoration */}
                     <div className="mt-6">
                       <div className="flex justify-between font-pixel text-[8px] text-muted-foreground mb-1">
-                        <span>COMPLETION</span>
+                        <span>{t.common.completion}</span>
                         <span>100%</span>
                       </div>
                       <div className="power-bar">

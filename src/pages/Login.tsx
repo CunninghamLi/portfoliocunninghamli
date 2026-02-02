@@ -74,7 +74,7 @@ const Login = () => {
     
     if (signupUsername.length < 3) {
       toast({
-        title: 'Error',
+        title: t.auth.error,
         description: t.auth.usernameMinLength,
         variant: 'destructive',
       });
@@ -83,8 +83,8 @@ const Login = () => {
 
     if (!validatePassword(signupPassword)) {
       toast({
-        title: 'Error',
-        description: 'Password does not meet all requirements',
+        title: t.auth.error,
+        description: t.auth.passwordRequirements,
         variant: 'destructive',
       });
       return;
@@ -92,8 +92,8 @@ const Login = () => {
 
     if (signupPassword !== signupConfirmPassword) {
       toast({
-        title: 'Error',
-        description: 'Passwords do not match',
+        title: t.auth.error,
+        description: t.auth.passwordsDoNotMatch,
         variant: 'destructive',
       });
       return;

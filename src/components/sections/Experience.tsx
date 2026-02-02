@@ -12,13 +12,13 @@ const Experience = () => {
   const { experiences } = data;
 
   const experiencesForTranslation = useMemo(() => 
-    experiences.map(e => ({ ...e, description: e.description, role: e.role })), 
+    experiences.map(e => ({ ...e, description: e.description, role: e.role, duration: e.duration })), 
     [experiences]
   );
 
   const { items: translatedExperiences, isTranslating } = useTranslatedArray(
     experiencesForTranslation,
-    ['description', 'role']
+    ['description', 'role', 'duration']
   );
 
   return (
@@ -42,7 +42,7 @@ const Experience = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-purple mb-4 block tracking-wider">
-            {'// ACHIEVEMENT TIMELINE'}
+            {'// ' + t.sections.achievementTimeline}
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-purple flex items-center justify-center gap-3">
             <Star className="w-10 h-10" />
@@ -96,7 +96,7 @@ const Experience = () => {
                     {/* Level badge */}
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-pixel text-[8px] text-neon-cyan">
-                        LVL {String(translatedExperiences.length - index).padStart(2, '0')}
+                        {t.common.level} {String(translatedExperiences.length - index).padStart(2, '0')}
                       </div>
                       <span className="font-pixel text-[8px] text-muted-foreground px-2 py-1 border border-muted-foreground/30">
                         {exp.duration}

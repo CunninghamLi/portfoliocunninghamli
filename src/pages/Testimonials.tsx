@@ -123,8 +123,8 @@ const Testimonials = () => {
     } catch (error) {
       console.error('Error submitting testimonial:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to submit testimonial',
+        title: t.testimonials.error,
+        description: t.testimonials.failedToSubmit,
         variant: 'destructive',
       });
     } finally {

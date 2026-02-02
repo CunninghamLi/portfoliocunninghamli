@@ -140,8 +140,8 @@ const Hero = () => {
         >
           <div className="game-card p-4 rounded-sm">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-pixel text-[8px] text-neon-cyan">SKILL LEVEL</span>
-              <span className="font-pixel text-[8px] text-neon-pink">MAX</span>
+              <span className="font-pixel text-[8px] text-neon-cyan">{t.common.skillLevel}</span>
+              <span className="font-pixel text-[8px] text-neon-pink">{t.common.max}</span>
             </div>
             <div className="power-bar">
               <motion.div
@@ -186,14 +186,14 @@ const Hero = () => {
         >
           <div className="flex items-center gap-2 font-pixel text-[8px] text-muted-foreground">
             <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-            ONLINE
+            {t.hero.online}
           </div>
           <div className="font-pixel text-[8px] text-muted-foreground">
-            SCROLL TO EXPLORE
+            {t.hero.scrollToExplore}
           </div>
           <div className="flex items-center gap-2 font-pixel text-[8px] text-muted-foreground">
             <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse" />
-            READY
+            {t.hero.ready}
           </div>
         </motion.div>
       </div>
