@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslatedText } from '@/hooks/useTranslation';
-import { Mail, Phone, MapPin, Linkedin, Github, Loader2, Send, MessageSquare, CheckCircle, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Github, Loader2, Send, MessageSquare, CheckCircle, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -88,18 +88,15 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-32 bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-mesh" />
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1], 
-            opacity: [0.1, 0.2, 0.1] 
-          }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl bg-gradient-to-t from-glow-primary/20 to-transparent"
-        />
-      </div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-grid-game opacity-10" />
+      <div className="absolute inset-0 bg-gradient-mesh" />
+      
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+        transition={{ duration: 8, repeat: Infinity }}
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl bg-gradient-to-t from-neon-green/20 to-transparent"
+      />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -109,10 +106,10 @@ const Contact = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-glow-primary mb-4 block flex items-center justify-center gap-2">
-            <Sparkles className="w-4 h-4" /> LET'S CONNECT
+          <span className="font-pixel text-[10px] text-neon-green mb-4 block tracking-wider flex items-center justify-center gap-2">
+            <Wifi className="w-3 h-3" /> OPEN CHANNEL <Wifi className="w-3 h-3" />
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground flex items-center justify-center gap-3">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-green flex items-center justify-center gap-3">
             {t.sections.contact}
             {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
@@ -125,11 +122,9 @@ const Contact = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-3xl mx-auto"
         >
-          <div className="glass rounded-2xl p-8 md:p-12 glass-hover transition-all duration-300 relative">
-            {/* Decorative gradient border */}
-            <div className="absolute inset-0 rounded-2xl opacity-50 pointer-events-none">
-              <div className="absolute top-0 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-transparent via-glow-primary to-transparent" />
-            </div>
+          <div className="game-card p-8 md:p-12 relative">
+            {/* Top accent line */}
+            <div className="absolute top-0 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-transparent via-neon-green to-transparent" />
 
             <div className="space-y-8">
               {/* Contact Me Button */}
@@ -144,26 +139,30 @@ const Contact = () => {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex items-center gap-5 w-full text-left p-5 rounded-xl bg-gradient-to-r from-glow-primary/10 to-glow-secondary/10 border border-glow-primary/20 hover:border-glow-primary/40 transition-all duration-300 group"
+                      className="flex items-center gap-5 w-full text-left p-5 border-2 border-neon-green/50 bg-neon-green/10 hover:bg-neon-green/20 hover:border-neon-green transition-all duration-300 group"
                     >
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-glow-primary to-glow-secondary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                        <MessageSquare className="w-6 h-6 text-white" />
-                      </div>
+                      <motion.div 
+                        animate={{ boxShadow: ['0 0 10px hsl(120 100% 50%)', '0 0 30px hsl(120 100% 50%)', '0 0 10px hsl(120 100% 50%)'] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-14 h-14 bg-neon-green/20 border border-neon-green flex items-center justify-center shrink-0 group-hover:bg-neon-green/30"
+                      >
+                        <MessageSquare className="w-6 h-6 text-neon-green" />
+                      </motion.div>
                       <div>
-                        <p className="text-sm text-muted-foreground mb-1">{t.contact.email}</p>
-                        <p className="font-semibold text-foreground text-lg">
-                          Want to contact me about anything? Click here
+                        <p className="font-pixel text-[8px] text-neon-green mb-1">{t.contact.email}</p>
+                        <p className="font-game font-semibold text-foreground text-lg">
+                          INITIATE CONTACT
                         </p>
                       </div>
                     </motion.button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md glass border-glow-primary/20">
+                  <DialogContent className="sm:max-w-md game-card border-neon-green/30">
                     <DialogHeader>
-                      <DialogTitle className="flex items-center gap-2 text-xl">
-                        <Mail className="w-5 h-5 text-glow-primary" />
-                        Get in Touch
+                      <DialogTitle className="flex items-center gap-2 text-xl font-game text-neon-green">
+                        <Mail className="w-5 h-5" />
+                        SEND MESSAGE
                       </DialogTitle>
-                      <DialogDescription>
+                      <DialogDescription className="font-body">
                         Fill out the form below and I'll get back to you as soon as possible.
                       </DialogDescription>
                     </DialogHeader>
@@ -174,16 +173,20 @@ const Contact = () => {
                           animate={{ scale: 1, opacity: 1 }}
                           className="flex flex-col items-center justify-center py-8 text-center"
                         >
-                          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
-                            <CheckCircle className="w-10 h-10 text-green-500" />
-                          </div>
-                          <p className="text-lg font-medium">Message sent successfully!</p>
-                          <p className="text-muted-foreground">I'll get back to you soon.</p>
+                          <motion.div 
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 0.5 }}
+                            className="w-16 h-16 border-2 border-neon-green bg-neon-green/20 flex items-center justify-center mb-4"
+                          >
+                            <CheckCircle className="w-10 h-10 text-neon-green" />
+                          </motion.div>
+                          <p className="text-lg font-game text-neon-green">TRANSMISSION COMPLETE!</p>
+                          <p className="text-muted-foreground font-body">I'll get back to you soon.</p>
                         </motion.div>
                       ) : (
                         <>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-name">Name</Label>
+                            <Label htmlFor="contact-name" className="font-pixel text-[10px] text-neon-cyan">NAME</Label>
                             <Input
                               id="contact-name"
                               placeholder="Your name"
@@ -191,11 +194,11 @@ const Contact = () => {
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                               required
                               disabled={isSubmitting}
-                              className="bg-background/50"
+                              className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-subject">Subject</Label>
+                            <Label htmlFor="contact-subject" className="font-pixel text-[10px] text-neon-cyan">SUBJECT</Label>
                             <Input
                               id="contact-subject"
                               placeholder="What's this about?"
@@ -203,11 +206,11 @@ const Contact = () => {
                               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                               required
                               disabled={isSubmitting}
-                              className="bg-background/50"
+                              className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="contact-message">Message</Label>
+                            <Label htmlFor="contact-message" className="font-pixel text-[10px] text-neon-cyan">MESSAGE</Label>
                             <Textarea
                               id="contact-message"
                               placeholder="Your message..."
@@ -216,19 +219,23 @@ const Contact = () => {
                               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                               required
                               disabled={isSubmitting}
-                              className="bg-background/50"
+                              className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
                           </div>
-                          <Button type="submit" className="w-full glow-primary" disabled={isSubmitting}>
+                          <Button 
+                            type="submit" 
+                            className="w-full font-game uppercase tracking-wider neon-border-cyan bg-transparent hover:bg-neon-cyan/20 text-neon-cyan" 
+                            disabled={isSubmitting}
+                          >
                             {isSubmitting ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Sending...
+                                TRANSMITTING...
                               </>
                             ) : (
                               <>
                                 <Send className="w-4 h-4 mr-2" />
-                                Send Message
+                                SEND TRANSMISSION
                               </>
                             )}
                           </Button>
@@ -248,13 +255,13 @@ const Contact = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                 >
-                  <div className="flex items-center gap-5 p-4 rounded-xl hover:bg-secondary/30 transition-colors">
-                    <div className="w-14 h-14 rounded-xl bg-secondary/50 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-5 p-4 border border-transparent hover:border-neon-cyan/30 hover:bg-neon-cyan/5 transition-colors">
+                    <div className="w-14 h-14 border border-muted-foreground/30 bg-muted/30 flex items-center justify-center shrink-0">
                       <item.icon className="w-6 h-6 text-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{item.label}</p>
-                      <p className="font-semibold text-foreground text-lg">{item.value}</p>
+                      <p className="font-pixel text-[8px] text-muted-foreground">{item.label}</p>
+                      <p className="font-body font-semibold text-foreground text-lg">{item.value}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -270,7 +277,12 @@ const Contact = () => {
               >
                 {contact.linkedin && (
                   <motion.div whileHover={{ scale: 1.1, y: -5 }} whileTap={{ scale: 0.95 }}>
-                    <Button variant="outline" size="lg" asChild className="hover:border-glow-primary/50 hover:text-glow-primary">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      asChild 
+                      className="font-game uppercase tracking-wider border-neon-cyan/50 hover:border-neon-cyan hover:bg-neon-cyan/20 text-neon-cyan"
+                    >
                       <a
                         href={contact.linkedin}
                         target="_blank"
@@ -285,7 +297,12 @@ const Contact = () => {
                 )}
                 {contact.github && (
                   <motion.div whileHover={{ scale: 1.1, y: -5 }} whileTap={{ scale: 0.95 }}>
-                    <Button variant="outline" size="lg" asChild className="hover:border-glow-secondary/50 hover:text-glow-secondary">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      asChild 
+                      className="font-game uppercase tracking-wider border-neon-pink/50 hover:border-neon-pink hover:bg-neon-pink/20 text-neon-pink"
+                    >
                       <a
                         href={contact.github}
                         target="_blank"
