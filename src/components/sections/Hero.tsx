@@ -1,143 +1,210 @@
-
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray } from '@/hooks/useTranslation';
-import { Briefcase, Loader2, Star, Zap } from 'lucide-react';
+import { useTranslatedText } from '@/hooks/useTranslation';
+import { Button } from '@/components/ui/button';
+import { ArrowDown, Gamepad2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
 
-const Experience = () => {
+const Hero = () => {
   const { data } = usePortfolio();
   const { t } = useLanguage();
-  const { experiences } = data;
+  const { aboutMe } = data;
 
-  const experiencesForTranslation = useMemo(() => 
-    experiences.map(e => ({ ...e, description: e.description, role: e.role })), 
-    [experiences]
-  );
+  const { text: translatedTitle } = useTranslatedText(aboutMe.title);
 
-  const { items: translatedExperiences, isTranslating } = useTranslatedArray(
-    experiencesForTranslation,
-    ['description', 'role']
-  );
+  const scrollToAbout = () => {
+    document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <section id="experience" className="py-32 bg-background relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-grid-game opacity-10" />
+    <section className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden scanlines">
+      {/* Animated grid background */}
+      <div className="absolute inset-0 bg-grid-game opacity-30" />
       
-      {/* Animated line */}
-      <motion.div
-        animate={{ y: [0, 100, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-        className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-neon-purple to-transparent opacity-30"
-      />
+      {/* Hex pattern */}
+      <div className="absolute inset-0 bg-hex-pattern opacity-20" />
+      
+      {/* Neon glow orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.5, 1],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] rounded-full blur-[100px]"
+          style={{ background: 'hsl(180 100% 50% / 0.3)' }}
+        />
+        <motion.div
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -bottom-1/4 -left-1/4 w-[700px] h-[700px] rounded-full blur-[100px]"
+          style={{ background: 'hsl(320 100% 60% / 0.3)' }}
+        />
+      </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              y: [-50, 50, -50],
+              x: [-30, 30, -30],
+              rotate: [0, 360],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              delay: i * 0.5,
+            }}
+            className="absolute border-2"
+            style={{
+              width: `${40 + i * 20}px`,
+              height: `${40 + i * 20}px`,
+              left: `${10 + i * 15}%`,
+              top: `${20 + (i % 3) * 25}%`,
+              borderColor: i % 2 === 0 ? 'hsl(180 100% 50% / 0.3)' : 'hsl(320 100% 60% / 0.3)',
+              transform: i % 2 === 0 ? 'rotate(45deg)' : 'rotate(0deg)',
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="container mx-auto px-4 text-center relative z-10 py-20">
+        {/* Level indicator badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
         >
-          <span className="font-pixel text-[10px] text-neon-purple mb-4 block tracking-wider">
-            {'// ACHIEVEMENT TIMELINE'}
+          <span className="inline-flex items-center gap-2 px-6 py-3 game-card rounded-sm text-sm font-game text-neon-cyan neon-flicker">
+            <Gamepad2 className="w-4 h-4" />
+            <span className="font-pixel text-[10px]">{t.hero.greeting}</span>
+            <Zap className="w-4 h-4" />
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-purple flex items-center justify-center gap-3">
-            <Star className="w-10 h-10" />
-            {t.sections.experience}
-            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
-          </h2>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[2px]">
-              <div className="h-full bg-gradient-to-b from-neon-cyan via-neon-purple to-neon-pink" />
+        {/* Main title with glitch effect */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-6"
+        >
+          <h1 
+            className="text-6xl md:text-8xl lg:text-9xl font-game font-bold leading-tight glitch"
+            data-text={aboutMe.name}
+          >
+            <span className="text-neon-cyan">{aboutMe.name.split(' ')[0]}</span>
+            <br />
+            <motion.span
+              animate={{ opacity: [1, 0.8, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-neon-pink"
+            >
+              {aboutMe.name.split(' ').slice(1).join(' ')}
+            </motion.span>
+          </h1>
+        </motion.div>
+
+        {/* Subtitle with typing effect feel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mb-12"
+        >
+          <p className="text-xl md:text-2xl lg:text-3xl font-body text-foreground/80 max-w-3xl mx-auto">
+            {'> '}<span className="text-gradient-game font-semibold">{translatedTitle}</span>
+            <motion.span
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="text-neon-cyan ml-1"
+            >
+              _
+            </motion.span>
+          </p>
+        </motion.div>
+
+        {/* Power level display */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="max-w-md mx-auto mb-12"
+        >
+          <div className="game-card p-4 rounded-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-pixel text-[8px] text-neon-cyan">SKILL LEVEL</span>
+              <span className="font-pixel text-[8px] text-neon-pink">MAX</span>
             </div>
-
-            {translatedExperiences.map((exp, index) => (
+            <div className="power-bar">
               <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className={`relative flex items-center mb-12 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
-              >
-                {/* Timeline node */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.2 + 0.3 }}
-                  className="absolute left-8 md:left-1/2 transform -translate-x-1/2 z-10"
-                >
-                  <motion.div 
-                    animate={{ boxShadow: ['0 0 10px hsl(180 100% 50%)', '0 0 30px hsl(180 100% 50%)', '0 0 10px hsl(180 100% 50%)'] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-12 h-12 bg-background border-2 border-neon-cyan flex items-center justify-center"
-                    style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
-                  >
-                    <Briefcase className="w-5 h-5 text-neon-cyan" />
-                  </motion.div>
-                </motion.div>
-
-                {/* Content card */}
-                <div className={`w-full md:w-[45%] ml-20 md:ml-0 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="game-card p-6 transition-all duration-300"
-                  >
-                    {/* Level badge */}
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="font-pixel text-[8px] text-neon-cyan">
-                        LVL {String(translatedExperiences.length - index).padStart(2, '0')}
-                      </div>
-                      <span className="font-pixel text-[8px] text-muted-foreground px-2 py-1 border border-muted-foreground/30">
-                        {exp.duration}
-                      </span>
-                    </div>
-
-                    <h3 className="text-xl font-game font-bold text-foreground">{exp.role}</h3>
-                    <p className="text-neon-pink font-semibold font-body flex items-center gap-2">
-                      <Zap className="w-4 h-4" />
-                      {exp.company}
-                    </p>
-                    
-                    <p className="text-muted-foreground mt-4 leading-relaxed font-body">
-                      {'> '}{exp.description}
-                    </p>
-                    
-                    {exp.skills && exp.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-4">
-                        {exp.skills.map((skill, i) => (
-                          <motion.span
-                            key={i}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.3, delay: index * 0.2 + i * 0.05 }}
-                            className="px-3 py-1 text-sm font-body border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/20 transition-colors"
-                          >
-                            +{skill}
-                          </motion.span>
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 2, delay: 0.8 }}
+                className="power-bar-fill"
+              />
+            </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button 
+              size="lg" 
+              onClick={scrollToAbout} 
+              className="group px-8 py-6 text-lg font-game uppercase tracking-wider neon-border-cyan bg-transparent hover:bg-neon-cyan/20 text-neon-cyan animate-pulse-neon"
+            >
+              <span className="font-pixel text-xs">{t.hero.viewWork}</span>
+              <motion.span
+                animate={{ y: [0, 5, 0] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <ArrowDown className="ml-3 w-5 h-5" />
+              </motion.span>
+            </Button>
+          </motion.div>
+        </motion.div>
+
+        {/* Bottom HUD elements */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-8"
+        >
+          <div className="flex items-center gap-2 font-pixel text-[8px] text-muted-foreground">
+            <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
+            ONLINE
+          </div>
+          <div className="font-pixel text-[8px] text-muted-foreground">
+            SCROLL TO EXPLORE
+          </div>
+          <div className="flex items-center gap-2 font-pixel text-[8px] text-muted-foreground">
+            <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse" />
+            READY
+          </div>
+        </motion.div>
       </div>
+
+      {/* Corner HUD decorations */}
+      <div className="absolute top-4 left-4 w-20 h-20 border-l-2 border-t-2 border-neon-cyan/50" />
+      <div className="absolute top-4 right-4 w-20 h-20 border-r-2 border-t-2 border-neon-cyan/50" />
+      <div className="absolute bottom-4 left-4 w-20 h-20 border-l-2 border-b-2 border-neon-pink/50" />
+      <div className="absolute bottom-4 right-4 w-20 h-20 border-r-2 border-b-2 border-neon-pink/50" />
     </section>
   );
 };
 
-export default Experience;
+export default Hero;
