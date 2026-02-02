@@ -1,172 +1,143 @@
+
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedText } from '@/hooks/useTranslation';
-import { Button } from '@/components/ui/button';
-import { ArrowDown, Sparkles } from 'lucide-react';
+import { useTranslatedArray } from '@/hooks/useTranslation';
+import { Briefcase, Loader2, Star, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
-const Hero = () => {
+const Experience = () => {
   const { data } = usePortfolio();
   const { t } = useLanguage();
-  const { aboutMe } = data;
+  const { experiences } = data;
 
-  const { text: translatedTitle } = useTranslatedText(aboutMe.title);
+  const experiencesForTranslation = useMemo(() => 
+    experiences.map(e => ({ ...e, description: e.description, role: e.role })), 
+    [experiences]
+  );
 
-  const scrollToAbout = () => {
-    document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const { items: translatedExperiences, isTranslating } = useTranslatedArray(
+    experiencesForTranslation,
+    ['description', 'role']
+  );
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-      {/* Large gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -top-1/3 -right-1/4 w-[800px] h-[800px] rounded-full blur-3xl"
-          style={{
-            background: 'radial-gradient(circle, hsl(263 70% 50% / 0.3), transparent 70%)',
-          }}
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.15, 0.3, 0.15],
-            x: [0, -30, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -bottom-1/3 -left-1/4 w-[900px] h-[900px] rounded-full blur-3xl"
-          style={{
-            background: 'radial-gradient(circle, hsl(199 89% 48% / 0.25), transparent 70%)',
-          }}
-        />
-        {/* Grid pattern overlay */}
-        <div 
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
-                              linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)`,
-            backgroundSize: '100px 100px',
-          }}
-        />
-      </div>
+    <section id="experience" className="py-32 bg-background relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-grid-game opacity-10" />
+      
+      {/* Animated line */}
+      <motion.div
+        animate={{ y: [0, 100, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-neon-purple to-transparent opacity-30"
+      />
 
-      <div className="container mx-auto px-4 text-center relative z-10 py-20">
-        {/* Decorative badge */}
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm text-muted-foreground">
-            <Sparkles className="w-4 h-4 text-glow-primary" />
-            {t.hero.greeting}
+          <span className="font-pixel text-[10px] text-neon-purple mb-4 block tracking-wider">
+            {'// ACHIEVEMENT TIMELINE'}
           </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-purple flex items-center justify-center gap-3">
+            <Star className="w-10 h-10" />
+            {t.sections.experience}
+            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
+          </h2>
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground mb-6 leading-tight"
-        >
-          {aboutMe.name.split(' ')[0]}{' '}
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-gradient inline-block"
-          >
-            {aboutMe.name.split(' ').slice(1).join(' ')}
-          </motion.span>
-        </motion.h1>
+        <div className="max-w-4xl mx-auto">
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[2px]">
+              <div className="h-full bg-gradient-to-b from-neon-cyan via-neon-purple to-neon-pink" />
+            </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-xl md:text-2xl lg:text-3xl text-muted-foreground mb-12 max-w-3xl mx-auto"
-        >
-          {translatedTitle}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button 
-              size="lg" 
-              onClick={scrollToAbout} 
-              className="group px-8 py-6 text-lg glow-primary hover:glow-secondary transition-all duration-300"
-            >
-              {t.hero.viewWork}
-              <motion.span
-                animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+            {translatedExperiences.map((exp, index) => (
+              <motion.div
+                key={exp.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                className={`relative flex items-center mb-12 ${
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                }`}
               >
-                <ArrowDown className="ml-2 w-5 h-5" />
-              </motion.span>
-            </Button>
-          </motion.div>
-        </motion.div>
+                {/* Timeline node */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.2 + 0.3 }}
+                  className="absolute left-8 md:left-1/2 transform -translate-x-1/2 z-10"
+                >
+                  <motion.div 
+                    animate={{ boxShadow: ['0 0 10px hsl(180 100% 50%)', '0 0 30px hsl(180 100% 50%)', '0 0 10px hsl(180 100% 50%)'] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="w-12 h-12 bg-background border-2 border-neon-cyan flex items-center justify-center"
+                    style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
+                  >
+                    <Briefcase className="w-5 h-5 text-neon-cyan" />
+                  </motion.div>
+                </motion.div>
 
-        {/* Floating decorative elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(8)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: [0.1, 0.4, 0.1],
-                y: [-30, 30, -30],
-                x: [-20, 20, -20],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 8 + i * 2,
-                repeat: Infinity,
-                delay: i * 0.7,
-              }}
-              className="absolute rounded-full"
-              style={{
-                width: `${8 + i * 4}px`,
-                height: `${8 + i * 4}px`,
-                left: `${10 + i * 12}%`,
-                top: `${15 + (i % 4) * 20}%`,
-                background: i % 2 === 0 
-                  ? 'hsl(263 70% 50% / 0.4)' 
-                  : 'hsl(199 89% 48% / 0.4)',
-                boxShadow: i % 2 === 0 
-                  ? '0 0 20px hsl(263 70% 50% / 0.3)' 
-                  : '0 0 20px hsl(199 89% 48% / 0.3)',
-              }}
-            />
-          ))}
+                {/* Content card */}
+                <div className={`w-full md:w-[45%] ml-20 md:ml-0 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="game-card p-6 transition-all duration-300"
+                  >
+                    {/* Level badge */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-pixel text-[8px] text-neon-cyan">
+                        LVL {String(translatedExperiences.length - index).padStart(2, '0')}
+                      </div>
+                      <span className="font-pixel text-[8px] text-muted-foreground px-2 py-1 border border-muted-foreground/30">
+                        {exp.duration}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-game font-bold text-foreground">{exp.role}</h3>
+                    <p className="text-neon-pink font-semibold font-body flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      {exp.company}
+                    </p>
+                    
+                    <p className="text-muted-foreground mt-4 leading-relaxed font-body">
+                      {'> '}{exp.description}
+                    </p>
+                    
+                    {exp.skills && exp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {exp.skills.map((skill, i) => (
+                          <motion.span
+                            key={i}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: index * 0.2 + i * 0.05 }}
+                            className="px-3 py-1 text-sm font-body border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/20 transition-colors"
+                          >
+                            +{skill}
+                          </motion.span>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
     </section>
   );
 };
 
-export default Hero;
+export default Experience;
