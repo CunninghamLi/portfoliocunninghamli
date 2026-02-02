@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LogOut } from 'lucide-react';
+import { Menu, X, LogOut, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -52,15 +52,29 @@ const Navbar = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm'
+          ? 'bg-background/95 backdrop-blur-md border-b border-neon-cyan/30 shadow-[0_0_20px_hsl(180_100%_50%/0.1)]'
           : 'bg-transparent'
       )}
     >
-      <div className="container mx-auto px-4">
+      {/* Scanlines effect */}
+      <div className="absolute inset-0 scanlines pointer-events-none opacity-30" />
+      
+      <div className="container mx-auto px-4 relative">
         <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <motion.div whileHover={{ scale: 1.05 }}>
-            <Link to="/" className="text-xl font-bold text-foreground">
-              Portfolio
+            <Link to="/" className="flex items-center gap-2 group">
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                className="w-8 h-8 border border-neon-cyan flex items-center justify-center"
+                style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+              >
+                <Gamepad2 className="w-4 h-4 text-neon-cyan" />
+              </motion.div>
+              <span className="font-game text-lg text-foreground group-hover:text-neon-cyan transition-colors">
+                PORTFOLIO
+              </span>
             </Link>
           </motion.div>
 
@@ -79,10 +93,10 @@ const Navbar = () => {
                     handleNavClick(item.href);
                   }
                 }}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+                className="text-sm font-body font-medium text-muted-foreground hover:text-neon-cyan transition-colors relative group uppercase tracking-wider"
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-neon-cyan transition-all duration-300 group-hover:w-full shadow-[0_0_10px_hsl(180_100%_50%)]" />
               </motion.a>
             ))}
 
@@ -93,10 +107,10 @@ const Navbar = () => {
             >
               <Link
                 to="/resume"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+                className="text-sm font-body font-medium text-muted-foreground hover:text-neon-pink transition-colors relative group uppercase tracking-wider"
               >
                 {t.nav.resume}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-neon-pink transition-all duration-300 group-hover:w-full shadow-[0_0_10px_hsl(320_100%_60%)]" />
               </Link>
             </motion.div>
 
@@ -107,10 +121,10 @@ const Navbar = () => {
             >
               <Link
                 to="/testimonials"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+                className="text-sm font-body font-medium text-muted-foreground hover:text-neon-purple transition-colors relative group uppercase tracking-wider"
               >
                 {t.nav.testimonials}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-neon-purple transition-all duration-300 group-hover:w-full shadow-[0_0_10px_hsl(280_100%_60%)]" />
               </Link>
             </motion.div>
 
@@ -122,7 +136,7 @@ const Navbar = () => {
               >
                 <Link
                   to="/dashboard"
-                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  className="text-sm font-body font-medium text-neon-green hover:text-neon-green/80 transition-colors uppercase tracking-wider"
                 >
                   {t.nav.dashboard}
                 </Link>
@@ -133,13 +147,21 @@ const Navbar = () => {
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               {isLoggedIn ? (
-                <Button variant="outline" size="sm" onClick={logout}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={logout}
+                  className="font-game uppercase tracking-wider border-neon-pink/50 hover:border-neon-pink hover:bg-neon-pink/20 text-neon-pink"
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   {t.nav.logout}
                 </Button>
               ) : (
                 <Link to="/login">
-                  <Button variant="default" size="sm">
+                  <Button 
+                    size="sm"
+                    className="font-game uppercase tracking-wider neon-border-cyan bg-transparent hover:bg-neon-cyan/20 text-neon-cyan"
+                  >
                     {t.nav.login}
                   </Button>
                 </Link>
@@ -152,7 +174,7 @@ const Navbar = () => {
             <LanguageToggle />
             <motion.button
               whileTap={{ scale: 0.9 }}
-              className="p-2"
+              className="p-2 text-neon-cyan"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -169,9 +191,9 @@ const Navbar = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden overflow-hidden"
+              className="md:hidden overflow-hidden game-card border-t border-neon-cyan/30"
             >
-              <div className="flex flex-col gap-2 pb-4">
+              <div className="flex flex-col gap-2 py-4">
                 {navItems.map((item, index) => (
                   <motion.a
                     key={item.href}
@@ -185,50 +207,60 @@ const Navbar = () => {
                         handleNavClick(item.href);
                       }
                     }}
-                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-body font-medium text-muted-foreground hover:text-neon-cyan hover:bg-neon-cyan/10 transition-colors uppercase tracking-wider"
                   >
-                    {item.label}
+                    {'> '}{item.label}
                   </motion.a>
                 ))}
 
                 <Link
                   to="/resume"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                  className="px-4 py-2 text-sm font-body font-medium text-muted-foreground hover:text-neon-pink hover:bg-neon-pink/10 transition-colors uppercase tracking-wider"
                 >
-                  {t.nav.resume}
+                  {'> '}{t.nav.resume}
                 </Link>
 
                 <Link
                   to="/testimonials"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                  className="px-4 py-2 text-sm font-body font-medium text-muted-foreground hover:text-neon-purple hover:bg-neon-purple/10 transition-colors uppercase tracking-wider"
                 >
-                  {t.nav.testimonials}
+                  {'> '}{t.nav.testimonials}
                 </Link>
 
                 {isLoggedIn && isAdmin && (
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="px-4 py-2 text-sm font-medium text-primary hover:bg-accent rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-body font-medium text-neon-green hover:bg-neon-green/10 transition-colors uppercase tracking-wider"
                   >
-                    {t.nav.dashboard}
+                    {'> '}{t.nav.dashboard}
                   </Link>
                 )}
 
-                {isLoggedIn ? (
-                  <Button variant="outline" size="sm" onClick={logout} className="mx-4">
-                    <LogOut className="w-4 h-4 mr-2" />
-                    {t.nav.logout}
-                  </Button>
-                ) : (
-                  <Link to="/login" className="px-4">
-                    <Button variant="default" size="sm" className="w-full">
-                      {t.nav.login}
+                <div className="px-4 pt-2">
+                  {isLoggedIn ? (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={logout} 
+                      className="w-full font-game uppercase tracking-wider border-neon-pink/50 hover:border-neon-pink hover:bg-neon-pink/20 text-neon-pink"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      {t.nav.logout}
                     </Button>
-                  </Link>
-                )}
+                  ) : (
+                    <Link to="/login" className="block">
+                      <Button 
+                        size="sm" 
+                        className="w-full font-game uppercase tracking-wider neon-border-cyan bg-transparent hover:bg-neon-cyan/20 text-neon-cyan"
+                      >
+                        {t.nav.login}
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
