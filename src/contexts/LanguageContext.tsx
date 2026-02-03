@@ -471,7 +471,7 @@ const translations: Record<Language, Translations> = {
       getInTouch: 'Me contacter',
       sendMessage: 'Envoyez-moi un message',
       name: 'Nom',
-      email: 'Email',
+      email: 'Messagez-moi',
       message: 'Message',
       send: 'Envoyer',
       sending: 'Envoi en cours...',
