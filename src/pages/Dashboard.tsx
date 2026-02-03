@@ -308,6 +308,7 @@ const AboutMeEditor = ({
   data: { name: string; title: string; bio: string; image?: string };
   onSave: (data: { name: string; title: string; bio: string; image?: string }) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState(data);
   const [previewImage, setPreviewImage] = useState<string | undefined>(data.image);
   const [saving, setSaving] = useState(false);
@@ -405,6 +406,7 @@ const ContactEditor = ({
   data: { email: string; phone: string; location: string; linkedin?: string; github?: string };
   onSave: (data: { email: string; phone: string; location: string; linkedin?: string; github?: string }) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState(data);
   const [saving, setSaving] = useState(false);
 
@@ -486,6 +488,7 @@ const ProjectsEditor = ({
   onUpdate: (project: Project) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
@@ -647,6 +650,7 @@ const ExperienceEditor = ({
   onUpdate: (experience: Experience) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
@@ -819,6 +823,7 @@ const SkillsEditor = ({
   onUpdate: (skill: Skill) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const categories = [...new Set(skills.map((s) => s.category))];
@@ -967,6 +972,7 @@ const EducationEditor = ({
   onUpdate: (edu: Education) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
@@ -1123,6 +1129,7 @@ const HobbiesEditor = ({
   onUpdate: (hobby: Hobby) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const categories = [...new Set(hobbies.map((h) => h.category))];
