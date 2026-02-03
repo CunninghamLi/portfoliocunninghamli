@@ -8,8 +8,10 @@ import Hobbies from '@/components/sections/Hobbies';
 import Education from '@/components/sections/Education';
 import Contact from '@/components/sections/Contact';
 import { Gamepad2, Heart } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-background crt-effect">
       <Navbar />
@@ -34,14 +36,14 @@ const Index = () => {
             <div className="h-[1px] w-20 bg-gradient-to-l from-transparent to-neon-cyan/50" />
           </div>
           <p className="text-muted-foreground font-body">
-            © {new Date().getFullYear()} Portfolio. Built with{' '}
+            © {new Date().getFullYear()} Portfolio. {t.footer.builtWith}{' '}
             <span className="inline-flex items-center gap-1">
               <Heart className="w-4 h-4 text-neon-pink" />
-              <span className="text-gradient-game font-game">PASSION</span>
+              <span className="text-gradient-game font-game">{t.footer.builtWithPassion}</span>
             </span>
           </p>
           <p className="font-pixel text-[8px] text-muted-foreground/50 mt-2">
-            PRESS START TO CONTINUE
+            {t.footer.pressStartToContinue}
           </p>
         </div>
       </footer>

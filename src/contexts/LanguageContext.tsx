@@ -213,6 +213,12 @@ interface Translations {
     error: string;
     failedToSubmit: string;
   };
+  footer: {
+    openChannel: string;
+    builtWith: string;
+    builtWithPassion: string;
+    pressStartToContinue: string;
+  };
 }
 
 const translations: Record<Language, Translations> = {
@@ -427,6 +433,12 @@ const translations: Record<Language, Translations> = {
       error: 'Error',
       failedToSubmit: 'Failed to submit testimonial',
     },
+    footer: {
+      openChannel: 'OPEN CHANNEL',
+        builtWith: 'Built with',
+      builtWithPassion: 'PASSION',
+      pressStartToContinue: 'PRESS START TO CONTINUE',
+    },
   },
   fr: {
     nav: {
@@ -638,6 +650,12 @@ const translations: Record<Language, Translations> = {
       reject: 'Rejeter',
       error: 'Erreur',
       failedToSubmit: 'Échec de la soumission du témoignage',
+    },
+    footer: {
+      openChannel: 'OUVRIR LE CANAL',
+        builtWith: 'Créé avec',
+      builtWithPassion: 'PASSION',
+      pressStartToContinue: 'APPUYEZ SUR DÉMARRER POUR CONTINUER',
     },
   },
 };

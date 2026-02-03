@@ -63,7 +63,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.div whileHover={{ scale: 1.05 }}>
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-1 group">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}

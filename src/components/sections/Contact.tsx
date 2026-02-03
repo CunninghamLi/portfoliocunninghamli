@@ -107,7 +107,7 @@ const Contact = () => {
           className="text-center mb-16"
         >
           <span className="font-pixel text-[10px] text-neon-green mb-4 block tracking-wider flex items-center justify-center gap-2">
-            <Wifi className="w-3 h-3" /> OPEN CHANNEL <Wifi className="w-3 h-3" />
+            <Wifi className="w-3 h-3" /> {t.footer.openChannel} <Wifi className="w-3 h-3" />
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-green flex items-center justify-center gap-3">
             {t.sections.contact}
