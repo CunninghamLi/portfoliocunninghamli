@@ -31,6 +31,25 @@ const Contact = () => {
     subject: '',
     message: '',
   });
+  const wordLimits = {
+    name: 6,
+    subject: 12,
+    message: 120,
+  };
+
+  const countWords = (value: string) =>
+    value.trim().length === 0 ? 0 : value.trim().split(/\s+/).length;
+
+  const clampWords = (value: string, limit: number) => {
+    const words = value.trim().split(/\s+/).filter(Boolean);
+    if (words.length <= limit) return value;
+    return words.slice(0, limit).join(' ');
+  };
+
+  const updateField = (field: keyof typeof formData, value: string, limit: number) => {
+    const nextValue = clampWords(value, limit);
+    setFormData((prev) => ({ ...prev, [field]: nextValue }));
+  };
 
   const { text: translatedLocation, isTranslating } = useTranslatedText(contact.location);
 
@@ -192,11 +211,15 @@ const Contact = () => {
                               id="contact-name"
                               placeholder={t.contact.yourName}
                               value={formData.name}
-                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                              onChange={(e) => updateField('name', e.target.value, wordLimits.name)}
                               required
                               disabled={isSubmitting}
+                              aria-describedby="contact-name-limit"
                               className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
+                            <p id="contact-name-limit" className="text-xs text-muted-foreground font-body">
+                              {countWords(formData.name)}/{wordLimits.name} words
+                            </p>
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="contact-subject" className="font-pixel text-[10px] text-neon-cyan">{t.contact.subjectLabel}</Label>
@@ -204,11 +227,15 @@ const Contact = () => {
                               id="contact-subject"
                               placeholder={t.contact.whatsThisAbout}
                               value={formData.subject}
-                              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                              onChange={(e) => updateField('subject', e.target.value, wordLimits.subject)}
                               required
                               disabled={isSubmitting}
+                              aria-describedby="contact-subject-limit"
                               className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
+                            <p id="contact-subject-limit" className="text-xs text-muted-foreground font-body">
+                              {countWords(formData.subject)}/{wordLimits.subject} words
+                            </p>
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="contact-message" className="font-pixel text-[10px] text-neon-cyan">{t.contact.messageLabel}</Label>
@@ -217,11 +244,15 @@ const Contact = () => {
                               placeholder={t.contact.yourMessage}
                               rows={4}
                               value={formData.message}
-                              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                              onChange={(e) => updateField('message', e.target.value, wordLimits.message)}
                               required
                               disabled={isSubmitting}
+                              aria-describedby="contact-message-limit"
                               className="bg-muted/30 border-neon-cyan/30 focus:border-neon-cyan font-body"
                             />
+                            <p id="contact-message-limit" className="text-xs text-muted-foreground font-body">
+                              {countWords(formData.message)}/{wordLimits.message} words
+                            </p>
                           </div>
                           <Button 
                             type="submit" 
