@@ -17,7 +17,7 @@ import { Plus, Pencil, Trash2, Upload, FileText, X, Check, XCircle } from 'lucid
 import ContactMessagesEditor from '@/components/dashboard/ContactMessagesEditor';
 
 const Dashboard = () => {
-  const { isLoggedIn, isAdmin } = useAuth();
+  const { isLoggedIn, isAdmin, loading: authLoading } = useAuth();
   const { t } = useLanguage();
   const {
     data,
@@ -42,6 +42,14 @@ const Dashboard = () => {
     updateEducation,
     deleteEducation,
   } = usePortfolio();
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground">{t.common.loading}</div>
+      </div>
+    );
+  }
 
   // Only admin can access the dashboard
   if (!isLoggedIn || !isAdmin) {
