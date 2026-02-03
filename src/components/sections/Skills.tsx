@@ -86,7 +86,7 @@ const Skills = () => {
                 </h3>
                 <div className="flex-1 h-[1px] bg-gradient-to-r from-neon-cyan/50 to-transparent" />
                 <span className="font-pixel text-[8px] text-muted-foreground">
-                  {translatedSkills.filter(s => s.category === category).length} UNLOCKED
+                  {translatedSkills.filter(s => s.category === category).length} {t.common.unlocked}
                 </span>
               </div>
 

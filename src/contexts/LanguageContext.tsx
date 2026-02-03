@@ -96,6 +96,7 @@ interface Translations {
     projectsLabel: string;
     technologiesLabel: string;
     knowledgeGained: string;
+    unlocked: string;
   };
   dashboard: {
     title: string;
@@ -316,6 +317,7 @@ const translations: Record<Language, Translations> = {
       projectsLabel: 'PROJECTS',
       technologiesLabel: 'TECHNOLOGIES',
       knowledgeGained: 'KNOWLEDGE GAINED',
+      unlocked: 'UNLOCKED',
     },
     dashboard: {
       title: 'Dashboard',
@@ -526,7 +528,7 @@ const translations: Record<Language, Translations> = {
       skillLevel: 'NIVEAU DE COMPÉTENCE',
       max: 'MAX',
       mastery: 'MAÎTRISE',
-      expert: 'EXPERT',
+      expert: 'SPÉCIALISTE',
       quest: 'QUÊTE',
       level: 'NIV',
       completion: 'COMPLÉTUDE',
@@ -534,6 +536,7 @@ const translations: Record<Language, Translations> = {
       projectsLabel: 'PROJETS',
       technologiesLabel: 'TECHNOLOGIES',
       knowledgeGained: 'CONNAISSANCES ACQUISES',
+      unlocked: 'DÉVERROUILLÉ',
     },
     dashboard: {
       title: 'Tableau de bord',
