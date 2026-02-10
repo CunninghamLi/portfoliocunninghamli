@@ -403,8 +403,8 @@ const ContactEditor = ({
   data,
   onSave,
 }: {
-  data: { email: string; phone: string; location: string; linkedin?: string; github?: string };
-  onSave: (data: { email: string; phone: string; location: string; linkedin?: string; github?: string }) => Promise<void>;
+  data: { email: string; location: string; linkedin?: string; github?: string };
+  onSave: (data: { email: string; location: string; linkedin?: string; github?: string }) => Promise<void>;
 }) => {
   const { t } = useLanguage();
   const [form, setForm] = useState(data);
@@ -423,24 +423,14 @@ const ContactEditor = ({
         <CardTitle>Edit Contact Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="location">Location</Label>

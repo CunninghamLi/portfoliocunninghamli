@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTranslatedText } from '@/hooks/useTranslation';
-import { Mail, Phone, MapPin, Linkedin, Github, Loader2, Send, MessageSquare, CheckCircle, Wifi } from 'lucide-react';
+import { Mail, MapPin, Linkedin, Github, Loader2, Send, MessageSquare, CheckCircle, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -93,11 +93,6 @@ const Contact = () => {
   };
 
   const contactItems = [
-    {
-      icon: Phone,
-      label: t.contact.phone,
-      value: contact.phone,
-    },
     {
       icon: MapPin,
       label: t.contact.location,
