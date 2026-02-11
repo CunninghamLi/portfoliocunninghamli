@@ -49,6 +49,23 @@ const manualTranslations: Record<string, Record<string, string>> = {
     'July': 'juillet',
     'August': 'août',
     'Present': 'Présent',
+    'Full-stack Computer Science student at Champlain College St-Lambert with experience in backend development, frontend technologies, and API integration. I work with Java, Spring Boot, JavaScript, TypeScript, React, Next.js, SQL, and Docker, and I enjoy building reliable applications that are clear to maintain and extend. I’ve worked across different parts of the development process, from designing REST APIs to implementing user interfaces and managing data. I’m continuing to grow my skills through practical projects and team-based coursework.':
+      'Étudiant en informatique full-stack au Collège Champlain St-Lambert avec de l’expérience en développement backend, technologies frontend et intégration d’API. Je travaille avec Java, Spring Boot, JavaScript, TypeScript, React, Next.js, SQL et Docker, et j’aime créer des applications fiables, faciles à maintenir et à faire évoluer. J’ai travaillé sur différentes parties du processus de développement, de la conception d’API REST à l’implémentation d’interfaces utilisateur et à la gestion des données. Je continue de développer mes compétences grâce à des projets pratiques et des cours en équipe.',
+    'External client project built in a team of 5 where my focus was on the employee side with projects.':
+      'Projet pour un client externe réalisé en équipe de 5, où je me suis concentré sur la partie employé et les projets.',
+    'Full-stack job exploration platform with Spring Boot backend and React frontend.':
+      'Plateforme d’exploration d’emplois full-stack avec un backend Spring Boot et un frontend React.',
+    'Full-stack demo gambling-style web app with authentication built with Next.js.':
+      'Application web de démonstration de style casino full-stack avec authentification, construite avec Next.js.',
+    'Computer Science Tutor': 'Tuteur en informatique',
+    'Champlain College St-Lambert': 'Collège Champlain St-Lambert',
+    'Supported about 20 second year students each week with SQL topics including joins, filtering and relational design and held weekly tutoring sessions to guide students through labs and assignments and help clarify difficult concepts.':
+      'J’ai soutenu environ 20 étudiants de deuxième année chaque semaine sur des sujets SQL, notamment les jointures, le filtrage et la conception relationnelle, et j’ai animé des séances de tutorat hebdomadaires pour les guider dans les laboratoires et les travaux et clarifier les concepts difficiles.',
+    'Programming Languages': 'Langages de programmation',
+    'Tools & Frameworks': 'Outils et frameworks',
+    'DEC in Computer Science and Technology': 'DEC en informatique et technologie',
+    'Relevant coursework: Web Services and Distributed Computing, Database Administration & Security, Web Programming and JS Libraries.':
+      'Cours pertinents : Services Web et informatique distribuée, Administration et sécurité des bases de données, Programmation Web et bibliothèques JavaScript.',
   },
 };
 
