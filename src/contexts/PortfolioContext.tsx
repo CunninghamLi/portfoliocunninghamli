@@ -61,6 +61,7 @@ export interface PortfolioData {
     github?: string;
   };
   resumeUrl?: string;
+  resumeUrlFr?: string;
 }
 
 const defaultData: PortfolioData = {
@@ -82,6 +83,7 @@ const defaultData: PortfolioData = {
     github: 'https://github.com/CunninghamLi',
   },
   resumeUrl: undefined,
+  resumeUrlFr: undefined,
 };
 
 interface PortfolioContextType {
@@ -91,6 +93,7 @@ interface PortfolioContextType {
   updateAboutMe: (aboutMe: PortfolioData['aboutMe']) => Promise<void>;
   updateContact: (contact: PortfolioData['contact']) => Promise<void>;
   updateResumeUrl: (resumeUrl: string | null) => Promise<void>;
+  updateResumeUrlFr: (resumeUrlFr: string | null) => Promise<void>;
   addProject: (project: Omit<Project, 'id'>) => Promise<void>;
   updateProject: (project: Project) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
@@ -210,6 +213,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
             github: portfolio.github || undefined,
           },
           resumeUrl: portfolio.resume_url || undefined,
+          resumeUrlFr: portfolio.resume_url_fr || undefined,
         });
       } catch (error) {
         console.error('Error loading portfolio data:', error);
@@ -600,6 +604,22 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     setData((prev) => ({ ...prev, resumeUrl: resumeUrl || undefined }));
   };
 
+  const updateResumeUrlFr = async (resumeUrlFr: string | null) => {
+    if (!portfolioId) return;
+
+    const { error } = await supabase
+      .from('portfolio')
+      .update({ resume_url_fr: resumeUrlFr })
+      .eq('id', portfolioId);
+
+    if (error) {
+      console.error('Error updating French resume URL:', error);
+      return;
+    }
+
+    setData((prev) => ({ ...prev, resumeUrlFr: resumeUrlFr || undefined }));
+  };
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -609,6 +629,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         updateAboutMe,
         updateContact,
         updateResumeUrl,
+        updateResumeUrlFr,
         addProject,
         updateProject,
         deleteProject,

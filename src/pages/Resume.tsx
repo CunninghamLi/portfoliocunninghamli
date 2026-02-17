@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 
 const Resume = () => {
   const { data, loading } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const isPdf = data.resumeUrl?.toLowerCase().endsWith('.pdf');
+  // Select resume URL based on current language
+  const currentResumeUrl = language === 'fr' ? data.resumeUrlFr : data.resumeUrl;
+  const isPdf = currentResumeUrl?.toLowerCase().endsWith('.pdf');
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,20 +30,21 @@ const Resume = () => {
             <div className="flex items-center justify-center py-20">
               <p className="text-muted-foreground">{t.common.loading}</p>
             </div>
-          ) : data.resumeUrl ? (
+          ) : currentResumeUrl ? (
             <div className="max-w-4xl mx-auto">
               {isPdf ? (
                 <div className="space-y-4">
                   <div className="bg-card border border-border rounded-lg overflow-hidden">
                     <iframe
-                      src={data.resumeUrl}
+                      src={currentResumeUrl}
                       className="w-full h-[80vh]"
                       title="Resume PDF"
+                      key={currentResumeUrl}
                     />
                   </div>
                   <div className="flex justify-center">
                     <Button asChild>
-                      <a href={data.resumeUrl} target="_blank" rel="noopener noreferrer" download>
+                      <a href={currentResumeUrl} target="_blank" rel="noopener noreferrer" download>
                         <Download className="w-4 h-4 mr-2" />
                         {t.resume.downloadPdf}
                       </a>
@@ -51,12 +54,13 @@ const Resume = () => {
               ) : (
                 <div className="flex justify-center">
                   <motion.img
-                    src={data.resumeUrl}
+                    src={currentResumeUrl}
                     alt="Resume"
                     className="max-w-full h-auto rounded-lg shadow-lg border border-border"
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3 }}
+                    key={currentResumeUrl}
                   />
                 </div>
               )}

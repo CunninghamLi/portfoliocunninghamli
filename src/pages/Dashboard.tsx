@@ -26,6 +26,7 @@ const Dashboard = () => {
     updateAboutMe,
     updateContact,
     updateResumeUrl,
+    updateResumeUrlFr,
     addProject,
     updateProject,
     deleteProject,
@@ -144,8 +145,10 @@ const Dashboard = () => {
           <TabsContent value="resume">
             <ResumeEditor
               resumeUrl={data.resumeUrl}
+              resumeUrlFr={data.resumeUrlFr}
               portfolioId={portfolioId}
-              onSave={updateResumeUrl}
+              onSaveEn={updateResumeUrl}
+              onSaveFr={updateResumeUrlFr}
             />
           </TabsContent>
         </Tabs>
@@ -157,18 +160,24 @@ const Dashboard = () => {
 // Resume Editor Component
 const ResumeEditor = ({
   resumeUrl,
+  resumeUrlFr,
   portfolioId,
-  onSave,
+  onSaveEn,
+  onSaveFr,
 }: {
   resumeUrl?: string;
+  resumeUrlFr?: string;
   portfolioId: string | null;
-  onSave: (url: string | null) => Promise<void>;
+  onSaveEn: (url: string | null) => Promise<void>;
+  onSaveFr: (url: string | null) => Promise<void>;
 }) => {
   const { t } = useLanguage();
-  const [uploading, setUploading] = useState(false);
-  const [removing, setRemoving] = useState(false);
+  const [uploadingEn, setUploadingEn] = useState(false);
+  const [uploadingFr, setUploadingFr] = useState(false);
+  const [removingEn, setRemovingEn] = useState(false);
+  const [removingFr, setRemovingFr] = useState(false);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, language: 'en' | 'fr') => {
     const file = e.target.files?.[0];
     if (!file || !portfolioId) return;
 
@@ -178,14 +187,18 @@ const ResumeEditor = ({
       return;
     }
 
+    const setUploading = language === 'en' ? setUploadingEn : setUploadingFr;
+    const onSave = language === 'en' ? onSaveEn : onSaveFr;
+    const currentUrl = language === 'en' ? resumeUrl : resumeUrlFr;
+
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${portfolioId}/resume.${fileExt}`;
+      const fileName = `${portfolioId}/resume_${language}.${fileExt}`;
 
       // Delete old file if exists
-      if (resumeUrl) {
-        const oldPath = resumeUrl.split('/resumes/')[1];
+      if (currentUrl) {
+        const oldPath = currentUrl.split('/resumes/')[1];
         if (oldPath) {
           await supabase.storage.from('resumes').remove([oldPath]);
         }
@@ -209,12 +222,16 @@ const ResumeEditor = ({
     }
   };
 
-  const handleRemove = async () => {
-    if (!resumeUrl || !portfolioId) return;
+  const handleRemove = async (language: 'en' | 'fr') => {
+    const currentUrl = language === 'en' ? resumeUrl : resumeUrlFr;
+    if (!currentUrl || !portfolioId) return;
+
+    const setRemoving = language === 'en' ? setRemovingEn : setRemovingFr;
+    const onSave = language === 'en' ? onSaveEn : onSaveFr;
 
     setRemoving(true);
     try {
-      const path = resumeUrl.split('/resumes/')[1];
+      const path = currentUrl.split('/resumes/')[1];
       if (path) {
         await supabase.storage.from('resumes').remove([path]);
       }
@@ -228,71 +245,139 @@ const ResumeEditor = ({
     }
   };
 
-  const isPdf = resumeUrl?.toLowerCase().endsWith('.pdf');
+  const isPdfEn = resumeUrl?.toLowerCase().endsWith('.pdf');
+  const isPdfFr = resumeUrlFr?.toLowerCase().endsWith('.pdf');
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t.dashboard.editResume}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label>{t.dashboard.uploadResume}</Label>
-          <div className="flex items-center gap-4">
-            <Input
-              type="file"
-              accept=".pdf,image/*"
-              onChange={handleFileUpload}
-              disabled={uploading}
-              className="cursor-pointer"
-            />
-            {uploading && <span className="text-muted-foreground text-sm">{t.common.saving}</span>}
+    <div className="space-y-6">
+      {/* English Resume */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t.dashboard.editResume} (English)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label>{t.dashboard.uploadResume}</Label>
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept=".pdf,image/*"
+                onChange={(e) => handleFileUpload(e, 'en')}
+                disabled={uploadingEn}
+                className="cursor-pointer"
+              />
+              {uploadingEn && <span className="text-muted-foreground text-sm">{t.common.saving}</span>}
+            </div>
+            <p className="text-xs text-muted-foreground">{t.dashboard.resumeHelp}</p>
           </div>
-          <p className="text-xs text-muted-foreground">{t.dashboard.resumeHelp}</p>
-        </div>
 
-        {resumeUrl && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>{t.dashboard.currentResume}</Label>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleRemove}
-                disabled={removing}
-              >
-                <X className="w-4 h-4 mr-2" />
-                {removing ? t.common.saving : t.dashboard.removeResume}
-              </Button>
-            </div>
-            <div className="border border-border rounded-lg overflow-hidden">
-              {isPdf ? (
-                <div className="flex items-center gap-3 p-4 bg-secondary/50">
-                  <FileText className="w-8 h-8 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">{t.dashboard.resumePdfLabel}</p>
-                    <a
-                      href={resumeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline"
-                    >
-                      {t.dashboard.viewPdfLink}
-                    </a>
+          {resumeUrl && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>{t.dashboard.currentResume}</Label>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemove('en')}
+                  disabled={removingEn}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  {removingEn ? t.common.saving : t.dashboard.removeResume}
+                </Button>
+              </div>
+              <div className="border border-border rounded-lg overflow-hidden">
+                {isPdfEn ? (
+                  <div className="flex items-center gap-3 p-4 bg-secondary/50">
+                    <FileText className="w-8 h-8 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground">{t.dashboard.resumePdfLabel}</p>
+                      <a
+                        href={resumeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {t.dashboard.viewPdfLink}
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <img
-                  src={resumeUrl}
-                  alt={t.dashboard.resumePreviewAlt}
-                  className="max-w-full h-auto max-h-96 object-contain mx-auto"
-                />
-              )}
+                ) : (
+                  <img
+                    src={resumeUrl}
+                    alt={t.dashboard.resumePreviewAlt}
+                    className="max-w-full h-auto max-h-96 object-contain mx-auto"
+                  />
+                )}
+              </div>
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* French Resume */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t.dashboard.editResume} (Français)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label>{t.dashboard.uploadResume}</Label>
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept=".pdf,image/*"
+                onChange={(e) => handleFileUpload(e, 'fr')}
+                disabled={uploadingFr}
+                className="cursor-pointer"
+              />
+              {uploadingFr && <span className="text-muted-foreground text-sm">{t.common.saving}</span>}
+            </div>
+            <p className="text-xs text-muted-foreground">{t.dashboard.resumeHelp}</p>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {resumeUrlFr && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>{t.dashboard.currentResume}</Label>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemove('fr')}
+                  disabled={removingFr}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  {removingFr ? t.common.saving : t.dashboard.removeResume}
+                </Button>
+              </div>
+              <div className="border border-border rounded-lg overflow-hidden">
+                {isPdfFr ? (
+                  <div className="flex items-center gap-3 p-4 bg-secondary/50">
+                    <FileText className="w-8 h-8 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground">{t.dashboard.resumePdfLabel}</p>
+                      <a
+                        href={resumeUrlFr}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {t.dashboard.viewPdfLink}
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <img
+                    src={resumeUrlFr}
+                    alt={t.dashboard.resumePreviewAlt}
+                    className="max-w-full h-auto max-h-96 object-contain mx-auto"
+                  />
+                )}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
