@@ -77,6 +77,7 @@ interface Translations {
   common: {
     loading: string;
     save: string;
+    saveShort: string;
     saving: string;
     add: string;
     edit: string;
@@ -167,6 +168,70 @@ interface Translations {
     editEducation: string;
     addNewHobby: string;
     editHobby: string;
+    profilePictureLabel: string;
+    profilePreviewAlt: string;
+    noImage: string;
+    uploadProfilePictureHelp: string;
+    nameLabel: string;
+    titleLabel: string;
+    bioLabel: string;
+    emailLabel: string;
+    locationLabel: string;
+    linkedinLabel: string;
+    githubLabel: string;
+    projectTitleLabel: string;
+    projectDescriptionLabel: string;
+    projectTechnologiesLabel: string;
+    projectTechnologiesPlaceholder: string;
+    projectLinkLabel: string;
+    projectLinkPlaceholder: string;
+    experienceRoleLabel: string;
+    experienceCompanyLabel: string;
+    experienceDurationLabel: string;
+    experienceDurationPlaceholder: string;
+    experienceDescriptionLabel: string;
+    experienceSkillsLabel: string;
+    experienceSkillsPlaceholder: string;
+    skillNameLabel: string;
+    skillCategoryLabel: string;
+    skillCategoryPlaceholder: string;
+    educationDegreeLabel: string;
+    educationInstitutionLabel: string;
+    educationDurationLabel: string;
+    educationDurationPlaceholder: string;
+    educationDescriptionLabel: string;
+    hobbyNameLabel: string;
+    hobbyCategoryLabel: string;
+    hobbyCategoryPlaceholder: string;
+    hobbyIconLabel: string;
+    hobbyIconPlaceholder: string;
+    resumePdfLabel: string;
+    viewPdfLink: string;
+    resumePreviewAlt: string;
+    loadingTestimonials: string;
+    pendingLabel: string;
+    failedToLoadTestimonials: string;
+    testimonialApprovedDesc: string;
+    testimonialRejectedDesc: string;
+    failedToUpdateTestimonial: string;
+    testimonialDeletedDesc: string;
+    failedToDeleteTestimonial: string;
+    contactMessagesTitle: string;
+    unreadLabel: string;
+    noContactMessages: string;
+    markAsRead: string;
+    markAsUnread: string;
+    markedAsRead: string;
+    markedAsUnread: string;
+    messageMarkedRead: string;
+    messageMarkedUnread: string;
+    failedToLoadMessages: string;
+    failedToUpdateMessage: string;
+    failedToDeleteMessage: string;
+    messageDeleted: string;
+    deleteMessageTitle: string;
+    deleteMessageConfirm: string;
+    fromLabel: string;
   };
   auth: {
     title: string;
@@ -304,6 +369,7 @@ const translations: Record<Language, Translations> = {
     common: {
       loading: 'Loading...',
       save: 'Save Changes',
+      saveShort: 'Save',
       saving: 'Saving...',
       add: 'Add',
       edit: 'Edit',
@@ -394,6 +460,70 @@ const translations: Record<Language, Translations> = {
       editEducation: 'Edit Education',
       addNewHobby: 'Add New Hobby',
       editHobby: 'Edit Hobby',
+      profilePictureLabel: 'Profile Picture',
+      profilePreviewAlt: 'Profile preview',
+      noImage: 'No image',
+      uploadProfilePictureHelp: 'Upload a profile picture (JPG, PNG)',
+      nameLabel: 'Name',
+      titleLabel: 'Title',
+      bioLabel: 'Bio',
+      emailLabel: 'Email',
+      locationLabel: 'Location',
+      linkedinLabel: 'LinkedIn URL',
+      githubLabel: 'GitHub URL',
+      projectTitleLabel: 'Title',
+      projectDescriptionLabel: 'Description',
+      projectTechnologiesLabel: 'Technologies (comma-separated)',
+      projectTechnologiesPlaceholder: 'React, Node.js, PostgreSQL',
+      projectLinkLabel: 'Link (optional)',
+      projectLinkPlaceholder: 'https://github.com/...',
+      experienceRoleLabel: 'Role',
+      experienceCompanyLabel: 'Company',
+      experienceDurationLabel: 'Duration',
+      experienceDurationPlaceholder: 'June 2023 - Present',
+      experienceDescriptionLabel: 'Description',
+      experienceSkillsLabel: 'Skills (comma-separated)',
+      experienceSkillsPlaceholder: 'React, Node.js, Python',
+      skillNameLabel: 'Skill Name',
+      skillCategoryLabel: 'Category',
+      skillCategoryPlaceholder: 'e.g., Programming Languages, Frameworks',
+      educationDegreeLabel: 'Degree',
+      educationInstitutionLabel: 'Institution',
+      educationDurationLabel: 'Duration',
+      educationDurationPlaceholder: '2021 - 2025',
+      educationDescriptionLabel: 'Description',
+      hobbyNameLabel: 'Hobby Name',
+      hobbyCategoryLabel: 'Category',
+      hobbyCategoryPlaceholder: 'e.g., Sports, Arts, Gaming',
+      hobbyIconLabel: 'Icon (optional)',
+      hobbyIconPlaceholder: 'e.g., 🎮, 📚, 🎵',
+      resumePdfLabel: 'Resume PDF',
+      viewPdfLink: 'View PDF',
+      resumePreviewAlt: 'Resume preview',
+      loadingTestimonials: 'Loading testimonials...',
+      pendingLabel: 'pending',
+      failedToLoadTestimonials: 'Failed to load testimonials.',
+      testimonialApprovedDesc: 'Testimonial has been approved.',
+      testimonialRejectedDesc: 'Testimonial has been rejected.',
+      failedToUpdateTestimonial: 'Failed to update testimonial.',
+      testimonialDeletedDesc: 'Testimonial has been removed.',
+      failedToDeleteTestimonial: 'Failed to delete testimonial.',
+      contactMessagesTitle: 'Contact Messages',
+      unreadLabel: 'unread',
+      noContactMessages: 'No contact messages yet.',
+      markAsRead: 'Mark as read',
+      markAsUnread: 'Mark as unread',
+      markedAsRead: 'Marked as read',
+      markedAsUnread: 'Marked as unread',
+      messageMarkedRead: 'Message has been marked as read.',
+      messageMarkedUnread: 'Message has been marked as unread.',
+      failedToLoadMessages: 'Failed to load contact messages.',
+      failedToUpdateMessage: 'Failed to update message status.',
+      failedToDeleteMessage: 'Failed to delete message.',
+      messageDeleted: 'Message has been deleted.',
+      deleteMessageTitle: 'Delete Message',
+      deleteMessageConfirm: 'Are you sure you want to delete this message? This action cannot be undone.',
+      fromLabel: 'From:',
     },
     auth: {
       title: 'Welcome',
@@ -529,6 +659,7 @@ const translations: Record<Language, Translations> = {
     common: {
       loading: 'Chargement...',
       save: 'Enregistrer',
+      saveShort: 'Enregistrer',
       saving: 'Enregistrement...',
       add: 'Ajouter',
       edit: 'Modifier',
@@ -619,6 +750,70 @@ const translations: Record<Language, Translations> = {
       editEducation: 'Modifier la formation',
       addNewHobby: 'Ajouter un nouveau loisir',
       editHobby: 'Modifier le loisir',
+      profilePictureLabel: 'Photo de profil',
+      profilePreviewAlt: 'Aperçu du profil',
+      noImage: 'Aucune image',
+      uploadProfilePictureHelp: 'Téléchargez une photo de profil (JPG, PNG)',
+      nameLabel: 'Nom',
+      titleLabel: 'Titre',
+      bioLabel: 'Bio',
+      emailLabel: 'Email',
+      locationLabel: 'Localisation',
+      linkedinLabel: 'URL LinkedIn',
+      githubLabel: 'URL GitHub',
+      projectTitleLabel: 'Titre',
+      projectDescriptionLabel: 'Description',
+      projectTechnologiesLabel: 'Technologies (séparées par des virgules)',
+      projectTechnologiesPlaceholder: 'React, Node.js, PostgreSQL',
+      projectLinkLabel: 'Lien (optionnel)',
+      projectLinkPlaceholder: 'https://github.com/...',
+      experienceRoleLabel: 'Poste',
+      experienceCompanyLabel: 'Entreprise',
+      experienceDurationLabel: 'Durée',
+      experienceDurationPlaceholder: 'Juin 2023 - Présent',
+      experienceDescriptionLabel: 'Description',
+      experienceSkillsLabel: 'Compétences (séparées par des virgules)',
+      experienceSkillsPlaceholder: 'React, Node.js, Python',
+      skillNameLabel: 'Nom de la compétence',
+      skillCategoryLabel: 'Catégorie',
+      skillCategoryPlaceholder: 'ex. Langages de programmation, Frameworks',
+      educationDegreeLabel: 'Diplôme',
+      educationInstitutionLabel: 'Établissement',
+      educationDurationLabel: 'Durée',
+      educationDurationPlaceholder: '2021 - 2025',
+      educationDescriptionLabel: 'Description',
+      hobbyNameLabel: 'Nom du loisir',
+      hobbyCategoryLabel: 'Catégorie',
+      hobbyCategoryPlaceholder: 'ex. Sports, Arts, Jeux vidéo',
+      hobbyIconLabel: 'Icône (optionnelle)',
+      hobbyIconPlaceholder: 'ex. 🎮, 📚, 🎵',
+      resumePdfLabel: 'CV PDF',
+      viewPdfLink: 'Voir le PDF',
+      resumePreviewAlt: 'Aperçu du CV',
+      loadingTestimonials: 'Chargement des témoignages...',
+      pendingLabel: 'en attente',
+      failedToLoadTestimonials: 'Échec du chargement des témoignages.',
+      testimonialApprovedDesc: 'Le témoignage a été approuvé.',
+      testimonialRejectedDesc: 'Le témoignage a été rejeté.',
+      failedToUpdateTestimonial: 'Échec de la mise à jour du témoignage.',
+      testimonialDeletedDesc: 'Le témoignage a été supprimé.',
+      failedToDeleteTestimonial: 'Échec de la suppression du témoignage.',
+      contactMessagesTitle: 'Messages de contact',
+      unreadLabel: 'non lus',
+      noContactMessages: 'Aucun message de contact pour le moment.',
+      markAsRead: 'Marquer comme lu',
+      markAsUnread: 'Marquer comme non lu',
+      markedAsRead: 'Marqué comme lu',
+      markedAsUnread: 'Marqué comme non lu',
+      messageMarkedRead: 'Le message a été marqué comme lu.',
+      messageMarkedUnread: 'Le message a été marqué comme non lu.',
+      failedToLoadMessages: 'Échec du chargement des messages de contact.',
+      failedToUpdateMessage: 'Échec de la mise à jour du statut du message.',
+      failedToDeleteMessage: 'Échec de la suppression du message.',
+      messageDeleted: 'Le message a été supprimé.',
+      deleteMessageTitle: 'Supprimer le message',
+      deleteMessageConfirm: 'Êtes-vous sûr de vouloir supprimer ce message? Cette action est irréversible.',
+      fromLabel: 'De :',
     },
     auth: {
       title: 'Bienvenue',

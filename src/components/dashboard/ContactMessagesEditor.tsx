@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Mail, Trash2, Check, Eye, EyeOff, Loader2, MessageSquare } from 'lucide-react';
 import {
   Dialog,
@@ -34,6 +35,7 @@ interface ContactMessage {
 }
 
 const ContactMessagesEditor = () => {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
@@ -51,8 +53,8 @@ const ContactMessagesEditor = () => {
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to load contact messages.',
+        title: t.dashboard.error,
+        description: t.dashboard.failedToLoadMessages,
         variant: 'destructive',
       });
     } finally {
@@ -82,14 +84,14 @@ const ContactMessagesEditor = () => {
       }
 
       toast({
-        title: read ? 'Marked as read' : 'Marked as unread',
-        description: `Message has been marked as ${read ? 'read' : 'unread'}.`,
+        title: read ? t.dashboard.markedAsRead : t.dashboard.markedAsUnread,
+        description: read ? t.dashboard.messageMarkedRead : t.dashboard.messageMarkedUnread,
       });
     } catch (error) {
       console.error('Error updating message:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to update message status.',
+        title: t.dashboard.error,
+        description: t.dashboard.failedToUpdateMessage,
         variant: 'destructive',
       });
     }
@@ -112,14 +114,14 @@ const ContactMessagesEditor = () => {
       }
 
       toast({
-        title: 'Deleted',
-        description: 'Message has been deleted.',
+        title: t.dashboard.deleted,
+        description: t.dashboard.messageDeleted,
       });
     } catch (error) {
       console.error('Error deleting message:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to delete message.',
+        title: t.dashboard.error,
+        description: t.dashboard.failedToDeleteMessage,
         variant: 'destructive',
       });
     }
@@ -164,10 +166,10 @@ const ContactMessagesEditor = () => {
           <div className="flex items-center gap-3">
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
-              Contact Messages
+              {t.dashboard.contactMessagesTitle}
             </CardTitle>
             {unreadCount > 0 && (
-              <Badge variant="destructive">{unreadCount} unread</Badge>
+              <Badge variant="destructive">{unreadCount} {t.dashboard.unreadLabel}</Badge>
             )}
           </div>
         </CardHeader>
@@ -175,7 +177,7 @@ const ContactMessagesEditor = () => {
           {messages.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Mail className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No contact messages yet.</p>
+              <p>{t.dashboard.noContactMessages}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -212,7 +214,7 @@ const ContactMessagesEditor = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => markAsRead(message.id, !message.read)}
-                        title={message.read ? 'Mark as unread' : 'Mark as read'}
+                        title={message.read ? t.dashboard.markAsUnread : t.dashboard.markAsRead}
                       >
                         {message.read ? (
                           <EyeOff className="w-4 h-4" />
@@ -228,18 +230,18 @@ const ContactMessagesEditor = () => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+                            <AlertDialogTitle>{t.dashboard.deleteMessageTitle}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete this message? This action cannot be undone.
+                              {t.dashboard.deleteMessageConfirm}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => deleteMessage(message.id)}
                               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                             >
-                              Delete
+                              {t.common.delete}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -264,7 +266,7 @@ const ContactMessagesEditor = () => {
                   {selectedMessage.subject}
                 </DialogTitle>
                 <DialogDescription>
-                  From: {selectedMessage.name} • {formatDate(selectedMessage.created_at)}
+                  {t.dashboard.fromLabel} {selectedMessage.name} • {formatDate(selectedMessage.created_at)}
                 </DialogDescription>
               </DialogHeader>
               <div className="mt-4">
@@ -281,12 +283,12 @@ const ContactMessagesEditor = () => {
                   {selectedMessage.read ? (
                     <>
                       <EyeOff className="w-4 h-4 mr-2" />
-                      Mark as unread
+                      {t.dashboard.markAsUnread}
                     </>
                   ) : (
                     <>
                       <Check className="w-4 h-4 mr-2" />
-                      Mark as read
+                      {t.dashboard.markAsRead}
                     </>
                   )}
                 </Button>
@@ -294,23 +296,23 @@ const ContactMessagesEditor = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="sm">
                       <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
+                      {t.common.delete}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Message</AlertDialogTitle>
+                      <AlertDialogTitle>{t.dashboard.deleteMessageTitle}</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete this message? This action cannot be undone.
+                        {t.dashboard.deleteMessageConfirm}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>{t.common.cancel}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => deleteMessage(selectedMessage.id)}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
-                        Delete
+                        {t.common.delete}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

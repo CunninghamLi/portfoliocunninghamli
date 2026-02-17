@@ -269,21 +269,21 @@ const ResumeEditor = ({
                 <div className="flex items-center gap-3 p-4 bg-secondary/50">
                   <FileText className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="font-medium text-foreground">Resume PDF</p>
+                    <p className="font-medium text-foreground">{t.dashboard.resumePdfLabel}</p>
                     <a
                       href={resumeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-primary hover:underline"
                     >
-                      View PDF
+                      {t.dashboard.viewPdfLink}
                     </a>
                   </div>
                 </div>
               ) : (
                 <img
                   src={resumeUrl}
-                  alt="Resume preview"
+                  alt={t.dashboard.resumePreviewAlt}
                   className="max-w-full h-auto max-h-96 object-contain mx-auto"
                 />
               )}
@@ -335,17 +335,17 @@ const AboutMeEditor = ({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Profile Picture</Label>
+          <Label>{t.dashboard.profilePictureLabel}</Label>
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-border">
               {previewImage ? (
                 <img
                   src={previewImage}
-                  alt="Profile preview"
+                  alt={t.dashboard.profilePreviewAlt}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-muted-foreground text-xs">No image</span>
+                <span className="text-muted-foreground text-xs">{t.dashboard.noImage}</span>
               )}
             </div>
             <div className="flex-1 space-y-2">
@@ -356,12 +356,12 @@ const AboutMeEditor = ({
                 onChange={handleImageUpload}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground">Upload a profile picture (JPG, PNG)</p>
+              <p className="text-xs text-muted-foreground">{t.dashboard.uploadProfilePictureHelp}</p>
             </div>
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">{t.dashboard.nameLabel}</Label>
           <Input
             id="name"
             value={form.name}
@@ -369,7 +369,7 @@ const AboutMeEditor = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="title">{t.dashboard.titleLabel}</Label>
           <Input
             id="title"
             value={form.title}
@@ -377,7 +377,7 @@ const AboutMeEditor = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
+          <Label htmlFor="bio">{t.dashboard.bioLabel}</Label>
           <Textarea
             id="bio"
             value={form.bio}
@@ -386,7 +386,7 @@ const AboutMeEditor = ({
           />
         </div>
         <Button onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? t.common.saving : t.common.save}
         </Button>
       </CardContent>
     </Card>
@@ -415,11 +415,11 @@ const ContactEditor = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Edit Contact Information</CardTitle>
+        <CardTitle>{t.dashboard.editContact}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t.dashboard.emailLabel}</Label>
           <Input
             id="email"
             type="email"
@@ -428,7 +428,7 @@ const ContactEditor = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="location">{t.dashboard.locationLabel}</Label>
           <Input
             id="location"
             value={form.location}
@@ -437,7 +437,7 @@ const ContactEditor = ({
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="linkedin">LinkedIn URL</Label>
+            <Label htmlFor="linkedin">{t.dashboard.linkedinLabel}</Label>
             <Input
               id="linkedin"
               value={form.linkedin || ''}
@@ -445,7 +445,7 @@ const ContactEditor = ({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="github">GitHub URL</Label>
+            <Label htmlFor="github">{t.dashboard.githubLabel}</Label>
             <Input
               id="github"
               value={form.github || ''}
@@ -454,7 +454,7 @@ const ContactEditor = ({
           </div>
         </div>
         <Button onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? t.common.saving : t.common.save}
         </Button>
       </CardContent>
     </Card>
@@ -479,11 +479,11 @@ const ProjectsEditor = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Manage Projects</CardTitle>
+        <CardTitle>{t.dashboard.manageProjects}</CardTitle>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Add Project
+              <Plus className="w-4 h-4 mr-2" /> {t.dashboard.addProject}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -557,6 +557,7 @@ const ProjectForm = ({
   project?: Project;
   onSave: (project: Omit<Project, 'id'>) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     title: project?.title || '',
     description: project?.description || '',
@@ -580,7 +581,7 @@ const ProjectForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="project-title">Title</Label>
+        <Label htmlFor="project-title">{t.dashboard.projectTitleLabel}</Label>
         <Input
           id="project-title"
           value={form.title}
@@ -589,7 +590,7 @@ const ProjectForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="project-desc">Description</Label>
+        <Label htmlFor="project-desc">{t.dashboard.projectDescriptionLabel}</Label>
         <Textarea
           id="project-desc"
           value={form.description}
@@ -598,26 +599,26 @@ const ProjectForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="project-tech">Technologies (comma-separated)</Label>
+        <Label htmlFor="project-tech">{t.dashboard.projectTechnologiesLabel}</Label>
         <Input
           id="project-tech"
           value={form.technologies}
           onChange={(e) => setForm({ ...form, technologies: e.target.value })}
-          placeholder="React, Node.js, PostgreSQL"
+          placeholder={t.dashboard.projectTechnologiesPlaceholder}
           required
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="project-link">Link (optional)</Label>
+        <Label htmlFor="project-link">{t.dashboard.projectLinkLabel}</Label>
         <Input
           id="project-link"
           value={form.link}
           onChange={(e) => setForm({ ...form, link: e.target.value })}
-          placeholder="https://github.com/..."
+          placeholder={t.dashboard.projectLinkPlaceholder}
         />
       </div>
       <Button type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+        {saving ? t.common.saving : t.common.saveShort}
       </Button>
     </form>
   );
@@ -641,11 +642,11 @@ const ExperienceEditor = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Manage Experience</CardTitle>
+        <CardTitle>{t.dashboard.manageExperience}</CardTitle>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Add Experience
+              <Plus className="w-4 h-4 mr-2" /> {t.dashboard.addExperience}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -719,6 +720,7 @@ const ExperienceForm = ({
   experience?: Experience;
   onSave: (experience: Omit<Experience, 'id'>) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     company: experience?.company || '',
     role: experience?.role || '',
@@ -744,7 +746,7 @@ const ExperienceForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="exp-role">Role</Label>
+        <Label htmlFor="exp-role">{t.dashboard.experienceRoleLabel}</Label>
         <Input
           id="exp-role"
           value={form.role}
@@ -753,7 +755,7 @@ const ExperienceForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="exp-company">Company</Label>
+        <Label htmlFor="exp-company">{t.dashboard.experienceCompanyLabel}</Label>
         <Input
           id="exp-company"
           value={form.company}
@@ -762,17 +764,17 @@ const ExperienceForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="exp-duration">Duration</Label>
+        <Label htmlFor="exp-duration">{t.dashboard.experienceDurationLabel}</Label>
         <Input
           id="exp-duration"
           value={form.duration}
           onChange={(e) => setForm({ ...form, duration: e.target.value })}
-          placeholder="June 2023 - Present"
+          placeholder={t.dashboard.experienceDurationPlaceholder}
           required
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="exp-desc">Description</Label>
+        <Label htmlFor="exp-desc">{t.dashboard.experienceDescriptionLabel}</Label>
         <Textarea
           id="exp-desc"
           value={form.description}
@@ -781,16 +783,16 @@ const ExperienceForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="exp-skills">Skills (comma-separated)</Label>
+        <Label htmlFor="exp-skills">{t.dashboard.experienceSkillsLabel}</Label>
         <Input
           id="exp-skills"
           value={form.skills}
           onChange={(e) => setForm({ ...form, skills: e.target.value })}
-          placeholder="React, Node.js, Python"
+          placeholder={t.dashboard.experienceSkillsPlaceholder}
         />
       </div>
       <Button type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+        {saving ? t.common.saving : t.common.saveShort}
       </Button>
     </form>
   );
@@ -816,11 +818,11 @@ const SkillsEditor = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Manage Skills</CardTitle>
+        <CardTitle>{t.dashboard.manageSkills}</CardTitle>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Add Skill
+              <Plus className="w-4 h-4 mr-2" /> {t.dashboard.addSkill}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -898,6 +900,7 @@ const SkillForm = ({
   categories: string[];
   onSave: (skill: Omit<Skill, 'id'>) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     name: skill?.name || '',
     category: skill?.category || '',
@@ -914,7 +917,7 @@ const SkillForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="skill-name">Skill Name</Label>
+        <Label htmlFor="skill-name">{t.dashboard.skillNameLabel}</Label>
         <Input
           id="skill-name"
           value={form.name}
@@ -923,12 +926,12 @@ const SkillForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="skill-category">Category</Label>
+        <Label htmlFor="skill-category">{t.dashboard.skillCategoryLabel}</Label>
         <Input
           id="skill-category"
           value={form.category}
           onChange={(e) => setForm({ ...form, category: e.target.value })}
-          placeholder="e.g., Programming Languages, Frameworks"
+          placeholder={t.dashboard.skillCategoryPlaceholder}
           list="categories"
           required
         />
@@ -939,7 +942,7 @@ const SkillForm = ({
         </datalist>
       </div>
       <Button type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+        {saving ? t.common.saving : t.common.saveShort}
       </Button>
     </form>
   );
@@ -963,11 +966,11 @@ const EducationEditor = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Manage Education</CardTitle>
+        <CardTitle>{t.dashboard.manageEducation}</CardTitle>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Add Education
+              <Plus className="w-4 h-4 mr-2" /> {t.dashboard.addEducation}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -1041,6 +1044,7 @@ const EducationForm = ({
   education?: Education;
   onSave: (edu: Omit<Education, 'id'>) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     institution: education?.institution || '',
     degree: education?.degree || '',
@@ -1059,7 +1063,7 @@ const EducationForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="edu-degree">Degree</Label>
+        <Label htmlFor="edu-degree">{t.dashboard.educationDegreeLabel}</Label>
         <Input
           id="edu-degree"
           value={form.degree}
@@ -1068,7 +1072,7 @@ const EducationForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="edu-institution">Institution</Label>
+        <Label htmlFor="edu-institution">{t.dashboard.educationInstitutionLabel}</Label>
         <Input
           id="edu-institution"
           value={form.institution}
@@ -1077,17 +1081,17 @@ const EducationForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="edu-duration">Duration</Label>
+        <Label htmlFor="edu-duration">{t.dashboard.educationDurationLabel}</Label>
         <Input
           id="edu-duration"
           value={form.duration}
           onChange={(e) => setForm({ ...form, duration: e.target.value })}
-          placeholder="2021 - 2025"
+          placeholder={t.dashboard.educationDurationPlaceholder}
           required
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="edu-desc">Description</Label>
+        <Label htmlFor="edu-desc">{t.dashboard.educationDescriptionLabel}</Label>
         <Textarea
           id="edu-desc"
           value={form.description}
@@ -1096,7 +1100,7 @@ const EducationForm = ({
         />
       </div>
       <Button type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+        {saving ? t.common.saving : t.common.saveShort}
       </Button>
     </form>
   );
@@ -1122,11 +1126,11 @@ const HobbiesEditor = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Manage Hobbies</CardTitle>
+        <CardTitle>{t.dashboard.manageHobbies}</CardTitle>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
-              <Plus className="w-4 h-4 mr-2" /> Add Hobby
+              <Plus className="w-4 h-4 mr-2" /> {t.dashboard.addHobby}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -1204,6 +1208,7 @@ const HobbyForm = ({
   categories: string[];
   onSave: (hobby: Omit<Hobby, 'id'>) => Promise<void>;
 }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     name: hobby?.name || '',
     category: hobby?.category || '',
@@ -1225,7 +1230,7 @@ const HobbyForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="hobby-name">Hobby Name</Label>
+        <Label htmlFor="hobby-name">{t.dashboard.hobbyNameLabel}</Label>
         <Input
           id="hobby-name"
           value={form.name}
@@ -1234,12 +1239,12 @@ const HobbyForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="hobby-category">Category</Label>
+        <Label htmlFor="hobby-category">{t.dashboard.hobbyCategoryLabel}</Label>
         <Input
           id="hobby-category"
           value={form.category}
           onChange={(e) => setForm({ ...form, category: e.target.value })}
-          placeholder="e.g., Sports, Arts, Gaming"
+          placeholder={t.dashboard.hobbyCategoryPlaceholder}
           list="hobby-categories"
           required
         />
@@ -1250,16 +1255,16 @@ const HobbyForm = ({
         </datalist>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="hobby-icon">Icon (optional)</Label>
+        <Label htmlFor="hobby-icon">{t.dashboard.hobbyIconLabel}</Label>
         <Input
           id="hobby-icon"
           value={form.icon}
           onChange={(e) => setForm({ ...form, icon: e.target.value })}
-          placeholder="e.g., 🎮, 📚, 🎵"
+          placeholder={t.dashboard.hobbyIconPlaceholder}
         />
       </div>
       <Button type="submit" disabled={saving}>
-        {saving ? 'Saving...' : 'Save'}
+        {saving ? t.common.saving : t.common.saveShort}
       </Button>
     </form>
   );
@@ -1276,6 +1281,7 @@ interface Testimonial {
 }
 
 const TestimonialsEditor = () => {
+  const { t } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -1293,7 +1299,7 @@ const TestimonialsEditor = () => {
       setTestimonials(testimonialsData || []);
     } catch (err) {
       console.error('Error fetching testimonials:', err);
-      toast({ title: 'Error', description: 'Failed to load testimonials.', variant: 'destructive' });
+      toast({ title: t.dashboard.error, description: t.dashboard.failedToLoadTestimonials, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -1316,12 +1322,12 @@ const TestimonialsEditor = () => {
         prev.map(t => t.id === id ? { ...t, status } : t)
       );
       toast({ 
-        title: status === 'approved' ? 'Approved!' : 'Rejected', 
-        description: `Testimonial has been ${status}.` 
+        title: status === 'approved' ? t.testimonials.approved : t.testimonials.rejected,
+        description: status === 'approved' ? t.dashboard.testimonialApprovedDesc : t.dashboard.testimonialRejectedDesc,
       });
     } catch (err) {
       console.error('Error updating testimonial:', err);
-      toast({ title: 'Error', description: 'Failed to update testimonial.', variant: 'destructive' });
+      toast({ title: t.dashboard.error, description: t.dashboard.failedToUpdateTestimonial, variant: 'destructive' });
     }
   };
 
@@ -1335,21 +1341,21 @@ const TestimonialsEditor = () => {
       if (error) throw error;
 
       setTestimonials(prev => prev.filter(t => t.id !== id));
-      toast({ title: 'Deleted!', description: 'Testimonial has been removed.' });
+      toast({ title: t.dashboard.deleted, description: t.dashboard.testimonialDeletedDesc });
     } catch (err) {
       console.error('Error deleting testimonial:', err);
-      toast({ title: 'Error', description: 'Failed to delete testimonial.', variant: 'destructive' });
+      toast({ title: t.dashboard.error, description: t.dashboard.failedToDeleteTestimonial, variant: 'destructive' });
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-600">Approved</span>;
+        return <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-600">{t.testimonials.approved}</span>;
       case 'rejected':
-        return <span className="px-2 py-1 text-xs rounded-full bg-red-500/20 text-red-600">Rejected</span>;
+        return <span className="px-2 py-1 text-xs rounded-full bg-red-500/20 text-red-600">{t.testimonials.rejected}</span>;
       default:
-        return <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-600">Pending</span>;
+        return <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-600">{t.testimonials.pending}</span>;
     }
   };
 
@@ -1359,7 +1365,7 @@ const TestimonialsEditor = () => {
     return (
       <Card>
         <CardContent className="py-8">
-          <p className="text-center text-muted-foreground">Loading testimonials...</p>
+          <p className="text-center text-muted-foreground">{t.dashboard.loadingTestimonials}</p>
         </CardContent>
       </Card>
     );
@@ -1369,17 +1375,17 @@ const TestimonialsEditor = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          Manage Testimonials
+          {t.dashboard.manageTestimonials}
           {pendingCount > 0 && (
             <span className="text-sm font-normal bg-yellow-500/20 text-yellow-600 px-3 py-1 rounded-full">
-              {pendingCount} pending
+              {pendingCount} {t.dashboard.pendingLabel}
             </span>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {testimonials.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">No testimonials yet.</p>
+          <p className="text-muted-foreground text-center py-8">{t.testimonials.noTestimonials}</p>
         ) : (
           <div className="space-y-4">
             {testimonials.map((testimonial) => (
@@ -1406,7 +1412,7 @@ const TestimonialsEditor = () => {
                       onClick={() => updateStatus(testimonial.id, 'approved')}
                     >
                       <Check className="w-4 h-4 mr-1" />
-                      Approve
+                      {t.testimonials.approve}
                     </Button>
                   )}
                   {testimonial.status !== 'rejected' && (
@@ -1417,7 +1423,7 @@ const TestimonialsEditor = () => {
                       onClick={() => updateStatus(testimonial.id, 'rejected')}
                     >
                       <XCircle className="w-4 h-4 mr-1" />
-                      Reject
+                      {t.testimonials.reject}
                     </Button>
                   )}
                   <Button
@@ -1426,7 +1432,7 @@ const TestimonialsEditor = () => {
                     onClick={() => deleteTestimonial(testimonial.id)}
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
+                    {t.common.delete}
                   </Button>
                 </div>
               </div>
