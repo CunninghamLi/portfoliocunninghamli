@@ -16,7 +16,7 @@ interface Testimonial {
   content: string;
   status: string;
   created_at: string;
-  username: string;
+  name: string;
 }
 
 const Testimonials = () => {
@@ -26,11 +26,12 @@ const Testimonials = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [newTestimonial, setNewTestimonial] = useState('');
+  const [newName, setNewName] = useState('');
   const [userTestimonials, setUserTestimonials] = useState<Testimonial[]>([]);
 
   const fetchTestimonials = async () => {
     try {
-      // Fetch approved testimonials with profile info
+      // Fetch approved testimonials
       const { data: approved, error } = await supabase
         .from('testimonials')
         .select(`
@@ -38,55 +39,24 @@ const Testimonials = () => {
           content,
           status,
           created_at,
-          user_id
+          name
         `)
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Fetch usernames for testimonials
-      if (approved && approved.length > 0) {
-        const userIds = [...new Set(approved.map(t => t.user_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, username')
-          .in('user_id', userIds);
-
-        const profileMap = new Map(profiles?.map(p => [p.user_id, p.username]) || []);
-        
-        const mappedTestimonials = approved.map(t => ({
-          ...t,
-          username: profileMap.get(t.user_id) || 'Anonymous',
-        }));
-        
-        setTestimonials(mappedTestimonials);
-      } else {
-        setTestimonials([]);
-      }
+      setTestimonials(approved || []);
 
       // If logged in, fetch user's own testimonials (pending/rejected)
       if (user) {
         const { data: userTestimonialsData } = await supabase
           .from('testimonials')
-          .select('id, content, status, created_at')
+          .select('id, content, status, created_at, name')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
-        if (userTestimonialsData) {
-          const { data: userProfile } = await supabase
-            .from('profiles')
-            .select('username')
-            .eq('user_id', user.id)
-            .maybeSingle();
-
-          setUserTestimonials(
-            userTestimonialsData.map(t => ({
-              ...t,
-              username: userProfile?.username || 'You',
-            }))
-          );
-        }
+        setUserTestimonials(userTestimonialsData || []);
       }
     } catch (error) {
       console.error('Error fetching testimonials:', error);
@@ -101,7 +71,7 @@ const Testimonials = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newTestimonial.trim()) return;
+    if (!user || !newTestimonial.trim() || !newName.trim()) return;
 
     setSubmitting(true);
     try {
@@ -110,6 +80,7 @@ const Testimonials = () => {
         .insert({
           user_id: user.id,
           content: newTestimonial.trim(),
+          name: newName.trim(),
         });
 
       if (error) throw error;
@@ -119,6 +90,7 @@ const Testimonials = () => {
         description: t.testimonials.submittedDesc,
       });
       setNewTestimonial('');
+      setNewName('');
       fetchTestimonials();
     } catch (error) {
       console.error('Error submitting testimonial:', error);
@@ -167,6 +139,18 @@ const Testimonials = () => {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">{t.common.name || 'Name'}</label>
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      placeholder="Your name"
+                      required
+                      maxLength={100}
+                      className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
                   <Textarea
                     value={newTestimonial}
                     onChange={(e) => setNewTestimonial(e.target.value)}
@@ -179,7 +163,7 @@ const Testimonials = () => {
                     <span className="text-sm text-muted-foreground">
                       {newTestimonial.length}/500
                     </span>
-                    <Button type="submit" disabled={submitting || !newTestimonial.trim()}>
+                    <Button type="submit" disabled={submitting || !newTestimonial.trim() || !newName.trim()}>
                       {submitting ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -258,7 +242,7 @@ const Testimonials = () => {
                             <User className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <p className="font-medium text-foreground">{testimonial.username}</p>
+                            <p className="font-medium text-foreground">{testimonial.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {new Date(testimonial.created_at).toLocaleDateString()}
                             </p>
