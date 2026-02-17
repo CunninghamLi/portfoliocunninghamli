@@ -284,6 +284,8 @@ interface Translations {
     reject: string;
     error: string;
     failedToSubmit: string;
+    name: string;
+    yourName: string;
   };
   footer: {
     openChannel: string;
@@ -576,6 +578,8 @@ const translations: Record<Language, Translations> = {
       reject: 'Reject',
       error: 'Error',
       failedToSubmit: 'Failed to submit testimonial',
+      name: 'Name',
+      yourName: 'Your name',
     },
     footer: {
       openChannel: 'OPEN CHANNEL',
@@ -866,6 +870,8 @@ const translations: Record<Language, Translations> = {
       reject: 'Rejeter',
       error: 'Erreur',
       failedToSubmit: 'Échec de la soumission du témoignage',
+      name: 'Nom',
+      yourName: 'Votre nom',
     },
     footer: {
       openChannel: 'OUVRIR LE CANAL',

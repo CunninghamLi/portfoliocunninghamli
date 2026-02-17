@@ -143,12 +143,12 @@ const Testimonials = () => {
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">{t.common.name || 'Name'}</label>
+                    <label className="text-sm font-medium text-foreground mb-2 block">{t.testimonials.name}</label>
                     <input
                       type="text"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      placeholder="Your name"
+                      placeholder={t.testimonials.yourName}
                       required
                       maxLength={100}
                       className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
