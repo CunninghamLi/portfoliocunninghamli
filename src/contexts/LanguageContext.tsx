@@ -192,6 +192,12 @@ interface Translations {
     error: string;
     passwordRequirements: string;
     passwordsDoNotMatch: string;
+    checkEmail: string;
+    emailConfirmation: string;
+    confirmEmailMessage: string;
+    emailPlaceholder: string;
+    invalidEmail: string;
+    emailNotConfirmed: string;
   };
   testimonials: {
     title: string;
@@ -405,14 +411,20 @@ const translations: Record<Language, Translations> = {
       signupFailed: 'Sign up failed',
       welcomeBack: 'Welcome back!',
       loginSuccess: 'You have successfully logged in.',
-      accountCreated: 'Account created!',
-      signupSuccess: 'Your account has been created successfully.',
+      accountCreated: 'Check your email!',
+      signupSuccess: 'We sent you a confirmation email. Please check your inbox and click the link to verify your account.',
       loggingIn: 'Logging in...',
       creatingAccount: 'Creating account...',
       createAccount: 'Create Account',
       error: 'Error',
       passwordRequirements: 'Password does not meet all requirements',
       passwordsDoNotMatch: 'Passwords do not match',
+      checkEmail: 'Check Your Email',
+      emailConfirmation: 'Email Confirmation Required',
+      confirmEmailMessage: 'Please check your email and click the confirmation link to activate your account.',
+      emailPlaceholder: 'you@example.com',
+      invalidEmail: 'Please enter a valid email address',
+      emailNotConfirmed: 'Please confirm your email before logging in. Check your inbox for the confirmation link.',
     },
     testimonials: {
       title: 'Testimonials',
@@ -624,14 +636,20 @@ const translations: Record<Language, Translations> = {
       signupFailed: 'Échec de l\'inscription',
       welcomeBack: 'Bon retour!',
       loginSuccess: 'Vous vous êtes connecté avec succès.',
-      accountCreated: 'Compte créé!',
-      signupSuccess: 'Votre compte a été créé avec succès.',
+      accountCreated: 'Vérifiez votre email!',
+      signupSuccess: 'Nous vous avons envoyé un email de confirmation. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour vérifier votre compte.',
       loggingIn: 'Connexion en cours...',
       creatingAccount: 'Création du compte...',
       createAccount: 'Créer un compte',
       error: 'Erreur',
       passwordRequirements: 'Le mot de passe ne répond pas à toutes les exigences',
       passwordsDoNotMatch: 'Les mots de passe ne correspondent pas',
+      checkEmail: 'Vérifiez votre email',
+      emailConfirmation: 'Confirmation email requise',
+      confirmEmailMessage: 'Veuillez vérifier votre email et cliquer sur le lien de confirmation pour activer votre compte.',
+      emailPlaceholder: 'vous@exemple.com',
+      invalidEmail: 'Veuillez entrer une adresse email valide',
+      emailNotConfirmed: 'Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte de réception pour le lien de confirmation.',
     },
     testimonials: {
       title: 'Témoignages',

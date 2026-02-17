@@ -25,9 +25,9 @@ const passwordRequirements: PasswordRequirement[] = [
 ];
 
 const Login = () => {
-  const [loginUsername, setLoginUsername] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [signupUsername, setSignupUsername] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,11 +47,26 @@ const Login = () => {
     return passwordRequirements.every((req) => req.test(password));
   };
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateEmail(loginEmail)) {
+      toast({
+        title: t.auth.error,
+        description: t.auth.invalidEmail,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
-    const { error } = await signIn(loginUsername, loginPassword);
+    const { error } = await signIn(loginEmail, loginPassword);
     
     if (error) {
       toast({
@@ -72,10 +87,10 @@ const Login = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (signupUsername.length < 3) {
+    if (!validateEmail(signupEmail)) {
       toast({
         title: t.auth.error,
-        description: t.auth.usernameMinLength,
+        description: t.auth.invalidEmail,
         variant: 'destructive',
       });
       return;
@@ -101,7 +116,7 @@ const Login = () => {
 
     setIsLoading(true);
 
-    const { error } = await signUp(signupUsername, signupPassword);
+    const { error } = await signUp(signupEmail, signupPassword);
     
     if (error) {
       toast({
@@ -113,8 +128,13 @@ const Login = () => {
       toast({
         title: t.auth.accountCreated,
         description: t.auth.signupSuccess,
+        duration: 8000, // Show longer since it contains important instructions
       });
-      navigate('/');
+      // Don't navigate away - user needs to check email first
+      // Clear the form
+      setSignupEmail('');
+      setSignupPassword('');
+      setSignupConfirmPassword('');
     }
     setIsLoading(false);
   };
@@ -138,13 +158,13 @@ const Login = () => {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-username">{t.auth.username}</Label>
+                    <Label htmlFor="login-email">{t.auth.email}</Label>
                     <Input
-                      id="login-username"
-                      type="text"
-                      value={loginUsername}
-                      onChange={(e) => setLoginUsername(e.target.value)}
-                      placeholder="johndoe"
+                      id="login-email"
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder={t.auth.emailPlaceholder}
                       required
                     />
                   </div>
@@ -186,18 +206,15 @@ const Login = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-username">{t.auth.username}</Label>
+                    <Label htmlFor="signup-email">{t.auth.email}</Label>
                     <Input
-                      id="signup-username"
-                      type="text"
-                      value={signupUsername}
-                      onChange={(e) => setSignupUsername(e.target.value)}
-                      placeholder="johndoe"
+                      id="signup-email"
+                      type="email"
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      placeholder={t.auth.emailPlaceholder}
                       required
-                      minLength={3}
-                      maxLength={30}
                     />
-                    <p className="text-xs text-muted-foreground">{t.auth.usernameHelp}</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">{t.auth.password}</Label>

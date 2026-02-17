@@ -9,8 +9,8 @@ interface AuthContextType {
   isAdmin: boolean;
   username: string | null;
   loading: boolean;
-  signUp: (username: string, password: string) => Promise<{ error: string | null }>;
-  signIn: (username: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   logout: () => Promise<void>;
 }
 
@@ -66,6 +66,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
+        // Check if email is confirmed (required for login)
+        const emailConfirmed = newSession?.user?.email_confirmed_at || newSession?.user?.confirmed_at;
+        
+        // Only set session if email is confirmed
+        if (newSession?.user && !emailConfirmed) {
+          console.log('Email not confirmed yet');
+          setSession(null);
+          setUser(null);
+          setIsAdmin(false);
+          setUsername(null);
+          setLoading(false);
+          return;
+        }
+
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
@@ -87,6 +101,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // THEN get initial session
     supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
+      // Check if email is confirmed
+      const emailConfirmed = initialSession?.user?.email_confirmed_at || initialSession?.user?.confirmed_at;
+      
+      if (initialSession?.user && !emailConfirmed) {
+        console.log('Email not confirmed, signing out');
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        setIsAdmin(false);
+        setUsername(null);
+        setLoading(false);
+        return;
+      }
+
       setSession(initialSession);
       setUser(initialSession?.user ?? null);
 
@@ -102,35 +130,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (username: string, password: string): Promise<{ error: string | null }> => {
+  const signUp = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      // Check if username is already taken
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('username', username)
-        .maybeSingle();
-
-      if (existingProfile) {
-        return { error: 'Username is already taken' };
-      }
-
-      // Generate a fake email from username for Supabase auth
-      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
-
-      const { error } = await supabase.auth.signUp({
-        email: fakeEmail,
+      const { data, error } = await supabase.auth.signUp({
+        email,
         password,
         options: {
-          emailRedirectTo: window.location.origin,
-          data: {
-            username,
-          },
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
 
       if (error) {
         return { error: error.message };
+      }
+
+      // Immediately sign out to prevent auto-login before email confirmation
+      // User must confirm email before they can log in
+      if (data?.session) {
+        await supabase.auth.signOut();
       }
 
       return { error: null };
@@ -139,35 +156,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signIn = async (username: string, password: string): Promise<{ error: string | null }> => {
+  const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      // First check if this is the admin user (cunninghamli uses gmail.com)
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('user_id')
-        .eq('username', username)
-        .maybeSingle();
-
-      // Try with the fake email format first for new users
-      const fakeEmail = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@portfolio.local`;
-      
-      let { error } = await supabase.auth.signInWithPassword({
-        email: fakeEmail,
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
         password,
       });
 
-      // If login fails and user exists in profiles, try with gmail format (for legacy admin)
-      if (error && profile && username.toLowerCase() === 'cunninghamli') {
-        const legacyEmail = `${username.toLowerCase()}@gmail.com`;
-        const legacyResult = await supabase.auth.signInWithPassword({
-          email: legacyEmail,
-          password,
-        });
-        error = legacyResult.error;
+      if (error) {
+        // Check if it's an email confirmation issue
+        if (error.message.toLowerCase().includes('email') && error.message.toLowerCase().includes('confirm')) {
+          return { error: 'Please confirm your email address before logging in. Check your inbox for the confirmation link.' };
+        }
+        return { error: 'Invalid email or password' };
       }
 
-      if (error) {
-        return { error: 'Invalid username or password' };
+      // Double check that email is confirmed
+      const emailConfirmed = data?.user?.email_confirmed_at || data?.user?.confirmed_at;
+      if (data?.user && !emailConfirmed) {
+        await supabase.auth.signOut();
+        return { error: 'Please confirm your email address before logging in. Check your inbox for the confirmation link.' };
       }
 
       return { error: null };
