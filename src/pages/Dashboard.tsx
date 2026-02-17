@@ -1272,7 +1272,7 @@ interface Testimonial {
   status: string;
   user_id: string;
   created_at: string;
-  username?: string;
+  name: string;
 }
 
 const TestimonialsEditor = () => {
@@ -1290,24 +1290,7 @@ const TestimonialsEditor = () => {
 
       if (error) throw error;
 
-      // Fetch usernames for each testimonial
-      if (testimonialsData && testimonialsData.length > 0) {
-        const userIds = [...new Set(testimonialsData.map(t => t.user_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, username')
-          .in('user_id', userIds);
-
-        const usernameMap = new Map(profiles?.map(p => [p.user_id, p.username]) || []);
-        
-        const withUsernames = testimonialsData.map(t => ({
-          ...t,
-          username: usernameMap.get(t.user_id) || 'Unknown User',
-        }));
-        setTestimonials(withUsernames);
-      } else {
-        setTestimonials([]);
-      }
+      setTestimonials(testimonialsData || []);
     } catch (err) {
       console.error('Error fetching testimonials:', err);
       toast({ title: 'Error', description: 'Failed to load testimonials.', variant: 'destructive' });
@@ -1406,7 +1389,7 @@ const TestimonialsEditor = () => {
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <p className="font-medium text-foreground">{testimonial.username}</p>
+                    <p className="font-medium text-foreground">{testimonial.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(testimonial.created_at).toLocaleDateString()}
                     </p>
