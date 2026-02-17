@@ -23,6 +23,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const clearAuthStorage = () => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+      localStorage.removeItem(`sb-${projectRef}-auth-token`);
+    } catch (err) {
+      console.warn('Failed to clear auth storage:', err);
+    }
+  };
+
   const checkAdminRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -72,6 +82,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Only set session if email is confirmed
         if (newSession?.user && !emailConfirmed) {
           console.log('Email not confirmed yet');
+          try {
+            await supabase.auth.signOut({ scope: 'local' });
+          } finally {
+            clearAuthStorage();
+          }
           setSession(null);
           setUser(null);
           setIsAdmin(false);
@@ -106,7 +121,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (initialSession?.user && !emailConfirmed) {
         console.log('Email not confirmed, signing out');
-        await supabase.auth.signOut();
+        try {
+          await supabase.auth.signOut({ scope: 'local' });
+        } finally {
+          clearAuthStorage();
+        }
         setSession(null);
         setUser(null);
         setIsAdmin(false);
@@ -147,7 +166,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Immediately sign out to prevent auto-login before email confirmation
       // User must confirm email before they can log in
       if (data?.session) {
-        await supabase.auth.signOut();
+        try {
+          await supabase.auth.signOut({ scope: 'local' });
+        } finally {
+          clearAuthStorage();
+        }
       }
 
       return { error: null };
@@ -174,7 +197,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Double check that email is confirmed
       const emailConfirmed = data?.user?.email_confirmed_at || data?.user?.confirmed_at;
       if (data?.user && !emailConfirmed) {
-        await supabase.auth.signOut();
+        try {
+          await supabase.auth.signOut({ scope: 'local' });
+        } finally {
+          clearAuthStorage();
+        }
         return { error: 'Please confirm your email address before logging in. Check your inbox for the confirmation link.' };
       }
 
@@ -185,11 +212,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
     setUser(null);
     setSession(null);
     setIsAdmin(false);
     setUsername(null);
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } finally {
+      clearAuthStorage();
+    }
   };
 
   return (
