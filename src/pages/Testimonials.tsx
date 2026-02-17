@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
+import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Loader2, MessageSquare, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -28,6 +29,8 @@ const Testimonials = () => {
   const [newTestimonial, setNewTestimonial] = useState('');
   const [newName, setNewName] = useState('');
   const [userTestimonials, setUserTestimonials] = useState<Testimonial[]>([]);
+  const { items: translatedTestimonials } = useTranslatedArray(testimonials, ['content']);
+  const { items: translatedUserTestimonials } = useTranslatedArray(userTestimonials, ['content']);
 
   const fetchTestimonials = async () => {
     try {
@@ -194,7 +197,7 @@ const Testimonials = () => {
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4 text-foreground">{t.testimonials.yourTestimonials}</h2>
               <div className="space-y-4">
-                {userTestimonials.map((testimonial) => (
+                {translatedUserTestimonials.map((testimonial) => (
                   <Card key={testimonial.id} className="border-l-4 border-l-primary/50">
                     <CardContent className="py-4">
                       <div className="flex justify-between items-start mb-2">
@@ -228,7 +231,7 @@ const Testimonials = () => {
           ) : (
             <AnimatePresence>
               <div className="grid gap-4 md:grid-cols-2">
-                {testimonials.map((testimonial, index) => (
+                {translatedTestimonials.map((testimonial, index) => (
                   <motion.div
                     key={testimonial.id}
                     initial={{ opacity: 0, y: 20 }}

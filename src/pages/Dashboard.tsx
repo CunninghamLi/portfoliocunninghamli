@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
+import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Plus, Pencil, Trash2, Upload, FileText, X, Check, XCircle } from 'lucide-react';
 
 const Dashboard = () => {
@@ -1284,6 +1285,7 @@ const TestimonialsEditor = () => {
   const { t } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  const { items: translatedTestimonials } = useTranslatedArray(testimonials, ['content']);
 
   const fetchTestimonials = async () => {
     setLoading(true);
@@ -1388,7 +1390,7 @@ const TestimonialsEditor = () => {
           <p className="text-muted-foreground text-center py-8">{t.testimonials.noTestimonials}</p>
         ) : (
           <div className="space-y-4">
-            {testimonials.map((testimonial) => (
+            {translatedTestimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
                 className="p-4 border border-border rounded-lg space-y-3"
