@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Loader2, Heart, Gamepad2 } from 'lucide-react';
 
 const container = {
@@ -22,19 +21,16 @@ const item = {
 
 const Hobbies = () => {
   const { data, loading } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const hobbiesForTranslation = useMemo(
-    () => data.hobbies.map((hobby) => ({ ...hobby })),
-    [data.hobbies]
+  const displayHobbies = useMemo(
+    () => data.hobbies.map((hobby) => ({ 
+      ...hobby,
+      name: language === 'fr' && hobby.name_fr ? hobby.name_fr : hobby.name,
+      category: language === 'fr' && hobby.category_fr ? hobby.category_fr : hobby.category
+    })),
+    [data.hobbies, language]
   );
-
-  const { items: translatedHobbies } = useTranslatedArray(
-    hobbiesForTranslation,
-    ['name', 'category']
-  );
-
-  const displayHobbies = translatedHobbies.length > 0 ? translatedHobbies : data.hobbies;
 
   const hobbiesByCategory = useMemo(() => {
     return displayHobbies.reduce((acc, hobby) => {

@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedText } from '@/hooks/useTranslation';
 import { Mail, MapPin, Linkedin, Github, Loader2, Send, MessageSquare, CheckCircle, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +20,7 @@ import { toast } from '@/hooks/use-toast';
 
 const Contact = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { contact } = data;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +50,10 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [field]: nextValue }));
   };
 
-  const { text: translatedLocation, isTranslating } = useTranslatedText(contact.location);
+  const displayLocation = useMemo(() => 
+    language === 'fr' && contact.location_fr ? contact.location_fr : contact.location,
+    [contact.location, contact.location_fr, language]
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,7 +98,7 @@ const Contact = () => {
     {
       icon: MapPin,
       label: t.contact.location,
-      value: translatedLocation,
+      value: displayLocation,
     },
   ];
 
@@ -125,7 +127,6 @@ const Contact = () => {
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-green flex items-center justify-center gap-3">
             {t.sections.contact}
-            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
         </motion.div>
 

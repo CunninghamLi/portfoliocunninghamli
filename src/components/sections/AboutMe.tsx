@@ -1,18 +1,16 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedText } from '@/hooks/useTranslation';
-import { User, Loader2, Target, Trophy } from 'lucide-react';
+import { User, Target, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const AboutMe = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { aboutMe } = data;
 
-  const { text: translatedTitle, isTranslating: titleLoading } = useTranslatedText(aboutMe.title);
-  const { text: translatedBio, isTranslating: bioLoading } = useTranslatedText(aboutMe.bio);
-
-  const isTranslating = titleLoading || bioLoading;
+  // Get the appropriate language version
+  const displayTitle = language === 'fr' && aboutMe.title_fr ? aboutMe.title_fr : aboutMe.title;
+  const displayBio = language === 'fr' && aboutMe.bio_fr ? aboutMe.bio_fr : aboutMe.bio;
 
   return (
     <section id="about" className="py-32 bg-background relative overflow-hidden">
@@ -106,8 +104,7 @@ const AboutMe = () => {
                   {aboutMe.name}
                 </h3>
                 <p className="text-xl text-gradient-game font-semibold flex items-center gap-2 font-body">
-                  {'> '}{translatedTitle}
-                  {isTranslating && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
+                  {'> '}{displayTitle}
                 </p>
               </div>
 
@@ -119,7 +116,7 @@ const AboutMe = () => {
               </div>
 
               <p className="text-lg text-muted-foreground leading-relaxed font-body">
-                {translatedBio}
+                {displayBio}
               </p>
 
               {/* Stats cards */}

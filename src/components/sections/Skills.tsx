@@ -1,7 +1,6 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray } from '@/hooks/useTranslation';
-import { Loader2, Cpu, Sparkles } from 'lucide-react';
+import { Cpu, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
@@ -22,20 +21,19 @@ const item = {
 
 const Skills = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { skills } = data;
 
-  const skillsForTranslation = useMemo(() => 
-    skills.map(s => ({ ...s, category: s.category, name: s.name })), 
-    [skills]
+  const displaySkills = useMemo(() => 
+    skills.map(s => ({ 
+      ...s, 
+      name: language === 'fr' && s.name_fr ? s.name_fr : s.name,
+      category: language === 'fr' && s.category_fr ? s.category_fr : s.category
+    })), 
+    [skills, language]
   );
 
-  const { items: translatedSkills, isTranslating } = useTranslatedArray(
-    skillsForTranslation,
-    ['category', 'name']
-  );
-
-  const categories = [...new Set(translatedSkills.map((s) => s.category))];
+  const categories = [...new Set(displaySkills.map((s) => s.category))];
 
   return (
     <section id="skills" className="py-32 bg-background relative overflow-hidden">
@@ -57,7 +55,6 @@ const Skills = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-cyan flex items-center justify-center gap-3">
             <Cpu className="w-10 h-10" />
             {t.sections.skills}
-            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
         </motion.div>
 
@@ -86,7 +83,7 @@ const Skills = () => {
                 </h3>
                 <div className="flex-1 h-[1px] bg-gradient-to-r from-neon-cyan/50 to-transparent" />
                 <span className="font-pixel text-[8px] text-muted-foreground">
-                  {translatedSkills.filter(s => s.category === category).length} {t.common.unlocked}
+                  {displaySkills.filter(s => s.category === category).length} {t.common.unlocked}
                 </span>
               </div>
 
@@ -98,7 +95,7 @@ const Skills = () => {
                 viewport={{ once: true }}
                 className="flex flex-wrap gap-3"
               >
-                {translatedSkills
+                {displaySkills
                   .filter((s) => s.category === category)
                   .map((skill) => (
                     <motion.div 

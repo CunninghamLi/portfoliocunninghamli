@@ -4,7 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Project {
   id: string;
   title: string;
+  title_fr?: string;
   description: string;
+  description_fr?: string;
   technologies: string[];
   link?: string;
   github?: string;
@@ -14,38 +16,52 @@ export interface Project {
 export interface Experience {
   id: string;
   company: string;
+  company_fr?: string;
   role: string;
+  role_fr?: string;
   duration: string;
+  duration_fr?: string;
   description: string;
+  description_fr?: string;
   skills: string[];
 }
 
 export interface Skill {
   id: string;
   name: string;
+  name_fr?: string;
   category: string;
+  category_fr?: string;
 }
 
 export interface Hobby {
   id: string;
   name: string;
+  name_fr?: string;
   category: string;
+  category_fr?: string;
   icon?: string;
 }
 
 export interface Education {
   id: string;
   institution: string;
+  institution_fr?: string;
   degree: string;
+  degree_fr?: string;
   duration: string;
   description: string;
+  description_fr?: string;
 }
 
 export interface PortfolioData {
   aboutMe: {
     name: string;
+    name_fr?: string;
     title: string;
+    title_fr?: string;
     bio: string;
+    bio_fr?: string;
     image?: string;
   };
   projects: Project[];
@@ -57,6 +73,7 @@ export interface PortfolioData {
     email: string;
     phone: string;
     location: string;
+    location_fr?: string;
     linkedin?: string;
     github?: string;
   };
@@ -166,14 +183,19 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         setData({
           aboutMe: {
             name: portfolio.name,
+            name_fr: portfolio.name_fr || undefined,
             title: portfolio.title,
+            title_fr: portfolio.title_fr || undefined,
             bio: portfolio.bio,
+            bio_fr: portfolio.bio_fr || undefined,
             image: portfolio.image || undefined,
           },
           projects: (projectsRes.data || []).map((p) => ({
             id: p.id,
             title: p.title,
+            title_fr: p.title_fr || undefined,
             description: p.description,
+            description_fr: p.description_fr || undefined,
             technologies: p.tags || [],
             link: p.link || undefined,
             github: p.github || undefined,
@@ -182,33 +204,45 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
           experiences: (experiencesRes.data || []).map((e) => ({
             id: e.id,
             company: e.company,
+            company_fr: e.company_fr || undefined,
             role: e.title,
+            role_fr: e.title_fr || undefined,
             duration: e.period,
+            duration_fr: e.period_fr || undefined,
             description: e.description,
+            description_fr: e.description_fr || undefined,
             skills: e.skills || [],
           })),
           skills: (skillsRes.data || []).map((s) => ({
             id: s.id,
             name: s.name,
+            name_fr: s.name_fr || undefined,
             category: s.category,
+            category_fr: s.category_fr || undefined,
           })),
           hobbies: (hobbiesRes.data || []).map((h) => ({
             id: h.id,
             name: h.name,
+            name_fr: h.name_fr || undefined,
             category: h.category,
+            category_fr: h.category_fr || undefined,
             icon: h.icon || undefined,
           })),
           education: (educationRes.data || []).map((e) => ({
             id: e.id,
             institution: e.school,
+            institution_fr: e.school_fr || undefined,
             degree: e.degree,
+            degree_fr: e.degree_fr || undefined,
             duration: e.period,
             description: e.description || '',
+            description_fr: e.description_fr || undefined,
           })),
           contact: {
             email: portfolio.email,
             phone: portfolio.phone || '',
             location: portfolio.location || '',
+            location_fr: portfolio.location_fr || undefined,
             linkedin: portfolio.linkedin || undefined,
             github: portfolio.github || undefined,
           },
@@ -232,8 +266,11 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('portfolio')
       .update({
         name: aboutMe.name,
+        name_fr: aboutMe.name_fr || null,
         title: aboutMe.title,
+        title_fr: aboutMe.title_fr || null,
         bio: aboutMe.bio,
+        bio_fr: aboutMe.bio_fr || null,
         image: aboutMe.image || null,
       })
       .eq('id', portfolioId);
@@ -255,6 +292,7 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
         email: contact.email,
         phone: contact.phone || null,
         location: contact.location || null,
+        location_fr: contact.location_fr || null,
         linkedin: contact.linkedin || null,
         github: contact.github || null,
       })
@@ -276,7 +314,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .insert({
         portfolio_id: portfolioId,
         title: project.title,
+        title_fr: project.title_fr || null,
         description: project.description,
+        description_fr: project.description_fr || null,
         tags: project.technologies,
         link: project.link || null,
         github: project.github || null,
@@ -293,7 +333,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     const mappedProject: Project = {
       id: newProject.id,
       title: newProject.title,
+      title_fr: newProject.title_fr || undefined,
       description: newProject.description,
+      description_fr: newProject.description_fr || undefined,
       technologies: newProject.tags || [],
       link: newProject.link || undefined,
       github: newProject.github || undefined,
@@ -308,7 +350,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('projects')
       .update({
         title: project.title,
+        title_fr: project.title_fr || null,
         description: project.description,
+        description_fr: project.description_fr || null,
         tags: project.technologies,
         link: project.link || null,
         github: project.github || null,
@@ -346,9 +390,13 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .insert({
         portfolio_id: portfolioId,
         title: experience.role,
+        title_fr: experience.role_fr || null,
         company: experience.company,
+        company_fr: experience.company_fr || null,
         period: experience.duration,
+        period_fr: experience.duration_fr || null,
         description: experience.description,
+        description_fr: experience.description_fr || null,
         skills: experience.skills,
       })
       .select()
@@ -362,9 +410,13 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     const mappedExperience: Experience = {
       id: newExperience.id,
       company: newExperience.company,
+      company_fr: newExperience.company_fr || undefined,
       role: newExperience.title,
+      role_fr: newExperience.title_fr || undefined,
       duration: newExperience.period,
+      duration_fr: newExperience.period_fr || undefined,
       description: newExperience.description,
+      description_fr: newExperience.description_fr || undefined,
       skills: newExperience.skills || [],
     };
 
@@ -376,9 +428,13 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('experiences')
       .update({
         title: experience.role,
+        title_fr: experience.role_fr || null,
         company: experience.company,
+        company_fr: experience.company_fr || null,
         period: experience.duration,
+        period_fr: experience.duration_fr || null,
         description: experience.description,
+        description_fr: experience.description_fr || null,
         skills: experience.skills,
       })
       .eq('id', experience.id);
@@ -413,7 +469,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .insert({
         portfolio_id: portfolioId,
         name: skill.name,
+        name_fr: skill.name_fr || null,
         category: skill.category,
+        category_fr: skill.category_fr || null,
       })
       .select()
       .single();
@@ -426,7 +484,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     const mappedSkill: Skill = {
       id: newSkill.id,
       name: newSkill.name,
+      name_fr: newSkill.name_fr || undefined,
       category: newSkill.category,
+      category_fr: newSkill.category_fr || undefined,
     };
 
     setData((prev) => ({ ...prev, skills: [...prev.skills, mappedSkill] }));
@@ -437,7 +497,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('skills')
       .update({
         name: skill.name,
+        name_fr: skill.name_fr || null,
         category: skill.category,
+        category_fr: skill.category_fr || null,
       })
       .eq('id', skill.id);
 
@@ -471,7 +533,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .insert({
         portfolio_id: portfolioId,
         name: hobby.name,
+        name_fr: hobby.name_fr || null,
         category: hobby.category,
+        category_fr: hobby.category_fr || null,
         icon: hobby.icon || null,
       })
       .select()
@@ -485,7 +549,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     const mappedHobby: Hobby = {
       id: newHobby.id,
       name: newHobby.name,
+      name_fr: newHobby.name_fr || undefined,
       category: newHobby.category,
+      category_fr: newHobby.category_fr || undefined,
       icon: newHobby.icon || undefined,
     };
 
@@ -497,7 +563,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('hobbies')
       .update({
         name: hobby.name,
+        name_fr: hobby.name_fr || null,
         category: hobby.category,
+        category_fr: hobby.category_fr || null,
         icon: hobby.icon || null,
       })
       .eq('id', hobby.id);
@@ -532,9 +600,12 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .insert({
         portfolio_id: portfolioId,
         degree: education.degree,
+        degree_fr: education.degree_fr || null,
         school: education.institution,
+        school_fr: education.institution_fr || null,
         period: education.duration,
         description: education.description || null,
+        description_fr: education.description_fr || null,
       })
       .select()
       .single();
@@ -547,9 +618,12 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     const mappedEducation: Education = {
       id: newEducation.id,
       institution: newEducation.school,
+      institution_fr: newEducation.school_fr || undefined,
       degree: newEducation.degree,
+      degree_fr: newEducation.degree_fr || undefined,
       duration: newEducation.period,
       description: newEducation.description || '',
+      description_fr: newEducation.description_fr || undefined,
     };
 
     setData((prev) => ({ ...prev, education: [...prev.education, mappedEducation] }));
@@ -560,9 +634,12 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
       .from('education')
       .update({
         degree: education.degree,
+        degree_fr: education.degree_fr || null,
         school: education.institution,
+        school_fr: education.institution_fr || null,
         period: education.duration,
         description: education.description || null,
+        description_fr: education.description_fr || null,
       })
       .eq('id', education.id);
 

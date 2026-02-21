@@ -1,9 +1,8 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray } from '@/hooks/useTranslation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowUpRight, Github, Sword, Shield } from 'lucide-react';
+import { ArrowUpRight, Github, Sword, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
@@ -24,43 +23,18 @@ const item = {
 
 const Projects = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { projects } = data;
 
-  const projectsForTranslation = useMemo(() => 
-    projects.map(p => ({ ...p })), 
-    [projects]
+  // Map projects to use the appropriate language
+  const displayProjects = useMemo(() => 
+    projects.map(p => ({
+      ...p,
+      title: language === 'fr' && p.title_fr ? p.title_fr : p.title,
+      description: language === 'fr' && p.description_fr ? p.description_fr : p.description,
+    })),
+    [projects, language]
   );
-  
-  const { items: translatedProjects, isTranslating } = useTranslatedArray(
-    projectsForTranslation,
-    ['title', 'description']
-  );
-
-  const displayProjects = translatedProjects.length > 0 ? translatedProjects : projects;
-
-  const technologiesForTranslation = useMemo(() => {
-    const techSet = new Set<string>();
-    projects.forEach((project) => {
-      project.technologies?.forEach((tech) => {
-        if (tech && tech.trim()) techSet.add(tech);
-      });
-    });
-    return Array.from(techSet).map((value) => ({ value }));
-  }, [projects]);
-
-  const { items: translatedTechnologies } = useTranslatedArray(
-    technologiesForTranslation,
-    ['value']
-  );
-
-  const technologyMap = useMemo(() => {
-    const map = new Map<string, string>();
-    technologiesForTranslation.forEach((item, index) => {
-      map.set(item.value, translatedTechnologies[index]?.value || item.value);
-    });
-    return map;
-  }, [technologiesForTranslation, translatedTechnologies]);
 
   return (
     <section id="projects" className="py-32 bg-background relative overflow-hidden">
@@ -83,12 +57,10 @@ const Projects = () => {
             <Sword className="w-10 h-10" />
             {t.sections.projects}
             <Shield className="w-10 h-10" />
-            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
         </motion.div>
 
         <motion.div
-          key={`projects-container-${displayProjects.length}`}
           variants={container}
           initial="hidden"
           whileInView="show"
@@ -166,7 +138,7 @@ const Projects = () => {
                             variant="secondary"
                             className="bg-muted/50 text-neon-cyan border border-neon-cyan/30 hover:bg-neon-cyan/20 hover:border-neon-cyan transition-all font-body"
                           >
-                            {technologyMap.get(tech) || tech}
+                            {tech}
                           </Badge>
                         </motion.div>
                       ))}

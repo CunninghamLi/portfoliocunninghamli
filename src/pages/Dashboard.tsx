@@ -386,8 +386,8 @@ const AboutMeEditor = ({
   data,
   onSave,
 }: {
-  data: { name: string; title: string; bio: string; image?: string };
-  onSave: (data: { name: string; title: string; bio: string; image?: string }) => Promise<void>;
+  data: { name: string; name_fr?: string; title: string; title_fr?: string; bio: string; bio_fr?: string; image?: string };
+  onSave: (data: { name: string; name_fr?: string; title: string; title_fr?: string; bio: string; bio_fr?: string; image?: string }) => Promise<void>;
 }) => {
   const { t } = useLanguage();
   const [form, setForm] = useState(data);
@@ -419,7 +419,7 @@ const AboutMeEditor = ({
       <CardHeader>
         <CardTitle>{t.dashboard.editAboutMe}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label>{t.dashboard.profilePictureLabel}</Label>
           <div className="flex items-center gap-4">
@@ -446,31 +446,73 @@ const AboutMeEditor = ({
             </div>
           </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="name">{t.dashboard.nameLabel}</Label>
-          <Input
-            id="name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
+        
+        <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm text-foreground">English</h3>
+            <div className="space-y-2">
+              <Label htmlFor="name">{t.dashboard.nameLabel}</Label>
+              <Input
+                id="name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Cunningham Li"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="title">{t.dashboard.titleLabel}</Label>
+              <Input
+                id="title"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                placeholder="Computer Science Student"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bio">{t.dashboard.bioLabel}</Label>
+              <Textarea
+                id="bio"
+                value={form.bio}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                rows={4}
+                placeholder="Your bio in English..."
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm text-foreground">Français</h3>
+            <div className="space-y-2">
+              <Label htmlFor="name_fr">Nom</Label>
+              <Input
+                id="name_fr"
+                value={form.name_fr || ''}
+                onChange={(e) => setForm({ ...form, name_fr: e.target.value })}
+                placeholder="Cunningham Li"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="title_fr">Titre</Label>
+              <Input
+                id="title_fr"
+                value={form.title_fr || ''}
+                onChange={(e) => setForm({ ...form, title_fr: e.target.value })}
+                placeholder="Étudiant en informatique"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bio_fr">Biographie</Label>
+              <Textarea
+                id="bio_fr"
+                value={form.bio_fr || ''}
+                onChange={(e) => setForm({ ...form, bio_fr: e.target.value })}
+                rows={4}
+                placeholder="Votre biographie en français..."
+              />
+            </div>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="title">{t.dashboard.titleLabel}</Label>
-          <Input
-            id="title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="bio">{t.dashboard.bioLabel}</Label>
-          <Textarea
-            id="bio"
-            value={form.bio}
-            onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            rows={4}
-          />
-        </div>
+        
         <Button onClick={handleSave} disabled={saving}>
           {saving ? t.common.saving : t.common.save}
         </Button>
@@ -484,8 +526,8 @@ const ContactEditor = ({
   data,
   onSave,
 }: {
-  data: { email: string; location: string; linkedin?: string; github?: string };
-  onSave: (data: { email: string; location: string; linkedin?: string; github?: string }) => Promise<void>;
+  data: { email: string; location: string; location_fr?: string; linkedin?: string; github?: string };
+  onSave: (data: { email: string; location: string; location_fr?: string; linkedin?: string; github?: string }) => Promise<void>;
 }) => {
   const { t } = useLanguage();
   const [form, setForm] = useState(data);
@@ -513,13 +555,25 @@ const ContactEditor = ({
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="location">{t.dashboard.locationLabel}</Label>
-          <Input
-            id="location"
-            value={form.location}
-            onChange={(e) => setForm({ ...form, location: e.target.value })}
-          />
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="location">{t.dashboard.locationLabel} (English)</Label>
+            <Input
+              id="location"
+              value={form.location}
+              onChange={(e) => setForm({ ...form, location: e.target.value })}
+              placeholder="Brossard, QC"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="location_fr">Lieu (Français)</Label>
+            <Input
+              id="location_fr"
+              value={form.location_fr || ''}
+              onChange={(e) => setForm({ ...form, location_fr: e.target.value })}
+              placeholder="Brossard, QC"
+            />
+          </div>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -646,7 +700,9 @@ const ProjectForm = ({
   const { t } = useLanguage();
   const [form, setForm] = useState({
     title: project?.title || '',
+    title_fr: project?.title_fr || '',
     description: project?.description || '',
+    description_fr: project?.description_fr || '',
     technologies: project?.technologies.join(', ') || '',
     link: project?.link || '',
   });
@@ -657,7 +713,9 @@ const ProjectForm = ({
     setSaving(true);
     await onSave({
       title: form.title,
+      title_fr: form.title_fr || undefined,
       description: form.description,
+      description_fr: form.description_fr || undefined,
       technologies: form.technologies.split(',').map((t) => t.trim()),
       link: form.link || undefined,
     });
@@ -665,24 +723,54 @@ const ProjectForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="project-title">{t.dashboard.projectTitleLabel}</Label>
-        <Input
-          id="project-title"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="project-desc">{t.dashboard.projectDescriptionLabel}</Label>
-        <Textarea
-          id="project-desc"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+      <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">English</h3>
+          <div className="space-y-2">
+            <Label htmlFor="project-title">{t.dashboard.projectTitleLabel}</Label>
+            <Input
+              id="project-title"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              required
+              placeholder="Project Title"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-desc">{t.dashboard.projectDescriptionLabel}</Label>
+            <Textarea
+              id="project-desc"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              required
+              rows={4}
+              placeholder="Project description in English..."
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">Français</h3>
+          <div className="space-y-2">
+            <Label htmlFor="project-title-fr">Titre du projet</Label>
+            <Input
+              id="project-title-fr"
+              value={form.title_fr}
+              onChange={(e) => setForm({ ...form, title_fr: e.target.value })}
+              placeholder="Titre du projet"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="project-desc-fr">Description</Label>
+            <Textarea
+              id="project-desc-fr"
+              value={form.description_fr}
+              onChange={(e) => setForm({ ...form, description_fr: e.target.value })}
+              rows={4}
+              placeholder="Description du projet en français..."
+            />
+          </div>
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="project-tech">{t.dashboard.projectTechnologiesLabel}</Label>
@@ -809,9 +897,13 @@ const ExperienceForm = ({
   const { t } = useLanguage();
   const [form, setForm] = useState({
     company: experience?.company || '',
+    company_fr: experience?.company_fr || '',
     role: experience?.role || '',
+    role_fr: experience?.role_fr || '',
     duration: experience?.duration || '',
+    duration_fr: experience?.duration_fr || '',
     description: experience?.description || '',
+    description_fr: experience?.description_fr || '',
     skills: experience?.skills?.join(', ') || '',
   });
   const [saving, setSaving] = useState(false);
@@ -821,52 +913,107 @@ const ExperienceForm = ({
     setSaving(true);
     await onSave({
       company: form.company,
+      company_fr: form.company_fr || undefined,
       role: form.role,
+      role_fr: form.role_fr || undefined,
       duration: form.duration,
+      duration_fr: form.duration_fr || undefined,
       description: form.description,
+      description_fr: form.description_fr || undefined,
       skills: form.skills.split(',').map((s) => s.trim()).filter(Boolean),
     });
     setSaving(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="exp-role">{t.dashboard.experienceRoleLabel}</Label>
-        <Input
-          id="exp-role"
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+      <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">English</h3>
+          <div className="space-y-2">
+            <Label htmlFor="exp-role">{t.dashboard.experienceRoleLabel}</Label>
+            <Input
+              id="exp-role"
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              required
+              placeholder="Position/Role"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="exp-company">{t.dashboard.experienceCompanyLabel}</Label>
+            <Input
+              id="exp-company"
+              value={form.company}
+              onChange={(e) => setForm({ ...form, company: e.target.value })}
+              required
+              placeholder="Company Name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="exp-desc">{t.dashboard.experienceDescriptionLabel}</Label>
+            <Textarea
+              id="exp-desc"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              required
+              rows={4}
+              placeholder="Description in English..."
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">Français</h3>
+          <div className="space-y-2">
+            <Label htmlFor="exp-role-fr">Poste</Label>
+            <Input
+              id="exp-role-fr"
+              value={form.role_fr}
+              onChange={(e) => setForm({ ...form, role_fr: e.target.value })}
+              placeholder="Poste"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="exp-company-fr">Entreprise</Label>
+            <Input
+              id="exp-company-fr"
+              value={form.company_fr}
+              onChange={(e) => setForm({ ...form, company_fr: e.target.value })}
+              placeholder="Nom de l'entreprise"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="exp-desc-fr">Description</Label>
+            <Textarea
+              id="exp-desc-fr"
+              value={form.description_fr}
+              onChange={(e) => setForm({ ...form, description_fr: e.target.value })}
+              rows={4}
+              placeholder="Description en français..."
+            />
+          </div>
+        </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="exp-company">{t.dashboard.experienceCompanyLabel}</Label>
-        <Input
-          id="exp-company"
-          value={form.company}
-          onChange={(e) => setForm({ ...form, company: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="exp-duration">{t.dashboard.experienceDurationLabel}</Label>
-        <Input
-          id="exp-duration"
-          value={form.duration}
-          onChange={(e) => setForm({ ...form, duration: e.target.value })}
-          placeholder={t.dashboard.experienceDurationPlaceholder}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="exp-desc">{t.dashboard.experienceDescriptionLabel}</Label>
-        <Textarea
-          id="exp-desc"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          required
-        />
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="exp-duration">{t.dashboard.experienceDurationLabel} (English)</Label>
+          <Input
+            id="exp-duration"
+            value={form.duration}
+            onChange={(e) => setForm({ ...form, duration: e.target.value })}
+            placeholder="September 2023 - Present"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="exp-duration-fr">Période (Français)</Label>
+          <Input
+            id="exp-duration-fr"
+            value={form.duration_fr}
+            onChange={(e) => setForm({ ...form, duration_fr: e.target.value })}
+            placeholder="Septembre 2023 - Présent"
+          />
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="exp-skills">{t.dashboard.experienceSkillsLabel}</Label>
@@ -989,43 +1136,77 @@ const SkillForm = ({
   const { t } = useLanguage();
   const [form, setForm] = useState({
     name: skill?.name || '',
+    name_fr: skill?.name_fr || '',
     category: skill?.category || '',
+    category_fr: skill?.category_fr || '',
   });
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await onSave(form);
+    await onSave({
+      name: form.name,
+      name_fr: form.name_fr || undefined,
+      category: form.category,
+      category_fr: form.category_fr || undefined,
+    });
     setSaving(false);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="skill-name">{t.dashboard.skillNameLabel}</Label>
-        <Input
-          id="skill-name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="skill-category">{t.dashboard.skillCategoryLabel}</Label>
-        <Input
-          id="skill-category"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          placeholder={t.dashboard.skillCategoryPlaceholder}
-          list="categories"
-          required
-        />
-        <datalist id="categories">
-          {categories.map((cat) => (
-            <option key={cat} value={cat} />
-          ))}
-        </datalist>
+      <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">English</h3>
+          <div className="space-y-2">
+            <Label htmlFor="skill-name">{t.dashboard.skillNameLabel}</Label>
+            <Input
+              id="skill-name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+              placeholder="Skill name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skill-category">{t.dashboard.skillCategoryLabel}</Label>
+            <Input
+              id="skill-category"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              placeholder={t.dashboard.skillCategoryPlaceholder}
+              list="categories"
+              required
+            />
+            <datalist id="categories">
+              {categories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">Français</h3>
+          <div className="space-y-2">
+            <Label htmlFor="skill-name-fr">Nom de la compétence</Label>
+            <Input
+              id="skill-name-fr"
+              value={form.name_fr}
+              onChange={(e) => setForm({ ...form, name_fr: e.target.value })}
+              placeholder="Nom de la compétence"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skill-category-fr">Catégorie</Label>
+            <Input
+              id="skill-category-fr"
+              value={form.category_fr}
+              onChange={(e) => setForm({ ...form, category_fr: e.target.value })}
+              placeholder="Catégorie"
+            />
+          </div>
+        </div>
       </div>
       <Button type="submit" disabled={saving}>
         {saving ? t.common.saving : t.common.saveShort}
@@ -1133,38 +1314,98 @@ const EducationForm = ({
   const { t } = useLanguage();
   const [form, setForm] = useState({
     institution: education?.institution || '',
+    institution_fr: education?.institution_fr || '',
     degree: education?.degree || '',
+    degree_fr: education?.degree_fr || '',
     duration: education?.duration || '',
     description: education?.description || '',
+    description_fr: education?.description_fr || '',
   });
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await onSave(form);
+    await onSave({
+      institution: form.institution,
+      institution_fr: form.institution_fr || undefined,
+      degree: form.degree,
+      degree_fr: form.degree_fr || undefined,
+      duration: form.duration,
+      description: form.description,
+      description_fr: form.description_fr || undefined,
+    });
     setSaving(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="edu-degree">{t.dashboard.educationDegreeLabel}</Label>
-        <Input
-          id="edu-degree"
-          value={form.degree}
-          onChange={(e) => setForm({ ...form, degree: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="edu-institution">{t.dashboard.educationInstitutionLabel}</Label>
-        <Input
-          id="edu-institution"
-          value={form.institution}
-          onChange={(e) => setForm({ ...form, institution: e.target.value })}
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+      <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">English</h3>
+          <div className="space-y-2">
+            <Label htmlFor="edu-degree">{t.dashboard.educationDegreeLabel}</Label>
+            <Input
+              id="edu-degree"
+              value={form.degree}
+              onChange={(e) => setForm({ ...form, degree: e.target.value })}
+              required
+              placeholder="Degree/Program"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edu-institution">{t.dashboard.educationInstitutionLabel}</Label>
+            <Input
+              id="edu-institution"
+              value={form.institution}
+              onChange={(e) => setForm({ ...form, institution: e.target.value })}
+              required
+              placeholder="Institution Name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edu-desc">{t.dashboard.educationDescriptionLabel}</Label>
+            <Textarea
+              id="edu-desc"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              required
+              rows={3}
+              placeholder="Description in English..."
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">Français</h3>
+          <div className="space-y-2">
+            <Label htmlFor="edu-degree-fr">Diplôme/Programme</Label>
+            <Input
+              id="edu-degree-fr"
+              value={form.degree_fr}
+              onChange={(e) => setForm({ ...form, degree_fr: e.target.value })}
+              placeholder="Diplôme/Programme"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edu-institution-fr">Institution</Label>
+            <Input
+              id="edu-institution-fr"
+              value={form.institution_fr}
+              onChange={(e) => setForm({ ...form, institution_fr: e.target.value })}
+              placeholder="Nom de l'institution"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edu-desc-fr">Description</Label>
+            <Textarea
+              id="edu-desc-fr"
+              value={form.description_fr}
+              onChange={(e) => setForm({ ...form, description_fr: e.target.value })}
+              rows={3}
+              placeholder="Description en français..."
+            />
+          </div>
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="edu-duration">{t.dashboard.educationDurationLabel}</Label>
@@ -1173,15 +1414,6 @@ const EducationForm = ({
           value={form.duration}
           onChange={(e) => setForm({ ...form, duration: e.target.value })}
           placeholder={t.dashboard.educationDurationPlaceholder}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="edu-desc">{t.dashboard.educationDescriptionLabel}</Label>
-        <Textarea
-          id="edu-desc"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
           required
         />
       </div>
@@ -1297,7 +1529,9 @@ const HobbyForm = ({
   const { t } = useLanguage();
   const [form, setForm] = useState({
     name: hobby?.name || '',
+    name_fr: hobby?.name_fr || '',
     category: hobby?.category || '',
+    category_fr: hobby?.category_fr || '',
     icon: hobby?.icon || '',
   });
   const [saving, setSaving] = useState(false);
@@ -1307,7 +1541,9 @@ const HobbyForm = ({
     setSaving(true);
     await onSave({
       name: form.name,
+      name_fr: form.name_fr || undefined,
       category: form.category,
+      category_fr: form.category_fr || undefined,
       icon: form.icon || undefined,
     });
     setSaving(false);
@@ -1315,30 +1551,57 @@ const HobbyForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="hobby-name">{t.dashboard.hobbyNameLabel}</Label>
-        <Input
-          id="hobby-name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="hobby-category">{t.dashboard.hobbyCategoryLabel}</Label>
-        <Input
-          id="hobby-category"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          placeholder={t.dashboard.hobbyCategoryPlaceholder}
-          list="hobby-categories"
-          required
-        />
-        <datalist id="hobby-categories">
-          {categories.map((cat) => (
-            <option key={cat} value={cat} />
-          ))}
-        </datalist>
+      <div className="grid md:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">English</h3>
+          <div className="space-y-2">
+            <Label htmlFor="hobby-name">{t.dashboard.hobbyNameLabel}</Label>
+            <Input
+              id="hobby-name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+              placeholder="Hobby name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="hobby-category">{t.dashboard.hobbyCategoryLabel}</Label>
+            <Input
+              id="hobby-category"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              placeholder={t.dashboard.hobbyCategoryPlaceholder}
+              list="hobby-categories"
+              required
+            />
+            <datalist id="hobby-categories">
+              {categories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="font-semibold text-sm">Français</h3>
+          <div className="space-y-2">
+            <Label htmlFor="hobby-name-fr">Nom du passe-temps</Label>
+            <Input
+              id="hobby-name-fr"
+              value={form.name_fr}
+              onChange={(e) => setForm({ ...form, name_fr: e.target.value })}
+              placeholder="Nom du passe-temps"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="hobby-category-fr">Catégorie</Label>
+            <Input
+              id="hobby-category-fr"
+              value={form.category_fr}
+              onChange={(e) => setForm({ ...form, category_fr: e.target.value })}
+              placeholder="Catégorie"
+            />
+          </div>
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="hobby-icon">{t.dashboard.hobbyIconLabel}</Label>

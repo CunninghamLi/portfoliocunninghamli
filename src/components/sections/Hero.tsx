@@ -1,16 +1,19 @@
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedText } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Gamepad2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 const Hero = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { aboutMe } = data;
 
-  const { text: translatedTitle } = useTranslatedText(aboutMe.title);
+  const displayTitle = useMemo(() => 
+    language === 'fr' && aboutMe.title_fr ? aboutMe.title_fr : aboutMe.title,
+    [aboutMe.title, aboutMe.title_fr, language]
+  );
 
   const scrollToAbout = () => {
     document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
@@ -120,7 +123,7 @@ const Hero = () => {
           className="mb-12"
         >
           <p className="text-xl md:text-2xl lg:text-3xl font-body text-foreground/80 max-w-3xl mx-auto">
-            {'> '}<span className="text-gradient-game font-semibold">{translatedTitle}</span>
+            {'> '}<span className="text-gradient-game font-semibold">{displayTitle}</span>
             <motion.span
               animate={{ opacity: [1, 0, 1] }}
               transition={{ duration: 1, repeat: Infinity }}

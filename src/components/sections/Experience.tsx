@@ -1,24 +1,24 @@
 
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTranslatedArray } from '@/hooks/useTranslation';
-import { Briefcase, Loader2, Star, Zap } from 'lucide-react';
+import { Briefcase, Star, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
 const Experience = () => {
   const { data } = usePortfolio();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { experiences } = data;
 
-  const experiencesForTranslation = useMemo(() => 
-    experiences.map(e => ({ ...e, description: e.description, role: e.role, duration: e.duration })), 
-    [experiences]
-  );
-
-  const { items: translatedExperiences, isTranslating } = useTranslatedArray(
-    experiencesForTranslation,
-    ['description', 'role', 'duration']
+  const displayExperiences = useMemo(() => 
+    experiences.map(e => ({ 
+      ...e, 
+      role: language === 'fr' && e.role_fr ? e.role_fr : e.role,
+      company: language === 'fr' && e.company_fr ? e.company_fr : e.company,
+      duration: language === 'fr' && e.duration_fr ? e.duration_fr : e.duration,
+      description: language === 'fr' && e.description_fr ? e.description_fr : e.description
+    })), 
+    [experiences, language]
   );
 
   return (
@@ -47,7 +47,6 @@ const Experience = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-game font-bold text-neon-purple flex items-center justify-center gap-3">
             <Star className="w-10 h-10" />
             {t.sections.experience}
-            {isTranslating && <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />}
           </h2>
         </motion.div>
 
@@ -58,7 +57,7 @@ const Experience = () => {
               <div className="h-full bg-gradient-to-b from-neon-cyan via-neon-purple to-neon-pink" />
             </div>
 
-            {translatedExperiences.map((exp, index) => (
+            {displayExperiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 initial={{ opacity: 0, y: 50 }}
@@ -96,7 +95,7 @@ const Experience = () => {
                     {/* Level badge */}
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-pixel text-[8px] text-neon-cyan">
-                        {t.common.level} {String(translatedExperiences.length - index).padStart(2, '0')}
+                        {t.common.level} {String(displayExperiences.length - index).padStart(2, '0')}
                       </div>
                       <span className="font-pixel text-[8px] text-muted-foreground px-2 py-1 border border-muted-foreground/30">
                         {exp.duration}
