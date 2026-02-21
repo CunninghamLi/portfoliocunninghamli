@@ -29,6 +29,7 @@ const Testimonials = () => {
   const [newTestimonial, setNewTestimonial] = useState('');
   const [newName, setNewName] = useState('');
   const [userTestimonials, setUserTestimonials] = useState<Testimonial[]>([]);
+  const [todayCount, setTodayCount] = useState(0);
   const { items: translatedTestimonials } = useTranslatedArray(testimonials, ['content']);
   const { items: translatedUserTestimonials } = useTranslatedArray(userTestimonials, ['content']);
 
@@ -60,6 +61,16 @@ const Testimonials = () => {
           .order('created_at', { ascending: false });
 
         setUserTestimonials(userTestimonialsData || []);
+
+        // Count testimonials submitted today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStart = today.toISOString();
+
+        const todayTestimonials = (userTestimonialsData || []).filter(
+          (t) => new Date(t.created_at) >= new Date(todayStart)
+        );
+        setTodayCount(todayTestimonials.length);
       }
     } catch (error) {
       console.error('Error fetching testimonials:', error);
@@ -75,6 +86,16 @@ const Testimonials = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !newTestimonial.trim() || !newName.trim()) return;
+
+    // Check daily limit
+    if (todayCount >= 2) {
+      toast({
+        title: t.testimonials.error || 'Daily Limit Reached',
+        description: 'You can only submit 2 testimonials per day. Please try again tomorrow.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -163,20 +184,35 @@ const Testimonials = () => {
                     maxLength={500}
                   />
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      {newTestimonial.length}/500
-                    </span>
-                    <Button type="submit" disabled={submitting || !newTestimonial.trim() || !newName.trim()}>
+                    <div className="text-sm text-muted-foreground">
+                      <span>{newTestimonial.length}/500</span>
+                      {todayCount > 0 && (
+                        <span className="ml-4 text-xs">
+                          {todayCount}/2 testimonials posted today
+                        </span>
+                      )}
+                    </div>
+                    <Button 
+                      type="submit" 
+                      disabled={submitting || !newTestimonial.trim() || !newName.trim() || todayCount >= 2}
+                    >
                       {submitting ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           {t.common.saving}
                         </>
+                      ) : todayCount >= 2 ? (
+                        'Daily Limit Reached'
                       ) : (
                         t.testimonials.submit
                       )}
                     </Button>
                   </div>
+                  {todayCount >= 2 && (
+                    <div className="text-xs text-red-500 mt-2">
+                      You've reached the daily limit of 2 testimonials. Try again tomorrow!
+                    </div>
+                  )}
                 </form>
               </CardContent>
             </Card>
