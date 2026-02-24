@@ -16,14 +16,6 @@ interface PasswordRequirement {
   test: (password: string) => boolean;
 }
 
-const passwordRequirements: PasswordRequirement[] = [
-  { label: 'At least 8 characters', test: (p) => p.length >= 8 },
-  { label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
-  { label: 'One lowercase letter', test: (p) => /[a-z]/.test(p) },
-  { label: 'One number', test: (p) => /[0-9]/.test(p) },
-  { label: 'One special character (!@#$%^&*)', test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
-];
-
 const Login = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -37,6 +29,14 @@ const Login = () => {
   const { signIn, signUp, isLoggedIn } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  const passwordRequirements: PasswordRequirement[] = [
+    { label: t.auth.passwordRequirementMinLength, test: (p) => p.length >= 8 },
+    { label: t.auth.passwordRequirementUppercase, test: (p) => /[A-Z]/.test(p) },
+    { label: t.auth.passwordRequirementLowercase, test: (p) => /[a-z]/.test(p) },
+    { label: t.auth.passwordRequirementNumber, test: (p) => /[0-9]/.test(p) },
+    { label: t.auth.passwordRequirementSpecial, test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
+  ];
 
   if (isLoggedIn) {
     navigate('/');
@@ -260,7 +260,7 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+                    <Label htmlFor="signup-confirm-password">{t.auth.confirmPassword}</Label>
                     <div className="relative">
                       <Input
                         id="signup-confirm-password"
@@ -282,12 +282,12 @@ const Login = () => {
                     </div>
                     {signupConfirmPassword && signupPassword !== signupConfirmPassword && (
                       <p className="text-xs text-destructive flex items-center gap-1">
-                        <X className="w-3 h-3" /> Passwords do not match
+                        <X className="w-3 h-3" /> {t.auth.passwordsDoNotMatch}
                       </p>
                     )}
                     {signupConfirmPassword && signupPassword === signupConfirmPassword && (
                       <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                        <Check className="w-3 h-3" /> Passwords match
+                        <Check className="w-3 h-3" /> {t.auth.passwordsMatch}
                       </p>
                     )}
                   </div>

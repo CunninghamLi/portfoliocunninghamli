@@ -240,11 +240,17 @@ interface Translations {
     signup: string;
     email: string;
     password: string;
+    confirmPassword: string;
     username: string;
     usernameHelp: string;
     passwordHelp: string;
     usernameMinLength: string;
     passwordMinLength: string;
+    passwordRequirementMinLength: string;
+    passwordRequirementUppercase: string;
+    passwordRequirementLowercase: string;
+    passwordRequirementNumber: string;
+    passwordRequirementSpecial: string;
     loginFailed: string;
     signupFailed: string;
     welcomeBack: string;
@@ -257,6 +263,7 @@ interface Translations {
     error: string;
     passwordRequirements: string;
     passwordsDoNotMatch: string;
+    passwordsMatch: string;
     checkEmail: string;
     emailConfirmation: string;
     confirmEmailMessage: string;
@@ -534,11 +541,17 @@ const translations: Record<Language, Translations> = {
       signup: 'Sign Up',
       email: 'Email',
       password: 'Password',
+      confirmPassword: 'Confirm Password',
       username: 'Username',
       usernameHelp: 'This will be displayed publicly',
       passwordHelp: 'Minimum 6 characters',
       usernameMinLength: 'Username must be at least 3 characters',
       passwordMinLength: 'Password must be at least 6 characters',
+      passwordRequirementMinLength: 'At least 8 characters',
+      passwordRequirementUppercase: 'One uppercase letter',
+      passwordRequirementLowercase: 'One lowercase letter',
+      passwordRequirementNumber: 'One number',
+      passwordRequirementSpecial: 'One special character (!@#$%^&*)',
       loginFailed: 'Login failed',
       signupFailed: 'Sign up failed',
       welcomeBack: 'Welcome back!',
@@ -551,6 +564,7 @@ const translations: Record<Language, Translations> = {
       error: 'Error',
       passwordRequirements: 'Password does not meet all requirements',
       passwordsDoNotMatch: 'Passwords do not match',
+      passwordsMatch: 'Passwords match',
       checkEmail: 'Check Your Email',
       emailConfirmation: 'Email Confirmation Required',
       confirmEmailMessage: 'Please check your email and click the confirmation link to activate your account.',
@@ -826,11 +840,17 @@ const translations: Record<Language, Translations> = {
       signup: 'Inscription',
       email: 'Email',
       password: 'Mot de passe',
+      confirmPassword: 'Confirmer le mot de passe',
       username: 'Nom d\'utilisateur',
       usernameHelp: 'Ceci sera affiché publiquement',
       passwordHelp: 'Minimum 6 caractères',
       usernameMinLength: 'Le nom d\'utilisateur doit contenir au moins 3 caractères',
       passwordMinLength: 'Le mot de passe doit contenir au moins 6 caractères',
+      passwordRequirementMinLength: 'Au moins 8 caractères',
+      passwordRequirementUppercase: 'Une majuscule',
+      passwordRequirementLowercase: 'Une minuscule',
+      passwordRequirementNumber: 'Un chiffre',
+      passwordRequirementSpecial: 'Un caractère spécial (!@#$%^&*)',
       loginFailed: 'Échec de la connexion',
       signupFailed: 'Échec de l\'inscription',
       welcomeBack: 'Bon retour!',
@@ -843,6 +863,7 @@ const translations: Record<Language, Translations> = {
       error: 'Erreur',
       passwordRequirements: 'Le mot de passe ne répond pas à toutes les exigences',
       passwordsDoNotMatch: 'Les mots de passe ne correspondent pas',
+      passwordsMatch: 'Les mots de passe correspondent',
       checkEmail: 'Vérifiez votre email',
       emailConfirmation: 'Confirmation email requise',
       confirmEmailMessage: 'Veuillez vérifier votre email et cliquer sur le lien de confirmation pour activer votre compte.',
