@@ -36,15 +36,9 @@ const Navbar = () => {
   }, []);
 
   const handleNavClick = (href: string) => {
-    if (!isHome) {
-      // Navigate to home page with the hash
+    if (href.startsWith('#')) {
+      // Always navigate with the hash - useEffect in Index will handle scrolling
       navigate('/' + href);
-    } else if (href.startsWith('#')) {
-      // Already on home page, scroll to section
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
     }
     setIsOpen(false);
   };
