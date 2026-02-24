@@ -163,6 +163,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error: error.message };
       }
 
+      // Check if user already exists
+      // Supabase doesn't return an error for existing users to prevent email enumeration
+      // Instead, if identities array is empty, it means the user already exists
+      if (data?.user && (!data.user.identities || data.user.identities.length === 0)) {
+        return { error: 'An account with this email already exists. Please try logging in instead.' };
+      }
+
       // Immediately sign out to prevent auto-login before email confirmation
       // User must confirm email before they can log in
       if (data?.session) {
