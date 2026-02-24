@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +14,7 @@ const Navbar = () => {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === '/';
 
   const navItems = [
@@ -35,7 +36,11 @@ const Navbar = () => {
   }, []);
 
   const handleNavClick = (href: string) => {
-    if (isHome && href.startsWith('#')) {
+    if (!isHome) {
+      // Navigate to home page with the hash
+      navigate('/' + href);
+    } else if (href.startsWith('#')) {
+      // Already on home page, scroll to section
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -86,12 +91,10 @@ const Navbar = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                href={isHome ? item.href : `/${item.href}`}
+                href={item.href}
                 onClick={(e) => {
-                  if (isHome) {
-                    e.preventDefault();
-                    handleNavClick(item.href);
-                  }
+                  e.preventDefault();
+                  handleNavClick(item.href);
                 }}
                 className="text-sm font-body font-medium text-muted-foreground hover:text-neon-cyan transition-colors relative group uppercase tracking-wider"
               >
@@ -200,12 +203,10 @@ const Navbar = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                    href={isHome ? item.href : `/${item.href}`}
+                    href={item.href}
                     onClick={(e) => {
-                      if (isHome) {
-                        e.preventDefault();
-                        handleNavClick(item.href);
-                      }
+                      e.preventDefault();
+                      handleNavClick(item.href);
                     }}
                     className="px-4 py-2 text-sm font-body font-medium text-muted-foreground hover:text-neon-cyan hover:bg-neon-cyan/10 transition-colors uppercase tracking-wider"
                   >

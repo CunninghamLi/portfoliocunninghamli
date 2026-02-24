@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/sections/Hero';
 import AboutMe from '@/components/sections/AboutMe';
@@ -12,6 +14,22 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
   const { t } = useLanguage();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Handle scrolling to sections based on hash
+    if (location.hash) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash]);
+
   return (
     <div className="min-h-screen bg-background crt-effect">
       <Navbar />
